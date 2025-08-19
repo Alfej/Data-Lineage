@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Interactive Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>🔗 Enhanced Interactive Graph Visualization</h1>
+    <p>Click nodes directly on the graph or use the controls below. Hover over nodes and edges for detailed information!</p>
+    
+    <div class="container">
+        <div class="controls">
+            <h3>Controls</h3>
+            
+            <!-- Type-based Controls -->
+            <div class="section">
+                <div class="collapsible active" onclick="toggleCollapsible(this)">
+                    <h4>🎛️ Type Controls</h4>
+                </div>
+                <div class="collapsible-content">
+                    <h5>Node Types</h5>
+                    <div id="node-type-buttons" class="type-controls"></div>
+                    
+                    <h5>Relationship Types</h5>
+                    <div id="relationship-type-buttons" class="type-controls"></div>
+                </div>
+            </div>
+            
+            <!-- Individual Node Controls -->
+            <div class="section">
+                <div class="collapsible" onclick="toggleCollapsible(this)">
+                    <h4>📋 Individual Nodes</h4>
+                </div>
+                <div class="collapsible-content">
+                    <div id="node-buttons"></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-reset" onclick="resetAll()">🔄 Reset All</button>
+            
+            <div class="status">
+                <strong>Status:</strong><br>
+                Total Nodes: <span id="total-count">0</span><br>
+                Visible: <span id="visible-count">0</span><br>
+                Hidden: <span id="hidden-count">0</span>
+            </div>
+            
+            <div class="hidden-list">
+                <strong>Hidden Nodes:</strong>
+                <div id="hidden-list">None</div>
+            </div>
+            
+            <div class="legend">
+                <strong>Node Types:</strong><br>
+                🔵 Blue circles = CTE<br>
+                🟢 Green circles = Tables<br>
+                🟡 Yellow circles = Views<br><br>
+                
+                <strong>Relationship Colors:</strong><br>
+                <div id="relationship-legend"></div>
+                <br>
+                
+                <strong>Interactions:</strong><br>
+                • Click nodes to hide/show<br>
+                • Hover for details<br>
+                • Drag to reposition
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <svg id="graph"></svg>
+        </div>
+    </div>
+    
+        <div id="lineage-data">
+    <h2>Parent-Child Lineage</h2>
+    <table id="lineage-table">
+        <thead>
+            <tr>
+                <th>Child Table Name</th>
+                <th>Child Table Type</th>
+                <th>Relationship</th>
+                <th>Parent Table Name</th>
+                <th>Parent Table Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be loaded here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+    <!-- Data injection point -->
+    <script id="graph-data">
+        // Data will be injected here by Python script
+        const originalNodes = [];
+        const originalLinks = [];
+    </script>
+    
+    <script src="js/graph.js"></script>
+</body>
+</html>

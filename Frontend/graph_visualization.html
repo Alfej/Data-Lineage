@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Interactive Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>🔗 Enhanced Interactive Graph Visualization</h1>
+    <p>Click nodes directly on the graph or use the controls below. Hover over nodes and edges for detailed information!</p>
+    
+    <div class="container">
+        <div class="controls">
+            <h3>Controls</h3>
+            
+            <!-- Type-based Controls -->
+            <div class="section">
+                <div class="collapsible active" onclick="toggleCollapsible(this)">
+                    <h4>🎛️ Type Controls</h4>
+                </div>
+                <div class="collapsible-content">
+                    <h5>Node Types</h5>
+                    <div id="node-type-buttons" class="type-controls"></div>
+                    
+                    <h5>Relationship Types</h5>
+                    <div id="relationship-type-buttons" class="type-controls"></div>
+                </div>
+            </div>
+            
+            <!-- Individual Node Controls -->
+            <div class="section">
+                <div class="collapsible" onclick="toggleCollapsible(this)">
+                    <h4>📋 Individual Nodes</h4>
+                </div>
+                <div class="collapsible-content">
+                    <div id="node-buttons"></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-reset" onclick="resetAll()">🔄 Reset All</button>
+            
+            <div class="status">
+                <strong>Status:</strong><br>
+                Total Nodes: <span id="total-count">0</span><br>
+                Visible: <span id="visible-count">0</span><br>
+                Hidden: <span id="hidden-count">0</span>
+            </div>
+            
+            <div class="hidden-list">
+                <strong>Hidden Nodes:</strong>
+                <div id="hidden-list">None</div>
+            </div>
+            
+            <div class="legend">
+                <strong>Node Types:</strong><br>
+                🔵 Blue circles = CTE<br>
+                🟢 Green circles = Tables<br>
+                🟡 Yellow circles = Views<br><br>
+                
+                <strong>Relationship Colors:</strong><br>
+                <div id="relationship-legend"></div>
+                <br>
+                
+                <strong>Interactions:</strong><br>
+                • Click nodes to hide/show<br>
+                • Hover for details<br>
+                • Drag to reposition
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <svg id="graph"></svg>
+        </div>
+    </div>
+    
+        <div id="lineage-data">
+    <h2>Parent-Child Lineage</h2>
+    <table id="lineage-table">
+        <thead>
+            <tr>
+                <th>Child Table Name</th>
+                <th>Child Table Type</th>
+                <th>Relationship</th>
+                <th>Parent Table Name</th>
+                <th>Parent Table Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be loaded here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+    <!-- Data injection point -->
+    <script id="graph-data">
+        // Data injected by Python script
+        const originalNodes = [
+        {
+                "id": "V_CUST_EXCLUSION",
+                "name": "V_CUST_EXCLUSION",
+                "fullName": "V_CUST_EXCLUSION",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: TGT (Update)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_WKLY_FNL (Created from)",
+                        "\u2192 Table: DW_CUST_RPRTNG_ATRBT (Created from)",
+                        "\u2192 Table: DW_DATA_PARM_ATRBT_VAL (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_AGGR_SAS_WKLY",
+                "name": "V_CUST_AGGR_SAS_WKLY",
+                "fullName": "V_CUST_AGGR_SAS_WKLY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_WK_ACTL_CALL_RANGE (Created from)",
+                        "\u2190 Table: V_CUST_SERV_WKLY_FNL (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY (Created from)",
+                        "\u2192 Table: V_CUST_SERV_ELIG_BASE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P.DW_PEP_CALDR_DT",
+                "name": "DWL_P.DW_PEP_CALDR_DT",
+                "fullName": "DWL_P.DW_PEP_CALDR_DT",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_SERV_TIME_RANGE (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_STD_WSA_CUST",
+                "name": "V_STD_WSA_CUST",
+                "fullName": "V_STD_WSA_CUST",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_STD_WKLY (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY (Created from)",
+                        "\u2192 Table: V_CUST_SERV_ELIG_BASE (Created from)",
+                        "\u2192 Table: V_CUST_SERV_TIME_WK_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "PEPCMN_P.STEP",
+                "name": "PEPCMN_P.STEP",
+                "fullName": "PEPCMN_P.STEP",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "PEPCMN_P.SYS",
+                "name": "PEPCMN_P.SYS",
+                "fullName": "PEPCMN_P.SYS",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_SERV_TIME_WK_RANGE",
+                "name": "V_CUST_SERV_TIME_WK_RANGE",
+                "fullName": "V_CUST_SERV_TIME_WK_RANGE",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_STD_CALC_RANGE (Created from)",
+                        "\u2190 Table: V_STD_WSA_CUST (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_TIME_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_SERV_WKLY_FNL",
+                "name": "V_CUST_SERV_WKLY_FNL",
+                "fullName": "V_CUST_SERV_WKLY_FNL",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_EXCLUSION (Created from)",
+                        "\u2190 Table: TGT (Update)",
+                        "\u2190 CTE: V_FNL_CUST (Created from)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_AGGR_SAS_WKLY (Created from)",
+                        "\u2192 Table: V_CUST_STD_WKLY (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_WSA",
+                "name": "V_WSA",
+                "fullName": "V_WSA",
+                "type": "CTE",
+                "incoming": [
+                        "\u2190 Table: V_VOLBAND_CURR (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY (Created from)",
+                        "\u2192 Table: DLS_FLNA_TIME_TBL_V (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "SEM_EXTRCT.DW_CUST_VISTSCHD_DAY_PLANACTY",
+                "name": "SEM_EXTRCT.DW_CUST_VISTSCHD_DAY_PLANACTY",
+                "fullName": "SEM_EXTRCT.DW_CUST_VISTSCHD_DAY_PLANACTY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_DELIV_NM_WKLY (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_SERV_ELIG_BASE",
+                "name": "V_CUST_SERV_ELIG_BASE",
+                "fullName": "V_CUST_SERV_ELIG_BASE",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_AGGR_SAS_WKLY (Created from)",
+                        "\u2190 Table: V_CUST_WK_ACTL_CALL_RANGE (Created from)",
+                        "\u2190 Table: V_STD_WSA_CUST (Created from)",
+                        "\u2190 Table: TGT (Update)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DW_CUST_RPRTNG_ATRBT (Created from)",
+                        "\u2192 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY (Created from)",
+                        "\u2192 Table: V_CUST_SERV_TIME_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY",
+                "name": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY",
+                "fullName": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_SERV_ELIG_BASE (Created from)",
+                        "\u2190 Table: V_CUST_AGGR_SAS_WKLY (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "test",
+                "name": "test",
+                "fullName": "test",
+                "type": "View",
+                "incoming": [],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_TIME_RANGE (Insert)",
+                        "\u2192 Table: V_CUST_SERV_ELIG_BASE (Insert)",
+                        "\u2192 Table: V_CUST_AGGR_SAS_WKLY (Insert)",
+                        "\u2192 Table: V_CUST_SERV_TIME_WK_RANGE (Insert)",
+                        "\u2192 Table: V_CUST_STD_CALC_RANGE (Insert)",
+                        "\u2192 Table: V_CUST_WK_ACTL_CALL_RANGE (Insert)",
+                        "\u2192 Table: V_STD_WSA_CUST (Insert)",
+                        "\u2192 Table: V_CUST_STD_WKLY (Insert)",
+                        "\u2192 Table: V_CUST_SERV_WKLY_FNL (Insert)",
+                        "\u2192 Table: V_CUST_EXCLUSION (Insert)",
+                        "\u2192 Table: TGT (Insert)",
+                        "\u2192 Table: V_DELIV_NM_WKLY (Insert)",
+                        "\u2192 Table: V_VOLBAND_CURR (Insert)",
+                        "\u2192 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P.DW_DATA_PARM_ATRBT_VAL",
+                "name": "DWL_P.DW_DATA_PARM_ATRBT_VAL",
+                "fullName": "DWL_P.DW_DATA_PARM_ATRBT_VAL",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_EXCLUSION (Created from)",
+                        "\u2190 Table: TGT (Update)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_WK_ACTL_CALL_RANGE",
+                "name": "V_CUST_WK_ACTL_CALL_RANGE",
+                "fullName": "V_CUST_WK_ACTL_CALL_RANGE",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_STD_WKLY (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_ELIG_BASE (Created from)",
+                        "\u2192 Table: V_CUST_AGGR_SAS_WKLY (Created from)",
+                        "\u2192 Table: V_CUST_STD_CALC_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_SERV_TIME_RANGE",
+                "name": "V_CUST_SERV_TIME_RANGE",
+                "fullName": "V_CUST_SERV_TIME_RANGE",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_SERV_ELIG_BASE (Created from)",
+                        "\u2190 Table: V_CUST_SERV_TIME_WK_RANGE (Created from)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Delete)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DW_PEP_CALDR_DT (Created from)",
+                        "\u2192 Table: DW_TMSLC_CUR_REF_DT (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_STD_WKLY",
+                "name": "V_CUST_STD_WKLY",
+                "fullName": "V_CUST_STD_WKLY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_SERV_WKLY_FNL (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_STD_WSA_CUST (Created from)",
+                        "\u2192 Table: PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF (Created from)",
+                        "\u2192 Table: V_CUST_WK_ACTL_CALL_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P.DW_TMSLC_CUR_REF_DT",
+                "name": "DWL_P.DW_TMSLC_CUR_REF_DT",
+                "fullName": "DWL_P.DW_TMSLC_CUR_REF_DT",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_SERV_TIME_RANGE (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_CUST_STD_CALC_RANGE",
+                "name": "V_CUST_STD_CALC_RANGE",
+                "fullName": "V_CUST_STD_CALC_RANGE",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: V_CUST_WK_ACTL_CALL_RANGE (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_TIME_WK_RANGE (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "PEPCMN_P.ACTVTY",
+                "name": "PEPCMN_P.ACTVTY",
+                "fullName": "PEPCMN_P.ACTVTY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "V_FNL_CUST",
+                "name": "V_FNL_CUST",
+                "fullName": "V_FNL_CUST",
+                "type": "CTE",
+                "incoming": [
+                        "\u2190 Table: V_VOLBAND_CURR (Created from)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_WKLY_FNL (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_VOLBAND_CURR",
+                "name": "V_VOLBAND_CURR",
+                "fullName": "V_VOLBAND_CURR",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [
+                        "\u2192 CTE: V_FNL_CUST (Created from)",
+                        "\u2192 CTE: V_WSA (Created from)",
+                        "\u2192 Table: PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF (Created from)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF",
+                "name": "ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF",
+                "fullName": "ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_STD_WKLY (Created from)",
+                        "\u2190 Table: V_VOLBAND_CURR (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "name": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "fullName": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_CUST_SERV_ELIG_BASE (Created from)",
+                        "\u2190 Table: V_CUST_EXCLUSION (Created from)",
+                        "\u2190 Table: TGT (Update)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "SEM_EXTRCT.DLS_FLNA_TIME_TBL_V",
+                "name": "SEM_EXTRCT.DLS_FLNA_TIME_TBL_V",
+                "fullName": "SEM_EXTRCT.DLS_FLNA_TIME_TBL_V",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 CTE: V_WSA (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY",
+                "name": "SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY",
+                "fullName": "SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 Table: V_STD_WSA_CUST (Created from)",
+                        "\u2190 CTE: V_WSA (Created from)"
+                ],
+                "outgoing": [],
+                "hidden": false
+        },
+        {
+                "id": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "name": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "fullName": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Delete)",
+                        "\u2190 Table: TGT (Update)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: V_CUST_SERV_TIME_RANGE (Delete)",
+                        "\u2192 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Delete)",
+                        "\u2192 Table: V_CUST_SERV_TIME_RANGE (Insert)",
+                        "\u2192 Table: STEP (Insert)",
+                        "\u2192 Table: ACTVTY (Insert)",
+                        "\u2192 Table: SYS (Insert)",
+                        "\u2192 Table: V_CUST_SERV_WKLY_FNL (Insert)",
+                        "\u2192 Table: V_DELIV_NM_WKLY (Insert)",
+                        "\u2192 Table: V_VOLBAND_CURR (Insert)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "TGT",
+                "name": "TGT",
+                "fullName": "TGT",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DW_CUST_RPRTNG_ATRBT (Update)",
+                        "\u2192 Table: V_CUST_EXCLUSION (Update)",
+                        "\u2192 Table: V_CUST_SERV_WKLY_FNL (Update)",
+                        "\u2192 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Update)",
+                        "\u2192 Table: DW_DATA_PARM_ATRBT_VAL (Update)",
+                        "\u2192 Table: V_CUST_SERV_ELIG_BASE (Update)"
+                ],
+                "hidden": false
+        },
+        {
+                "id": "V_DELIV_NM_WKLY",
+                "name": "V_DELIV_NM_WKLY",
+                "fullName": "V_DELIV_NM_WKLY",
+                "type": "Table",
+                "incoming": [
+                        "\u2190 View: test (Insert)",
+                        "\u2190 Table: PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY (Insert)"
+                ],
+                "outgoing": [
+                        "\u2192 Table: DW_CUST_VISTSCHD_DAY_PLANACTY (Created from)"
+                ],
+                "hidden": false
+        }
+];
+        const originalLinks = [
+        {
+                "source": "test",
+                "target": "V_CUST_SERV_TIME_RANGE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_TIME_RANGE",
+                "target": "DWL_P.DW_PEP_CALDR_DT",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_TIME_RANGE",
+                "target": "DWL_P.DW_TMSLC_CUR_REF_DT",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_SERV_ELIG_BASE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_ELIG_BASE",
+                "target": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_ELIG_BASE",
+                "target": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_ELIG_BASE",
+                "target": "V_CUST_SERV_TIME_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_AGGR_SAS_WKLY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_AGGR_SAS_WKLY",
+                "target": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_AGGR_SAS_WKLY",
+                "target": "V_CUST_SERV_ELIG_BASE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_SERV_TIME_WK_RANGE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_TIME_WK_RANGE",
+                "target": "V_CUST_SERV_TIME_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_STD_CALC_RANGE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_STD_CALC_RANGE",
+                "target": "V_CUST_SERV_TIME_WK_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_WK_ACTL_CALL_RANGE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_WK_ACTL_CALL_RANGE",
+                "target": "V_CUST_SERV_ELIG_BASE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_WK_ACTL_CALL_RANGE",
+                "target": "V_CUST_AGGR_SAS_WKLY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_WK_ACTL_CALL_RANGE",
+                "target": "V_CUST_STD_CALC_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_STD_WSA_CUST",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_STD_WSA_CUST",
+                "target": "SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_STD_WSA_CUST",
+                "target": "V_CUST_SERV_ELIG_BASE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_STD_WSA_CUST",
+                "target": "V_CUST_SERV_TIME_WK_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_STD_WKLY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_STD_WKLY",
+                "target": "V_STD_WSA_CUST",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_STD_WKLY",
+                "target": "ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_STD_WKLY",
+                "target": "V_CUST_WK_ACTL_CALL_RANGE",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_SERV_WKLY_FNL",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_WKLY_FNL",
+                "target": "V_CUST_AGGR_SAS_WKLY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_SERV_WKLY_FNL",
+                "target": "V_CUST_STD_WKLY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_CUST_EXCLUSION",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_EXCLUSION",
+                "target": "V_CUST_SERV_WKLY_FNL",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_EXCLUSION",
+                "target": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_CUST_EXCLUSION",
+                "target": "DWL_P.DW_DATA_PARM_ATRBT_VAL",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "TGT",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "DWL_P.DW_CUST_RPRTNG_ATRBT",
+                "relationship": "Update",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "V_CUST_EXCLUSION",
+                "relationship": "Update",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "V_CUST_SERV_WKLY_FNL",
+                "relationship": "Update",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_DELIV_NM_WKLY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_DELIV_NM_WKLY",
+                "target": "SEM_EXTRCT.DW_CUST_VISTSCHD_DAY_PLANACTY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "V_VOLBAND_CURR",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "V_VOLBAND_CURR",
+                "target": "V_FNL_CUST",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_FNL_CUST",
+                "target": "V_CUST_SERV_WKLY_FNL",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_VOLBAND_CURR",
+                "target": "V_WSA",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_WSA",
+                "target": "SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_WSA",
+                "target": "SEM_EXTRCT.DLS_FLNA_TIME_TBL_V",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "V_VOLBAND_CURR",
+                "target": "ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF",
+                "relationship": "Created from",
+                "type": "direct"
+        },
+        {
+                "source": "test",
+                "target": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "V_CUST_SERV_TIME_RANGE",
+                "relationship": "Delete",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "relationship": "Delete",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "V_CUST_SERV_TIME_RANGE",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "PEPCMN_P.STEP",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "PEPCMN_P.ACTVTY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "PEPCMN_P.SYS",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "V_CUST_SERV_WKLY_FNL",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "V_DELIV_NM_WKLY",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "target": "V_VOLBAND_CURR",
+                "relationship": "Insert",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY",
+                "relationship": "Update",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "DWL_P.DW_DATA_PARM_ATRBT_VAL",
+                "relationship": "Update",
+                "type": "direct"
+        },
+        {
+                "source": "TGT",
+                "target": "V_CUST_SERV_ELIG_BASE",
+                "relationship": "Update",
+                "type": "direct"
+        }
+];
+    </script>
+    
+    <script src="js/graph.js"></script>
+</body>
+</html>
