@@ -1,0 +1,975 @@
+20250807-063448::PEPCMN
+
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 06:34:48 2025 PID: 2962
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/dwl/intl/bin/dwl_intl_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/DWL_BATCH_INTL_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 15 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 06:35:03-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  EXEC PEPCMN_P.STEP_STRT('DWL', 'LD_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM', 'DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD', '/etlapps/prds2/dwl/intl/logs/LD_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD.log');
+
+ *** Insert completed. One row added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+grep: /etlapps/prds2/dwl/intl/tmp/LD_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM.DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD.DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD.wkf: No such file or directory
+Executing load task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 06:35:03 2025 PID: 4994
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .RUN FILE /etlapps/prds2/dwl/intl/bin/dwl_drvd_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/DWL_BATCH_DRVD_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 6 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+  .SET WIDTH 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .SET MAXERROR 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 06:35:09-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+   CREATE MULTISET VOLATILE TABLE CTE_T AS (
+     SELECT DISTINCT -- Period Timeframe Query
+       TM.SALE_TKT_YR || ' P' || TM.SALE_TKT_PD AS "Timeframe",
+       TM.SALE_TKT_DLY_DT AS "Week Start Date",
+       TM.SALE_TKT_YR AS YR,
+    TM.SALE_TKT_PD AS PD,
+    TM.SALE_TKT_WK AS WK,
+    TM.SALE_TKT_FL_WK_DT,
+             1 AS PART
+  FROM  
+       ACQ_P.PGT_DLY_TIME_TBL_V1  AS TM
+       INNER JOIN DWL_P.PGT_DW_TMSLC_CUR_REF_DT AS TF 
+       ON TM.SALE_TKT_DLY_DT = TF.CALDR_DT
+  WHERE 
+       TM.SALE_TKT_DAY = 1
+       AND TF.TMFRM_NUM IN (13,7,4,10,45,42,41,25)
+       
+  UNION ALL
+
+  SELECT DISTINCT -- Quarter Timeframe Query
+       TM.SALE_TKT_YR || ' Q' || TM.SALE_TKT_QTR AS "Timeframe",
+       TM.SALE_TKT_DLY_DT AS "Week Start Date",
+       TM.SALE_TKT_YR AS YR,
+    TM.SALE_TKT_PD AS PD,
+    TM.SALE_TKT_WK AS WK,
+    TM.SALE_TKT_FL_WK_DT,
+             2 AS PART
+  FROM
+       ACQ_P.PGT_DLY_TIME_TBL_V1 AS TM
+       INNER JOIN 
+       (
+       SELECT DISTINCT 
+            TM.SALE_TKT_YR,
+            TM.SALE_TKT_QTR,
+            TM.SALE_TKT_DLY_DT AS WK_START_DT
+       FROM  
+            ACQ_P.PGT_DLY_TIME_TBL_V1 AS TM
+            INNER JOIN DWL_P.PGT_DW_TMSLC_CUR_REF_DT  AS TF 
+            ON TM.SALE_TKT_DLY_DT = TF.CALDR_DT
+       WHERE 
+            TM.SALE_TKT_DAY = 1
+            AND TF.TMFRM_NUM IN (13,7,4,10,45,42,41,25)
+       ) AS A
+       ON TM.SALE_TKT_YR = A.SALE_TKT_YR AND  TM.SALE_TKT_QTR = A.SALE_TKT_QTR
+  WHERE
+       TM.SALE_TKT_DAY = 1
+       AND TM.SALE_TKT_DLY_DT < CURRENT_DATE - 6
+       
+  UNION ALL
+
+  SELECT DISTINCT -- Week Timeframe Query
+       TM.SALE_TKT_FL_WK_DT AS "Timeframe",
+       TM.SALE_TKT_DLY_DT AS "Week Start Date",
+    TM.SALE_TKT_YR AS YR,
+    TM.SALE_TKT_PD AS PD,
+    TM.SALE_TKT_WK AS WK,
+    TM.SALE_TKT_FL_WK_DT,
+             3 AS PART
+  FROM  
+       ACQ_P.PGT_DLY_TIME_TBL_V1 AS TM
+       INNER JOIN DWL_P.PGT_DW_TMSLC_CUR_REF_DT AS TF 
+       ON TM.SALE_TKT_DLY_DT = TF.CALDR_DT
+       LEFT OUTER JOIN DWL_P.PGT_DW_TMSLC_CUR_REF_DT  AS TF2 
+       ON TM.SALE_TKT_DLY_DT = TF2.CALDR_DT AND TF2.TMFRM_NUM = 42
+  WHERE 
+       TM.SALE_TKT_DAY = 1
+      AND
+       (
+       TF.TMFRM_NUM IN (13,7,4,10,45,42,41,25)
+       OR 
+       (SALE_TKT_DLY_DT BETWEEN (CURRENT_DATE - 84) AND (CURRENT_DATE + 84))
+       )
+       
+  UNION ALL
+
+  SELECT  -- Timeframe Query
+       CASE 
+          WHEN TMFRM_NUM = 13 THEN 'LFW'
+          WHEN TMFRM_NUM = 7 THEN 'PTD'
+          WHEN TMFRM_NUM = 4 THEN 'YTD'
+          WHEN TMFRM_NUM = 10 THEN 'LFP'
+          WHEN TMFRM_NUM = 45 THEN 'R4'
+          WHEN TMFRM_NUM = 42 THEN 'R12'
+          WHEN TMFRM_NUM = 41 THEN 'R52'
+          WHEN TMFRM_NUM = 25 THEN 'QTD'
+          WHEN TMFRM_NUM = 20 THEN 'LFY'
+       END AS "Timeframe",
+       TM.SALE_TKT_DLY_DT AS  "Week Start Date",
+    TM.SALE_TKT_YR AS YR,
+    TM.SALE_TKT_PD AS PD,
+    TM.SALE_TKT_WK AS WK,
+    TM.SALE_TKT_FL_WK_DT,
+             4 AS PART
+  FROM  
+       ACQ_P.PGT_DLY_TIME_TBL_V1 TM
+       INNER JOIN DWL_P.PGT_DW_TMSLC_CUR_REF_DT TF 
+       ON TM.SALE_TKT_DLY_DT = TF.CALDR_DT     
+  WHERE 
+       TF.TMFRM_NUM IN (13,7,4,10,45,42,41,25)
+       AND TM.SALE_TKT_DAY = 1
+       AND "Timeframe" IS NOT NULL
+  ) WITH DATA NO PRIMARY INDEX 
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+ 
+CREATE MULTISET VOLATILE TABLE CTE_TIME  AS (
+  SELECT
+             "Week Start Date",
+             "Timeframe",
+    PART,
+    SALE_TKT_DLY_DT,
+             SALE_TKT_YR,
+    SALE_TKT_PD,
+             SALE_TKT_WK,
+             SALE_TKT_DAY,
+             MAX(CY) AS CY,
+             MAX(PY) AS PY
+     FROM
+         (
+         SELECT -- CY (Current Year)
+             "Week Start Date",
+             "Timeframe",
+    PART,
+             T.SALE_TKT_DLY_DT,
+             T.SALE_TKT_YR,
+             T.SALE_TKT_PD,
+             T.SALE_TKT_WK,
+    T.SALE_TKT_DAY,
+             1 AS CY,
+             0 AS PY
+         FROM  
+             ACQ_P.PGT_DLY_TIME_TBL_V1 AS T
+       INNER JOIN CTE_T
+       ON T.SALE_TKT_FL_WK_DT = CTE_T.SALE_TKT_FL_WK_DT  
+            
+         UNION ALL
+
+         SELECT  -- LY (Last Year)
+             T."Week Start Date",
+             "Timeframe",
+    PART,
+             TT.SALE_TKT_DLY_DT,
+             TT.SALE_TKT_YR,
+             TT.SALE_TKT_PD,
+             TT.SALE_TKT_WK,
+    TT.SALE_TKT_DAY,
+             0 AS CY,
+             1 AS PY
+         FROM  
+             CTE_T AS T
+             INNER JOIN ACQ_P.PGT_DLY_TIME_TBL_V1 AS TT
+             ON CAST(CAST(T.YR AS INT) - 1 AS CHAR(4)) = TT.SALE_TKT_YR AND T.PD = TT.SALE_TKT_PD AND T.WK = TT.SALE_TKT_WK
+             ) AS U
+  GROUP BY
+   1,2,3,4,5,6,7,8
+   ) WITH DATA NO PRIMARY INDEX 
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  
+  
+  CREATE MULTISET VOLATILE TABLE CTE_CUSTS AS (
+  SELECT DISTINCT LVL_4_SLS_UNIT_ID as SLS_HRCHY_LOCL_LVL_4_ID,  --Region
+   TRIM(C.RTE_ID) AS RTE_ID,
+      C.DW_CUST_ID,
+      C.CUST_ID,
+   C.XREF_DW_CUST_ID,
+      C.XREF_CUST_ID
+  FROM     
+       DWL_P.DW_CUST_RPRTNG_ATRBT AS C
+          WHERE 
+        C.CTRY_CDV = 'US' 
+                AND C.CO_CDV = 'US29' 
+                AND C.SYS_ID = 627
+    AND C.GEO_TYP_CDV = 'RTL'
+   ) WITH DATA PRIMARY INDEX (DW_CUST_ID)
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+        
+ 
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+COLLECT STATISTICS COLUMN (SALE_TKT_FL_WK_DT) ON CTE_T;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+COLLECT STATISTICS COLUMN (SALE_TKT_DLY_DT) ON CTE_TIME;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+COLLECT STATISTICS COLUMN (DW_CUST_ID) ON CTE_CUSTS;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+CREATE MULTISET VOLATILE TABLE V_PGT_SLLMX_CUST_SLS ,FALLBACK ,
+     CHECKSUM = DEFAULT,
+     DEFAULT MERGEBLOCKRATIO,
+     MAP = TD_MAP2,
+     LOG
+     (
+      CUST_ID VARCHAR(20) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      DW_CUST_ID BIGINT,
+      SLS_HRCHY_LOCL_LVL_4_ID VARCHAR(20) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      TMFRM_VAL VARCHAR(8) CHARACTER SET LATIN CASESPECIFIC,
+      TMFRM_TYP_CDV BYTEINT,
+      CY_SLS_AMT DECIMAL(18,2),
+      CY_SLS_QTY DECIMAL(18,2),
+      CY_SLS_LB_EQVLNT_QTY DECIMAL(18,4),
+      CY_SLS_CASE_EQVLNT_QTY DECIMAL(18,2),
+      CY_SLS_PRMTD_AMT DECIMAL(18,2),
+      CY_SLS_XDOCK_AMT DECIMAL(18,2),
+      CY_UNSLBL_AMT DECIMAL(18,2),
+      CY_STL_AMT DECIMAL(18,2),
+      CY_DFCT_AMT DECIMAL(18,2),
+      CY_RLLD_AMT DECIMAL(18,2),
+      CY_SLS_PLAN_AMT DECIMAL(18,4),
+      CY_UNSLBL_PLAN_AMT DECIMAL(18,4),
+      CY_SCHEDD_QTY DECIMAL(18,4),
+      CY_ACTL_QTY DECIMAL(18,4),
+      CY_STS_RCMNDD_QTY DECIMAL(18,4),
+      CY_STS_ACTL_QTY DECIMAL(18,4),
+      CY_SAS_RCMNDD_QTY DECIMAL(18,4),
+      CY_SAS_ACTL_QTY DECIMAL(18,4),
+      LY_SLS_AMT DECIMAL(18,2),
+      LY_SLS_QTY DECIMAL(18,2),
+      LY_SLS_LB_EQVLNT_QTY DECIMAL(18,4),
+      LY_SLS_CASE_EQVLNT_QTY DECIMAL(18,2),
+      LY_SLS_PRMTD_AMT DECIMAL(18,2),
+      LY_XDOCK_AMT DECIMAL(18,2),
+      LY_UNSLBL_AMT DECIMAL(18,2),
+      LY_ACTL_QTY DECIMAL(18,4),
+      XREF_CUST_ID VARCHAR(20) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      XREF_DW_CUST_ID BIGINT,
+      CRU_ID INTEGER,
+   CLNT_ID VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      HANA_INSTNC_SYS_ID VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      MDG_INSTNC_SYS_ID VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      MDM_SYS_ID VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC)
+ PRIMARY INDEX (CUST_ID ,SLS_HRCHY_LOCL_LVL_4_ID ,TMFRM_VAL)
+ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  INSERT INTO V_PGT_SLLMX_CUST_SLS  
+        SELECT -- Sales  
+            B.CUST_ID AS CUST_ID, 
+   B.DW_CUST_ID AS DW_CUST_ID, 
+   B.SLS_HRCHY_LOCL_LVL_4_ID AS SLS_HRCHY_LOCL_LVL_4_ID,
+            "Timeframe" as TMFRM_VAL,
+   PART as TMFRM_TYP_CDV,            
+            -- CY -----------------------
+            CAST(NULLIF(CASE WHEN CY = 1 THEN TKT_SLS_AMT END,0) AS DECIMAL(18,2)) AS CY_SLS_AMT,
+            CAST(NULLIF(CASE WHEN CY = 1 THEN TKT_SLS_EA_QTY END,0) AS DECIMAL(18,2)) AS CY_SLS_QTY,
+            CAST(NULLIF(CASE WHEN CY = 1 THEN TKT_SLS_WT END,0) AS DECIMAL(18,4)) AS CY_SLS_LB_EQVLNT_QTY,
+   CAST(NULLIF(CASE WHEN CY = 1 THEN TKT_SLS_CASE_QTY END,0) AS DECIMAL(18,2)) AS CY_SLS_CASE_EQVLNT_QTY,
+   CAST(NULLIF(CASE WHEN CY = 1 THEN SLS_PRMTD_AMT END,0) AS DECIMAL(18,2)) AS CY_SLS_PRMTD_AMT,
+   CAST(NULLIF(CASE WHEN CY = 1 THEN CRSS_DK_TKT_SLS_AMT END,0) AS DECIMAL(18,2)) AS CY_SLS_XDOCK_AMT,
+            CAST(NULLIF(COALESCE(CASE WHEN CY = 1 THEN SLS_STL_AMT END,0.0000) + COALESCE(CASE WHEN CY = 1 THEN SLS_DFECT_AMT END,0.0000), 0) AS DECIMAL(18,2)) AS CY_UNSLBL_AMT,
+            CAST(NULLIF(CASE WHEN CY = 1 THEN SLS_STL_AMT END,0) AS DECIMAL(18,2)) CY_STL_AMT,
+            CAST(NULLIF(CASE WHEN CY = 1 THEN SLS_DFECT_AMT END,0) AS DECIMAL(18,2)) AS CY_DFCT_AMT,
+            CAST(NULLIF(CASE WHEN CY = 1 THEN TKT_SLS_ROLL_AMT END,0) AS DECIMAL(18,2)) AS CY_RLLD_AMT,    
+            
+            CAST(0 AS DECIMAL(18,4)) AS CY_SLS_PLAN_AMT,
+            CAST(0 AS DECIMAL(18,4)) AS CY_UNSLBL_PLAN_AMT,
+                
+            CAST(0 AS DECIMAL(18,4)) AS CY_SCHEDD_QTY,        
+            CAST(0 AS DECIMAL(18,4)) AS CY_ACTL_QTY,   
+            CAST(0 AS DECIMAL(18,4)) AS CY_STS_RCMNDD_QTY,      
+            CAST(0 AS DECIMAL(18,4)) AS CY_STS_ACTL_QTY,        
+            CAST(0 AS DECIMAL(18,4)) AS CY_SAS_RCMNDD_QTY,      
+            CAST(0 AS DECIMAL(18,4)) AS CY_SAS_ACTL_QTY,    
+            
+            -- LY -----------------------	
+            CAST(NULLIF(CASE WHEN PY = 1 THEN TKT_SLS_AMT END,0) AS DECIMAL(18,2)) AS LY_SLS_AMT,     
+            CAST(NULLIF(CASE WHEN PY = 1 THEN TKT_SLS_EA_QTY END,0) AS DECIMAL(18,2)) AS LY_SLS_QTY,     
+            CAST(NULLIF(CASE WHEN PY = 1 THEN TKT_SLS_WT END,0) AS DECIMAL(18,4)) AS LY_SLS_LB_EQVLNT_QTY,
+   CAST(NULLIF(CASE WHEN PY = 1 THEN TKT_SLS_CASE_QTY END,0) AS DECIMAL(18,2)) AS LY_SLS_CASE_EQVLNT_QTY,
+   CAST(NULLIF(CASE WHEN PY = 1 THEN SLS_PRMTD_AMT END,0) AS DECIMAL(18,2)) AS LY_SLS_PRMTD_AMT,
+   CAST(NULLIF(CASE WHEN PY = 1 THEN CRSS_DK_TKT_SLS_AMT END,0) AS DECIMAL(18,2)) AS LY_XDOCK_AMT,
+            CAST(NULLIF(COALESCE(CASE WHEN PY = 1 THEN SLS_STL_AMT END,0.0000) + COALESCE(CASE WHEN PY = 1 THEN SLS_DFECT_AMT END,0.0000), 0) AS DECIMAL(18,2)) AS LY_UNSLBL_AMT,
+            
+            CAST(0 AS DECIMAL(18,4)) AS LY_ACTL_QTY,
+   B.XREF_CUST_ID AS XREF_CUST_ID, 
+   B.XREF_DW_CUST_ID AS XREF_DW_CUST_ID, 
+   A.CRU_ID AS CRU_ID,
+   '500' AS CLNT_ID,
+   'A1P' AS HANA_INSTNC_SYS_ID,
+   'GMP' AS MDG_INSTNC_SYS_ID,
+   '627' AS MDM_SYS_ID   
+        FROM     
+            DWL_P.DW_SLS_CUST_MTRL_SUMMRY AS A 
+   INNER JOIN CTE_TIME AS T
+            ON A.INVC_DT = T.SALE_TKT_DLY_DT
+   INNER JOIN CTE_CUSTS AS B 
+   ON A.XREF_DW_CUST_ID = B.DW_CUST_ID 
+            WHERE A.CRU_ID = 46
+            AND A.GTMU_ID = 799
+   ;
+
+ *** Insert completed. 8328732808 rows added. 
+ *** Total elapsed time was one minute and 22 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+   
+   
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  CREATE MULTISET VOLATILE TABLE V_PGT_SLLMX_CUST_SLS_TMFRM AS (
+  select CUST_ID                       
+  ,DW_CUST_ID                    
+  ,SLS_HRCHY_LOCL_LVL_4_ID       
+  ,TMFRM_VAL                     
+  ,TMFRM_TYP_CDV                 
+  ,COALESCE(SUM(V.CY_SLS_AMT),0)  as CY_SLS_AMT                
+  ,COALESCE(SUM(V.CY_SLS_QTY),0) as CY_SLS_QTY                   
+  ,COALESCE(SUM(V.CY_SLS_LB_EQVLNT_QTY),0) as CY_SLS_LB_EQVLNT_QTY          
+  ,COALESCE(SUM(V.CY_SLS_CASE_EQVLNT_QTY),0)  as CY_SLS_CASE_EQVLNT_QTY      
+  ,COALESCE(SUM(V.CY_SLS_PRMTD_AMT),0) as CY_SLS_PRMTD_AMT    
+  ,COALESCE(SUM(V.CY_SLS_XDOCK_AMT),0)  as  CY_SLS_XDOCK_AMT           
+  ,COALESCE(SUM(V.CY_STL_AMT),0) as CY_STL_AMT                   
+  ,COALESCE(SUM(V.CY_DFCT_AMT),0) as CY_DFCT_AMT             
+  ,COALESCE(SUM(V.CY_UNSLBL_AMT),0) as CY_UNSLBL_AMT         
+  ,COALESCE(SUM(V.CY_RLLD_AMT),0) as CY_RLLD_AMT             
+  ,COALESCE(SUM(V.CY_SLS_PLAN_AMT),0)  as CY_SLS_PLAN_AMT         
+  ,COALESCE(SUM(V.CY_UNSLBL_PLAN_AMT),0) as CY_UNSLBL_PLAN_AMT      
+  ,COALESCE(SUM(V.CY_SCHEDD_QTY),0)  as CY_SCHEDD_QTY           
+  ,COALESCE(SUM(V.CY_ACTL_QTY),0) as CY_ACTL_QTY                   
+  ,COALESCE(SUM(V.CY_STS_RCMNDD_QTY),0) as CY_STS_RCMNDD_QTY             
+  ,COALESCE(SUM(V.CY_STS_ACTL_QTY),0) as CY_STS_ACTL_QTY               
+  ,COALESCE(SUM(V.CY_SAS_RCMNDD_QTY),0) as CY_SAS_RCMNDD_QTY              
+  ,COALESCE(SUM(V.CY_SAS_ACTL_QTY),0)  as CY_SAS_ACTL_QTY             
+  ,COALESCE(SUM(V.LY_SLS_AMT),0) as LY_SLS_AMT                
+  ,COALESCE(SUM(V.LY_SLS_QTY),0) as LY_SLS_QTY                  
+  ,COALESCE(SUM(V.LY_SLS_LB_EQVLNT_QTY),0) as LY_SLS_LB_EQVLNT_QTY           
+  ,COALESCE(SUM(V.LY_SLS_CASE_EQVLNT_QTY),0) as LY_SLS_CASE_EQVLNT_QTY      
+  ,COALESCE(SUM(V.LY_SLS_PRMTD_AMT),0) as LY_SLS_PRMTD_AMT       
+  ,COALESCE(SUM(V.LY_XDOCK_AMT),0) as LY_XDOCK_AMT               
+  ,COALESCE(SUM(V.LY_UNSLBL_AMT),0) as LY_UNSLBL_AMT                             
+  ,COALESCE(SUM(V.LY_ACTL_QTY),0) as LY_ACTL_QTY                                       
+  ,XREF_CUST_ID                  
+  ,XREF_DW_CUST_ID 
+  ,CRU_ID
+  ,CLNT_ID
+  ,HANA_INSTNC_SYS_ID
+  ,MDG_INSTNC_SYS_ID
+  ,MDM_SYS_ID     
+  from V_PGT_SLLMX_CUST_SLS AS V
+          GROUP BY
+            1,2,3,4,5,32,33,34,35,36,37,38
+   ) WITH DATA NO PRIMARY INDEX 
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 21 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+ 
+    CREATE MULTISET VOLATILE TABLE V_PGT_SLLMX_CUST_SERV_TMFRM AS (
+SELECT  
+CUST_ID,
+DW_CUST_ID,
+SLS_HRCHY_LOCL_LVL_4_ID,
+TMFRM_VAL,
+TMFRM_TYP_CDV,
+CY_SLS_AMT,
+CY_SLS_QTY,
+CY_SLS_LB_EQVLNT_QTY,
+CY_SLS_CASE_EQVLNT_QTY,
+CY_SLS_PRMTD_AMT,
+CY_SLS_XDOCK_AMT,
+CY_UNSLBL_AMT,
+CY_STL_AMT,
+CY_DFCT_AMT,
+CY_RLLD_AMT,
+CY_SLS_PLAN_AMT,
+CY_UNSLBL_PLAN_AMT,
+sum(CY_SCHEDD_QTY) as CY_SCHEDD_QTY,
+sum(CY_ACTL_QTY) as CY_ACTL_QTY,
+sum(CY_STS_RCMNDD_QTY) as CY_STS_RCMNDD_QTY,
+sum(CY_STS_ACTL_QTY) as CY_STS_ACTL_QTY,
+sum(CY_SAS_RCMNDD_QTY) as CY_SAS_RCMNDD_QTY,
+sum(CY_SAS_ACTL_QTY)as CY_SAS_ACTL_QTY,
+CAST(0 AS DECIMAL(18,2)) AS LY_SLS_AMT,     
+CAST(0 AS INT) AS LY_SLS_QTY,     
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_LB_EQVLNT_QTY,   
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_CASE_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,2)) AS LY_SLS_PRMTD_AMT,
+CAST(0 AS DECIMAL(18,2)) AS LY_XDOCK_AMT,
+CAST(0 AS DECIMAL(18,2)) AS LY_UNSLBL_AMT,
+sum(LY_ACTL_QTY) AS LY_ACTL_QTY,
+XREF_CUST_ID, 
+XREF_DW_CUST_ID, 
+CRU_ID,
+CLNT_ID,
+HANA_INSTNC_SYS_ID,
+MDG_INSTNC_SYS_ID,
+MDM_SYS_ID  
+FROM (
+SELECT -- Service   
+B.CUST_ID AS CUST_ID, 
+B.DW_CUST_ID AS DW_CUST_ID, 
+B.SLS_HRCHY_LOCL_LVL_4_ID  AS SLS_HRCHY_LOCL_LVL_4_ID,
+"Timeframe" as TMFRM_VAL, 
+PART as TMFRM_TYP_CDV,            
+-- CY -----------------------
+CAST(0 AS DECIMAL(18,2)) AS CY_SLS_AMT,
+CAST(0 AS INT) AS CY_SLS_QTY,
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_LB_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_CASE_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,2)) AS CY_SLS_PRMTD_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_SLS_XDOCK_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_UNSLBL_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_STL_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_DFCT_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_RLLD_AMT,    
+
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_PLAN_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_UNSLBL_PLAN_AMT,
+    
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_RCMNDD_CALL_QTY END,0) AS INT) AS CY_SCHEDD_QTY,
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_ACTL_CALL_QTY END,0)AS INT) AS CY_ACTL_QTY,
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_STD_RCMNDD_CALL_QTY END,0)AS DECIMAL(18,4)) AS CY_STS_RCMNDD_QTY,
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_ACTL_STD_CALL_QTY END,0)AS DECIMAL(18,4)) AS CY_STS_ACTL_QTY,
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_RCMNDD_CALL_SAS_QTY END,0)AS INT) AS CY_SAS_RCMNDD_QTY,
+CAST(NULLIF(CASE WHEN CY = 1 THEN CY_LCW_ACTL_CALL_SAS_QTY END,0)AS INT) AS CY_SAS_ACTL_QTY,
+
+-- LY -----------------------	
+CAST(0 AS DECIMAL(18,2)) AS LY_SLS_AMT,     
+CAST(0 AS INT) AS LY_SLS_QTY,     
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_LB_EQVLNT_QTY,   
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_CASE_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,2)) AS LY_SLS_PRMTD_AMT,
+CAST(0 AS DECIMAL(18,2)) AS LY_XDOCK_AMT,
+CAST(0 AS DECIMAL(18,2)) AS LY_UNSLBL_AMT,
+
+CAST(NULLIF(CASE WHEN PY = 1 THEN LY_LCW_ACTL_CALL_QTY END,0)AS INT) AS LY_ACTL_QTY,
+B.XREF_CUST_ID AS XREF_CUST_ID, 
+B.XREF_DW_CUST_ID AS XREF_DW_CUST_ID, 
+A.CRU_ID AS CRU_ID,
+'500' AS CLNT_ID,
+'A1P' AS HANA_INSTNC_SYS_ID,
+'GMP' AS MDG_INSTNC_SYS_ID,
+'627' AS MDM_SYS_ID  
+   
+FROM DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_TMFRM_MEAS AS A
+INNER JOIN CTE_TIME AS T
+ON A.WK_STRT_DT-7 = T."Week Start Date" AND T.SALE_TKT_DAY = 1
+INNER JOIN CTE_CUSTS AS B
+ON A.DW_CUST_ID = B.DW_CUST_ID 
+WHERE A.CRU_ID= 46
+)A
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,24,25,26,27,28,29,30,32,33,34,35,36,37,38
+) WITH DATA NO PRIMARY INDEX 
+ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 2 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+ .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+ 
+ 
+CREATE MULTISET VOLATILE TABLE V_PGT_SLLMX_CUST_PLN_TMFRM AS (
+SELECT -- Plan
+C.CUST_ID AS CUST_ID,
+C.DW_CUST_ID AS DW_CUST_ID,
+C.SLS_HRCHY_LOCL_LVL_4_ID AS SLS_HRCHY_LOCL_LVL_4_ID,
+"Timeframe" as TMFRM_VAL,
+PART as TMFRM_TYP_CDV,
+-- CY -----------------------
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_QTY,
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_LB_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,4)) AS CY_SLS_CASE_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,2)) AS CY_SLS_PRMTD_AMT,
+CAST(0 AS DECIMAL(18,2)) AS CY_SLS_XDOCK_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_UNSLBL_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_STL_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_DFCT_AMT,
+CAST(0 AS DECIMAL(18,4)) AS CY_RLLD_AMT,
+
+SUM(CASE WHEN CY = 1 THEN SLS_PLAN_AMT END) AS CY_SLS_PLAN_AMT,
+SUM(CASE WHEN CY = 1 THEN UNSLBL_PLAN_AMT END) AS CY_UNSLBL_PLAN_AMT,
+                                               
+CAST(0 AS INT) AS CY_SCHEDD_QTY,     
+CAST(0 AS INT) AS CY_ACTL_QTY,   
+CAST(0 AS DECIMAL(18,4)) AS CY_STS_RCMNDD_QTY,   
+CAST(0 AS DECIMAL(18,4)) AS CY_STS_ACTL_QTY,    
+CAST(0 AS DECIMAL(18,4)) AS CY_SAS_RCMNDD_QTY,   
+CAST(0 AS DECIMAL(18,4)) AS CY_SAS_ACTL_QTY,
+
+-- LY -----------------------
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_AMT,
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_QTY,
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_LB_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,4)) AS LY_SLS_CASE_EQVLNT_QTY,
+CAST(0 AS DECIMAL(18,2)) AS LY_SLS_PRMTD_AMT,
+CAST(0 AS DECIMAL(18,2)) AS LY_XDOCK_AMT,
+CAST(0 AS DECIMAL(18,4)) AS LY_UNSLBL_AMT,
+  
+CAST(0 AS INT) AS LY_ACTL_QTY,
+C.XREF_CUST_ID AS XREF_CUST_ID, 
+C.XREF_DW_CUST_ID AS XREF_DW_CUST_ID, 
+A.CRU_ID AS CRU_ID ,
+'500' AS CLNT_ID,
+'A1P' AS HANA_INSTNC_SYS_ID,
+'GMP' AS MDG_INSTNC_SYS_ID,
+'627' AS MDM_SYS_ID    
+FROM 
+DWL_P.DW_CUST_SLS_PLAN AS A
+INNER JOIN CTE_CUSTS AS C
+ON A.XREF_DW_CUST_ID = C.DW_CUST_ID --A.CUST_UNIQ_ID_VAL
+INNER JOIN CTE_TIME AS T
+ON A.YR_NUM = T.SALE_TKT_YR AND A.PRD_IN_YR_NUM = T.SALE_TKT_PD AND A.WK_IN_PRD_NUM = T.SALE_TKT_WK AND T.SALE_TKT_DAY = 1
+WHERE A.SLS_ORG_CDV = 'US29'
+AND A.CRU_ID = 46
+GROUP BY
+1,2,3,4,5,32,33,34,35,36,37,38
+) WITH DATA NO PRIMARY INDEX 
+ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 5 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  CREATE MULTISET VOLATILE TABLE V_PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS AS (
+   SELECT * from V_PGT_SLLMX_CUST_SLS_TMFRM
+   UNION ALL
+   SELECT * from V_PGT_SLLMX_CUST_SERV_TMFRM 
+   UNION ALL
+            SELECT * from V_PGT_SLLMX_CUST_PLN_TMFRM
+             )  WITH DATA PRIMARY INDEX(CUST_ID,DW_CUST_ID)
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 2 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+COLLECT STATISTICS COLUMN (CUST_ID,DW_CUST_ID) ON V_PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 2 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+/************************************************************************************************************************************
+BT, ET STANDS FOR BEGINING AND END OF TRANSACTION RESPECTIVELY AND ANY FAILURE WITHIN THIS BLOCK WILL ROLLBACK TO ITS PREVIOUS STATE
+************************************************************************************************************************************/
+BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+DEL FROM DWL_P_DRVD.PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS;
+
+ *** Delete completed. 32372952 rows removed. 
+ *** Total elapsed time was 2 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+INSERT INTO DWL_P_DRVD.PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS
+(
+ CUST_ID                       
+,DW_CUST_ID                    
+,SLS_HRCHY_LOCL_LVL_4_ID       
+,TMFRM_VAL                     
+,TMFRM_TYP_CDV                 
+,CY_SLS_AMT                    
+,CY_SLS_QTY                    
+,CY_SLS_LB_EQVLNT_QTY          
+,CY_SLS_CASE_EQVLNT_QTY        
+,CY_SLS_PRMTD_AMT              
+,CY_SLS_XDOCK_AMT              
+,CY_STL_AMT                    
+,CY_DFCT_AMT                   
+,CY_UNSLBL_AMT                 
+,CY_RLLD_AMT                   
+,CY_SLS_PLAN_AMT               
+,CY_UNSLBL_PLAN_AMT            
+,CY_SCHEDD_QTY                 
+,CY_ACTL_QTY                   
+,CY_STS_RCMNDD_QTY             
+,CY_STS_ACTL_QTY               
+,CY_SAS_RCMNDD_QTY             
+,CY_SAS_ACTL_QTY               
+,LY_SLS_AMT                    
+,LY_SLS_QTY                    
+,LY_SLS_LB_EQVLNT_QTY          
+,LY_SLS_CASE_EQVLNT_QTY        
+,LY_SLS_PRMTD_AMT              
+,LY_XDOCK_AMT                  
+,LY_UNSLBL_AMT                 
+,LY_ACTL_QTY                   
+,CRU_ID                        
+,XREF_CUST_ID                  
+,XREF_DW_CUST_ID               
+,DW_BTCH_ID                    
+,DW_STEP_ID                    
+,DW_CRTD_DTM                   
+,DW_UPDT_DTM
+,CLNT_ID
+,HANA_INSTNC_SYS_ID
+,MDG_INSTNC_SYS_ID
+,MDM_SYS_ID      
+)
+SELECT
+        TRIM(VS.CUST_ID) AS CUST_ID, 
+  TRIM(VS.DW_CUST_ID) AS DW_CUST_ID, 
+  SLS_HRCHY_LOCL_LVL_4_ID,
+        TMFRM_VAL, 
+        TMFRM_TYP_CDV,
+        -- CY -----------------------
+        SUM(VS.CY_SLS_AMT),
+        SUM(VS.CY_SLS_QTY),
+        SUM(VS.CY_SLS_LB_EQVLNT_QTY),
+  SUM(VS.CY_SLS_CASE_EQVLNT_QTY),
+  SUM(VS.CY_SLS_PRMTD_AMT),
+  SUM(VS.CY_SLS_XDOCK_AMT),
+        SUM(VS.CY_STL_AMT),
+        SUM(VS.CY_DFCT_AMT),
+        SUM(VS.CY_UNSLBL_AMT),
+        SUM(VS.CY_RLLD_AMT),  
+        SUM(VS.CY_SLS_PLAN_AMT),
+        SUM(VS.CY_UNSLBL_PLAN_AMT),
+        
+        SUM(VS.CY_SCHEDD_QTY),     
+        SUM(VS.CY_ACTL_QTY),   
+        SUM(VS.CY_STS_RCMNDD_QTY),     
+        SUM(VS.CY_STS_ACTL_QTY),     
+        SUM(VS.CY_SAS_RCMNDD_QTY),     
+        SUM(VS.CY_SAS_ACTL_QTY),
+        
+        -- LY -----------------------
+        SUM(VS.LY_SLS_AMT),
+        SUM(VS.LY_SLS_QTY),
+        SUM(VS.LY_SLS_LB_EQVLNT_QTY),
+  SUM(VS.LY_SLS_CASE_EQVLNT_QTY),
+  SUM(VS.LY_SLS_PRMTD_AMT),
+  SUM(VS.LY_XDOCK_AMT),
+        SUM(VS.LY_UNSLBL_AMT),
+        SUM(VS.LY_ACTL_QTY),
+  VS.CRU_ID,
+  VS.XREF_CUST_ID, 
+  VS.XREF_DW_CUST_ID, 
+  MYBTCH_ID AS DW_BTCH_ID,
+  MYSTEP_ID AS DW_STEP_ID,
+  CURRENT_TIMESTAMP(0) AS DW_CRTD_DTM,
+  CURRENT_TIMESTAMP(0) AS DW_UPDT_DTM,
+  CLNT_ID,
+  HANA_INSTNC_SYS_ID,
+  MDG_INSTNC_SYS_ID,
+  MDM_SYS_ID  
+    FROM V_PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS VS
+    LEFT OUTER JOIN
+    (
+      SELECT MAX(ACTVTY.CUR_BTCH_ID) AS MYBTCH_ID, MAX(STEP.STEP_ID) AS MYSTEP_ID
+      FROM PEPCMN_P.STEP
+      INNER JOIN PEPCMN_P.ACTVTY
+        ON ACTVTY.ACTVTY_ID = STEP.ACTVTY_ID
+      INNER JOIN PEPCMN_P.SYS
+        ON SYS.SYS_NM = ACTVTY.SYS_NM
+      WHERE
+        SYS.SYS_NM ='DWL' AND
+        ACTVTY_NM = 'LD_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM' AND
+        STEP_NM = 'DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD'
+    ) THIS_STEP ON 1=1
+    GROUP BY
+        1,2,3,4,5,32,33,34,35,36,37,38,39,40,41,42;
+
+ *** Insert completed. 32372986 rows added. 
+ *** Total elapsed time was 3 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+/* Collect Stats */
+
+COLLECT STATS  COLUMN (DW_CUST_ID), COLUMN(SLS_HRCHY_LOCL_LVL_4_ID), COLUMN (DW_CUST_ID,SLS_HRCHY_LOCL_LVL_4_ID) ON DWL_P_DRVD.PGT_SLS_SERV_PLN_CUST_TMFRM_MTRCS;
+
+ *** Update completed. 4 rows changed. 
+ *** Total elapsed time was 3 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 06:37:14-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+/***************** ERROR HANDLING ********************************/
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+/***************** ERROR HANDLING ********************************/
+
+.LOGOFF;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.QUIT;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 06:37:15 2025 PID: 24703
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/dwl/intl/bin/dwl_intl_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/DWL_BATCH_INTL_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 6 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 06:37:21-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  EXEC PEPCMN_P.STEP_END('DWL', 'LD_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM', 'DW_PGT_SLLMX_CUST_SLS_SERV_PLN_TMFRM_LOAD');
+
+ *** Update completed. One row changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0

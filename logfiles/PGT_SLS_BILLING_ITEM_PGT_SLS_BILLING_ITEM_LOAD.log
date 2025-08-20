@@ -1,0 +1,5719 @@
+20250807-112701::PEPCMN
+
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:27:01 2025 PID: 8314
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 1 second.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:27:02-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  EXEC PEPCMN_P.STEP_STRT('ACQ', 'PGT_SLS_BILLING_ITEM', 'PGT_SLS_BILLING_ITEM_LOAD', '/etlapps/prds2/acq/sales/logs/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD.log');
+
+ *** Insert completed. One row added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+************ START EXECUTING TPT GENERIC SCRIPT **************
+/etlapps/prds2/acq/stg/bin/acq_da_bpl_load_files_tpt_generic_main.ksh[10]: [: PGT_ZGGL_OTC_CVI_BILLING_ITEM_*.txt: unknown operator
+PGT_SLS_BILLING_ITEM
+PGT_ZGGL_OTC_CVI_BILLING_ITEM_*.txt
+pgt_sls_billing_item.prcs
+load_main_pgt_sls_billing_item_stg.ksh
+ACQ
+PGT_SLS_BILLING_ITEM
+PGT_SLS_BILLING_ITEM_LOAD
+sales
+PGT_SLS_BILLING_ITEM.PGT_SLS_BILLING_ITEM_LOAD.wkf
+/etlapps/prds2/acq/stg/SrcFiles/PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+gzip: /etlapps/prds2/acq/stg/SrcFiles/PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt: unknown suffix -- ignored
+The Source File is :/etlapps/prds2/acq/stg/SrcFiles/PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+/etlapps/prds2/acq/stg/SrcFiles/PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+/etlapps/prds2/acq/stg/SrcFiles/pgt_sls_billing_item.prcs process file created successfully
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:27:36 2025 PID: 12257
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+      .set titledashes off;
++---------+---------+---------+---------+---------+---------+---------+----
+      .run file /etlapps/prds2/acq/stg/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 1 second.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+      .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+      .set width 4500
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+      SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+2025-08-07 11:27:37-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      
+      INSERT INTO PEPCMN_P_DATA.SRC_FILE_STATCS
+      (ACTVTY_ID, BTCH_ID, FILESET_NM, FILE_NM, FILE_SIZE, FILE_RCRD_CNT)
+      SELECT ACTVTY_ID, MAX(BTCH_ID), UPPER('PGT_SLS_BILLING_ITEM'), 'PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt', '2259882061' , '2353913'
+      FROM PEPCMN_P.ACTVTY_EVNT 
+      WHERE ACTVTY_ID IN ( SELECT ACTVTY_ID FROM PEPCMN_P.ACTVTY 
+                 WHERE  SYS_NM='ACQ' 
+                 AND ACTVTY_NM='PGT_SLS_BILLING_ITEM') 
+      GROUP BY 1,3,4,5,6;
+
+ *** Insert completed. One row added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      
+      .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+      .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+grep: /etlapps/prds2/acq/sales/tmp/PGT_SLS_BILLING_ITEM.PGT_SLS_BILLING_ITEM_LOAD.wkf: No such file or directory
+Executing append_rownum task
+FilPat:ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_*.txt
+Delimiter:|~|
+Delim_length:3
+/etlapps/prds2/acq/stg/SrcFiles/ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+Src_File:/etlapps/prds2/acq/stg/SrcFiles/ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+fil:ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+NewSrcFile:BKP_ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt
+Backup file created successfully
+RecordCount:2353913
+Sequential File Nm: SEQACQPGTZGGLOTCCVIBILLINGITEMtxt.seq
+Started Adding Line No @ 2025-08-07_11:27:40
+Sequential file created successfully
+Completed Adding Line No @ 2025-08-07_11:27:40
+The original source file was modified to have row numbers after taking backup @ 2025-08-07_11:27:50
+Actual file zipped successfully @ 2025-08-07_11:29:29
+Archived the file successfully @ 2025-08-07_11:29:29
+Executing tpt_pre task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:29:30 2025 PID: 22669
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 1 second.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=pre_upload;ltbl=pgt_sls_billing_item_stg;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:29:31-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We need to drop the log table if necessary
+  --
+  select 1 from dbc.tablesv 
+  where 
+    LOWER(databasename) = LOWER('ACQ_P_UTIL') and
+    LOWER(tablename) = LOWER('pgt_sls_billing_item_stg_log');
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_log_drop;
+.GOTO skip_log_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  drop table ACQ_P_UTIL.pgt_sls_billing_item_stg_log;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .label skip_log_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We need to drop an error table table if necessary
+  --
+  select 1 from dbc.tablesv 
+  where 
+    LOWER(databasename) = LOWER('ACQ_P_UTIL') and
+    LOWER(tablename) = LOWER('pgt_sls_billing_item_stg_et');
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_et_drop;
+.GOTO skip_et_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  drop table ACQ_P_UTIL.pgt_sls_billing_item_stg_et;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .label skip_et_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- We need to drop an error table table if necessary
+  --
+  select 1 from dbc.tablesv 
+  where 
+    LOWER(databasename) = LOWER('ACQ_P_UTIL') and
+    LOWER(tablename) = LOWER('pgt_sls_billing_item_stg_uv');
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_uv_drop;
+.GOTO skip_uv_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  drop table ACQ_P_UTIL.pgt_sls_billing_item_stg_uv;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .label skip_uv_drop;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- We need to delete the stage table
+  --
+  delete from ACQ_P_STAGE.pgt_sls_billing_item_stg;
+
+ *** Delete completed. 413612 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing tpt_run task
+Teradata Parallel Transporter Version 16.20.00.27 64-Bit
+The local configuration file '/home/daadm1/.twbcfg.ini' is used.
+   Log Directory: /etlapps/prds2/acq/stg/TptLogs
+   Checkpoint Directory: /opt/teradata/client/14.10/tbuild/checkpoint
+
+Job log: /etlapps/prds2/acq/stg/TptLogs/tbl_pgt_sls_billing_item_stg-2352642.out
+Job id is tbl_pgt_sls_billing_item_stg-2352642, running on peplap00726
+Teradata Parallel Transporter Update Operator Version 16.20.00.27
+OPLO_pgt_sls_billing_item_stg: private log specified: load_log
+Teradata Parallel Transporter DataConnector Operator Version 16.20.00.27
+OPPRO_pgt_sls_billing_item_stg[1]: Instance 1 directing private log report to 'file_log-1'.
+OPPRO_pgt_sls_billing_item_stg[1]: DataConnector Producer operator Instances: 1
+OPPRO_pgt_sls_billing_item_stg[1]: ECI operator ID: 'OPPRO_pgt_sls_billing_item_stg-22892'
+OPPRO_pgt_sls_billing_item_stg[1]: Operator instance 1 processing file '/etlapps/prds2/acq/stg/SrcFiles/ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt'.
+OPLO_pgt_sls_billing_item_stg: connecting sessions
+OPLO_pgt_sls_billing_item_stg: preparing target table(s)
+OPLO_pgt_sls_billing_item_stg: entering DML Phase
+OPLO_pgt_sls_billing_item_stg: entering Acquisition Phase
+OPLO_pgt_sls_billing_item_stg: entering Application Phase
+OPLO_pgt_sls_billing_item_stg: Statistics for Target Table:  'ACQ_P_STAGE.pgt_sls_billing_item_stg'
+OPLO_pgt_sls_billing_item_stg: Rows Inserted: 2353913
+OPLO_pgt_sls_billing_item_stg: Rows Updated:  0
+OPLO_pgt_sls_billing_item_stg: Rows Deleted:  0
+OPLO_pgt_sls_billing_item_stg: entering Cleanup Phase
+OPLO_pgt_sls_billing_item_stg: Error Table Statistics for Target Table :   'ACQ_P_STAGE.pgt_sls_billing_item_stg'
+OPLO_pgt_sls_billing_item_stg: Total Rows in Error Table 1:   0
+OPLO_pgt_sls_billing_item_stg: Total Rows in Error Table 2:   0
+OPLO_pgt_sls_billing_item_stg: disconnecting sessions
+OPPRO_pgt_sls_billing_item_stg[1]: Total files processed: 1.
+OPPRO_pgt_sls_billing_item_stg[1]: TPT19229 0 error rows sent to error file /etlapps/prds2/acq/stg/SrcFiles/pgt_sls_billing_item_stg_rej_records.err
+OPLO_pgt_sls_billing_item_stg: Performance metrics:
+OPLO_pgt_sls_billing_item_stg:     MB/sec in Acquisition phase: 28.400
+OPLO_pgt_sls_billing_item_stg:     Elapsed time from start to Acquisition phase:   24 second(s)
+OPLO_pgt_sls_billing_item_stg:     Elapsed time in Acquisition phase:   71 second(s)
+OPLO_pgt_sls_billing_item_stg:     Elapsed time in Application phase: < 1 second
+OPLO_pgt_sls_billing_item_stg:     Elapsed time from Application phase to end:   4 second(s)
+OPLO_pgt_sls_billing_item_stg: Total processor time used = '1.85612 Second(s)'
+OPLO_pgt_sls_billing_item_stg: Start : Thu Aug  7 11:29:33 2025
+OPLO_pgt_sls_billing_item_stg: End   : Thu Aug  7 11:31:12 2025
+Job step LOAD_STEP completed successfully
+Job tbl_pgt_sls_billing_item_stg completed successfully
+Job start: Thu Aug  7 11:29:33 2025
+Job end:   Thu Aug  7 11:31:12 2025
+Executing tpt_post task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:31:13 2025 PID: 22135
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 5 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=post_upload;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:31:18-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We need to copy the ET errors into permament tables.
+  --
+  select 1 from dbc.tablesv 
+  where 
+    LOWER(databasename) = LOWER('ACQ_P_UTIL') and
+    LOWER(tablename) = LOWER('pgt_sls_billing_item_stg_et');
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_et_manage;
+.GOTO skip_et_manage;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  insert into ACQ_P_JOB.pgt_sls_billing_item_err2 
+  (
+    dw_step_id,
+    dw_btch_id,
+    ErrorCode,
+    ErrorFieldName,
+    DataParcel
+  )
+  select 
+    this_step.mystep_id,
+    this_step.mybtch_id,
+    stg.ErrorCode,
+    stg.ErrorField,
+    stg.HostData
+  from ACQ_P_UTIL.pgt_sls_billing_item_stg_et as stg
+  left outer join
+  (
+    select max(actvty.cur_btch_id) as mybtch_id, max(step.step_id) as mystep_id
+    from PEPCMN_P.step
+    inner join PEPCMN_P.actvty
+      on actvty.actvty_id = step.actvty_id
+    inner join PEPCMN_P.sys
+      on sys.sys_nm = actvty.sys_nm
+    where
+      sys.sys_nm = 'ACQ' and
+      actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+      step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step on 1=1;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  delete ACQ_P_JOB.pgt_sls_billing_item_err2
+  where dw_last_updt_dt < (DATE - 30);
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .export report file /etlapps/prds2/acq/sales/tmp/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD_upld1.stat;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  select count(*) (TITLE '')
+  from ACQ_P_UTIL.pgt_sls_billing_item_stg_et;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .export reset;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .label skip_et_manage;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+ .import vartext ',' File=/etlapps/prds2/acq/stg/SrcFiles/pgt_sls_billing_item_stg_rej_records.err;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+ .REPEAT 500;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+ USING F1 (Varbyte(63500))
+ 
+ insert into ACQ_P_JOB.pgt_sls_billing_item_err2
+ (
+  dw_step_id,
+  dw_btch_id,
+  ErrorCode,
+  ErrorFieldName,
+  DataParcel
+ )
+ select 
+  this_step.mystep_id,
+  this_step.mybtch_id,
+  Null,
+  'TPT_Reject',
+  :F1
+ from (
+  select max(actvty.cur_btch_id) as mybtch_id, max(step.step_id) as mystep_id
+  from PEPCMN_P.step
+  inner join PEPCMN_P.actvty
+    on actvty.actvty_id = step.actvty_id
+  inner join PEPCMN_P.sys
+    on sys.sys_nm = actvty.sys_nm
+  where
+    sys.sys_nm = 'ACQ' and
+    actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+    step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+ ) this_step ;
+ *** Starting at Thu Aug  7 11:31:18 2025
+ 
+ *** Warning: Out of data. 
+ *** Finished at Thu Aug  7 11:31:18 2025
+ 
+ *** Total elapsed time was 1 second.
+ 
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+    .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We need to copy the UV errors into permament tables.
+  -- In reality, the UV errors should never exist though (if it did, t was issue with DDL).
+  --
+  select 1 from dbc.tablesv 
+  where 
+    LOWER(databasename) = LOWER('ACQ_P_UTIL') and
+    LOWER(tablename) = LOWER('pgt_sls_billing_item_stg_uv');
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_uv_manage;
+.GOTO skip_uv_manage;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will place error events into the error table.
+  insert into ACQ_P_JOB.pgt_sls_billing_item_err
+  (
+    dw_step_id,
+    dw_btch_id,
+    mandt,
+    acq_pgt_sys_id,
+    acq_mdm_sys_id,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_num,
+    co_cdv,
+    mtrl_id,
+    mtrl_nm,
+    blg_ln_typ_cdv,
+    sls_loc_id,
+    blg_ln_ctgy_cdv,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_rsn_cdv,
+    blg_ln_shpmt_ctry_cdv,
+    dlvry_doc_id,
+    dlvry_doc_crt_dt,
+    dlvry_ln_num,
+    sls_offc_loc_id_val,
+    rfrnc_blg_ln_num,
+    btch_id,
+    crtd_by_id,
+    crtd_dt,
+    blg_ln_tax_pct,
+    sls_org_cdv,
+    blg_typ_cdv,
+    cust_ordr_crncy_cdv,
+    blg_crncy_cdv,
+    mwsbp,
+    blg_ln_net_amt,
+    kzwi1,
+    crncy_exch_rt_amt,
+    cust_ordr_uniq_id_val,
+    cust_ordr_ln_num,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    rte_id,
+    ship_to_cust_id,
+    bill_to_cust_id,
+    sold_to_cust_id,
+    zsysid,
+    zdel_ind,
+    ztimestamp,
+    blg_ln_rtnd_amt,
+    blg_net_amt,
+    land1,
+    fkdat_ana,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    uprc,
+    ean11,
+    fbuda,
+    kokrs,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    matkl,
+    matwa,
+    posar,
+    prodh,
+    prsdt,
+    spara,
+    stadat,
+    vkgrp,
+    bonba,
+    kondm,
+    prctr,
+    ps_psp_pnr,
+    shkzg,
+    upmat,
+    vgbel,
+    vgpos,
+    knuma,
+    spart,
+    kzwi2,      
+    reason_code,
+    dstrbtn_chnl_cdv,
+    erzet_vbrp,
+ vgtyp,
+ autyp,
+    dw_rownum,
+    knumv_ana,
+ vbrk__pre_fkart,
+ sfakn,
+ vbrk__pre_vbeln,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ cust_po_typ_cdv
+  )
+  select 
+    this_step.mystep_id,
+    this_step.mybtch_id,
+    stg.mandt,
+    stg.acq_pgt_sys_id,
+    stg.acq_mdm_sys_id,
+    stg.blg_doc_dt,
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.co_cdv,
+    stg.mtrl_id,
+    stg.mtrl_nm,
+    stg.blg_ln_typ_cdv,
+    stg.sls_loc_id,
+    stg.blg_ln_ctgy_cdv,
+    stg.blg_ln_mtrl_qty,
+    stg.blg_ln_mtrl_uom_cdv,
+    stg.blg_ln_mtrl_bs_uom_qty,
+    stg.blg_ln_mtrl_bs_uom_cdv,
+    stg.blg_ln_mtrl_net_wght_uom_qty,
+    stg.blg_ln_mtrl_grss_wght_uom_qty,
+    stg.blg_ln_mtrl_wght_uom_cdv,
+    stg.blg_ln_mtrl_vol_uom_qty,
+    stg.blg_ln_mtrl_vol_uom_cdv,
+    stg.blg_ln_grss_amt,
+    stg.blg_ln_grss_frgnccy_amt,
+    stg.blg_ln_net_tot_amt,
+    stg.blg_ln_net_tot_frgnccy_amt,
+    stg.blg_ln_tot_tax_amt,
+    stg.blg_ln_tot_tax_frgnccy_amt,
+    stg.blg_ln_tot_dscnt_amt,
+    stg.blg_ln_tot_dscnt_frgnccy_amt,
+    stg.blg_ln_tot_prmtn_amt,
+    stg.blg_ln_tot_prmtn_frgnccy_amt,
+    stg.blg_ln_adjmt_amt,
+    stg.blg_ln_adjmt_frgnccy_amt,
+    stg.blg_ln_net_uprc_amt,
+    stg.blg_ln_net_uprc_frgnccy_amt,
+    stg.blg_ln_grss_uprc_amt,
+    stg.blg_ln_grss_uprc_frgnccy_amt,
+    stg.blg_ln_rsn_cdv,
+    stg.blg_ln_shpmt_ctry_cdv,
+    stg.dlvry_doc_id,
+    stg.dlvry_doc_crt_dt,
+    stg.dlvry_ln_num,
+    stg.sls_offc_loc_id_val,
+    stg.rfrnc_blg_ln_num,
+    stg.btch_id,
+    stg.crtd_by_id,
+    stg.crtd_dt,
+    stg.blg_ln_tax_pct,
+    stg.sls_org_cdv,
+    stg.blg_typ_cdv,
+    stg.cust_ordr_crncy_cdv,
+    stg.blg_crncy_cdv,
+    stg.mwsbp,
+    stg.blg_ln_net_amt,
+    stg.kzwi1,
+    stg.crncy_exch_rt_amt,
+    stg.cust_ordr_uniq_id_val,
+    stg.cust_ordr_ln_num,
+    stg.blg_cndtn_doc_id_val,
+    stg.blg_cndtn_typ_cdv,
+    stg.ordr_crt_dt,
+    stg.ordr_crt_tm,
+    stg.rte_id,
+    stg.ship_to_cust_id,
+    stg.bill_to_cust_id,
+    stg.sold_to_cust_id,
+    stg.zsysid,
+    stg.zdel_ind,
+    stg.ztimestamp,
+    stg.blg_ln_rtnd_amt,
+    stg.blg_net_amt,
+    stg.land1,
+    stg.fkdat_ana,
+    stg.kzwi3,
+    stg.kzwi4,
+    stg.kzwi5,
+    stg.kzwi6,
+    stg.uprc,
+    stg.ean11,
+    stg.fbuda,
+    stg.kokrs,
+    stg.kostl,
+    stg.kursk,
+    stg.kursk_dat,
+    stg.kvgr5,
+    stg.matkl,
+    stg.matwa,
+    stg.posar,
+    stg.prodh,
+    stg.prsdt,
+    stg.spara,
+    stg.stadat,
+    stg.vkgrp,
+    stg.bonba,
+    stg.kondm,
+    stg.prctr,
+    stg.ps_psp_pnr,
+    stg.shkzg,
+    stg.upmat,
+    stg.vgbel,
+    stg.vgpos,
+    stg.knuma,
+    stg.spart,
+    stg.kzwi2,    
+    stg.reason_code,
+    stg.dstrbtn_chnl_cdv,
+    stg.erzet_vbrp,
+ stg.vgtyp,
+ stg.autyp,
+    stg.dw_rownum,
+    stg.knumv_ana,
+ stg.vbrk__pre_fkart,
+ stg.sfakn,
+ stg.vbrk__pre_vbeln,
+    stg.vbak__auart,
+ stg.vbak__zz1_hh_no_sdh,
+ stg.cust_po_typ_cdv
+  from ACQ_P_UTIL.pgt_sls_billing_item_stg_uv as stg
+  left outer join
+  (
+    select max(actvty.cur_btch_id) as mybtch_id, max(step.step_id) as mystep_id
+    from PEPCMN_P.step
+    inner join PEPCMN_P.actvty
+      on actvty.actvty_id = step.actvty_id
+    inner join PEPCMN_P.sys
+      on sys.sys_nm = actvty.sys_nm
+    where
+      sys.sys_nm = 'ACQ' and
+      actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+      step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step on 1=1;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- Commented out because in reality we should not be creating errors via this table
+  -- delete ACQ_P_JOB.pgt_sls_billing_item_err
+  -- where dw_last_updt_dt < (DATE - 30);
+  -- .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+
+  .export report file /etlapps/prds2/acq/sales/tmp/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD_upld2.stat;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  select count(*) (TITLE '')
+  from ACQ_P_UTIL.pgt_sls_billing_item_stg_uv;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .export reset;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .label skip_uv_manage;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+ET=0, UV=0
+SENT=0, APPLIED=0, DUP=0
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:31:19 2025 PID: 22467
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+        .set titledashes off;
++---------+---------+---------+---------+---------+---------+---------+----
+        .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 5 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+        .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+        .set width 4500
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+        .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+        insert into PEPCMN_P_DATA.UPLD_STATCS
+            (STEP_ID, BTCH_ID, STG_TBL, 
+             UV_ERR_TOT, ET_ERR_TOT, TPT_SNT_TO_DBMS_TOT,
+             TPT_APLD_TOT, TPT_PTNTL_DUP_TOT)
+        select
+          STEP_ID,
+          CUR_BTCH_ID,
+          'pgt_sls_billing_item_stg',
+          0,
+          0,
+          0,
+          0,
+          0
+ from
+   PEPCMN_P.ACTVTY A
+        join PEPCMN_P.STEP S
+          ON A.ACTVTY_ID=S.ACTVTY_ID
+        where
+   SYS_NM='ACQ'
+          AND ACTVTY_NM='PGT_SLS_BILLING_ITEM'
+          AND STEP_NM='PGT_SLS_BILLING_ITEM_LOAD';
+
+ *** Insert completed. One row added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+.logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+0
+Executing hndl_dlta task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:31:24 2025 PID: 22857
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+.run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 11 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+.SET TITLEDASHES OFF;
++---------+---------+---------+---------+---------+---------+---------+----
+
+
+ --- Deleting the duplicate pk records and keeping the latest pk records
+ 
+ /* Select the date/time to get it into the log file.  */
+SELECT DATE,TIME;
+
+ *** Query completed. One row found. 2 columns returned. 
+ *** Total elapsed time was 1 second.
+
+Current Date      Time
+  2025-08-07  11:31:35
+
++---------+---------+---------+---------+---------+---------+---------+----
+.SET TITLEDASHES OFF;
++---------+---------+---------+---------+---------+---------+---------+----
+.SET WIDTH 200;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+   
+CREATE MULTISET VOLATILE TABLE VT_PGT_SLS_BILLING_ITEM_STG
+ AS (
+ SELECT 
+    BLG_DOC_ID,
+    BLG_LN_NUM,
+    ZSYSID,
+    MANDT,
+    MAX(DW_ROWNUM) AS DW_ROWNUM
+ FROM 
+    ACQ_P_STAGE.PGT_SLS_BILLING_ITEM_STG 
+ GROUP BY 1,2,3,4
+)WITH DATA
+PRIMARY INDEX(BLG_DOC_ID,BLG_LN_NUM,ZSYSID,MANDT)
+ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+COLLECT STATISTICS COLUMN(BLG_DOC_ID,BLG_LN_NUM,ZSYSID,MANDT),COLUMN(DW_ROWNUM) ON VT_PGT_SLS_BILLING_ITEM_STG;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 5 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+COLLECT STATISTICS COLUMN(BLG_DOC_ID,BLG_LN_NUM,ZSYSID,MANDT),COLUMN(DW_ROWNUM) ON ACQ_P_STAGE.PGT_SLS_BILLING_ITEM_STG;
+
+ *** Update completed. 3 rows changed. 
+ *** Total elapsed time was 5 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+DELETE STG
+    FROM ACQ_P_STAGE.PGT_SLS_BILLING_ITEM_STG STG, VT_PGT_SLS_BILLING_ITEM_STG VT
+WHERE
+    STG.BLG_DOC_ID=VT.BLG_DOC_ID
+    AND STG.BLG_LN_NUM=VT.BLG_LN_NUM
+    AND STG.ZSYSID=VT.ZSYSID
+    AND STG.MANDT=VT.MANDT
+    AND STG.DW_ROWNUM <> VT.DW_ROWNUM;
+
+ *** Delete completed. No rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+SELECT DATE,TIME;
+
+ *** Query completed. One row found. 2 columns returned. 
+ *** Total elapsed time was 1 second.
+
+Current Date      Time
+  2025-08-07  11:31:46
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.export reset;
+ *** Output returned to console.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Executing prestage task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:31:46 2025 PID: 24829
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 10 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=validate;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:31:56-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- Updating ACQ_PGT_SYS_ID,ACQ_MDM_SYS_ID columns by lookup on MINP_PGT_S4_MDG_SYS_ID_XREF table.
+  
+UPDATE
+ACQ_P_STAGE.PGT_SLS_BILLING_ITEM_STG 
+FROM ACQ_P_ULOAD.MINP_PGT_S4_MDG_SYS_ID_XREF AS XREF
+SET ACQ_PGT_SYS_ID = XREF.MDG_SYS_ID, 
+    ACQ_MDM_SYS_ID = XREF.MDM_SYS_ID
+
+WHERE
+    MANDT          = XREF.CLIENT_ID 
+AND ZSYSID         = XREF.S4_SYS_ID
+;
+
+ *** Update completed. 2353913 rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .export reset
+ *** Output returned to console.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing validation task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:31:58 2025 PID: 25666
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  -- Cleaning is required.  A copy of the stage table should exist in the WORK database.
+  -- Cleaning is required
+  --       when CRIT errors can cause records to be deleted, 
+  --       when defaults can be assigned in place of nulls,
+  --       when duplicate records causes records to be deleted
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 5 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=validate;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:32:03-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  --If we fail here, it means we did not expect an empty stage table.
+  --select top 1 * from ACQ_P_STAGE.pgt_sls_billing_item_stg;
+  --.IF ACTIVITYCOUNT = 0 THEN .QUIT 102;
+
+  -- Create volatile table to capture data error events.
+  CREATE MULTISET VOLATILE TABLE MYDAT_ERR_EVNT, 
+     NO FALLBACK,
+     CHECKSUM = DEFAULT,
+     NO LOG
+     (
+      blg_doc_id varchar(10) character set unicode  ,
+      blg_ln_num varchar(6) character set unicode  ,
+      mandt varchar(3) character set unicode  ,
+      zsysid varchar(8) character set unicode  ,
+      ERR_CD VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC NOT NULL,
+      OPTNL_RCRD_NM VARCHAR(200) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      OPTNL_RCRD_ID VARCHAR(1000) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      OPTNL_FLD_NM VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      OPTNL_FLD_VAL VARCHAR(4000) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      ERR_SVRTY VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      ERR_DTL_1 VARCHAR(4000) CHARACTER SET UNICODE NOT CASESPECIFIC,
+      ERR_DTL_2 VARCHAR(4000) CHARACTER SET UNICODE NOT CASESPECIFIC
+     )
+  PRIMARY INDEX ( blg_doc_id, blg_ln_num, mandt, zsysid )
+  ON COMMIT PRESERVE ROWS;
+
+ *** Table has been created. 
+ *** Warning: 6900 FallBackSetting is ALWAYS FALLBACK - MYDAT_ERR_EVNT is set to FAL
+LBACK.
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+  -- We execute a null check validation for pk field blg_doc_id
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'blg_doc_id',
+    blg_doc_id,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where blg_doc_id is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute a null check validation for pk field blg_ln_num
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'blg_ln_num',
+    blg_ln_num,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where blg_ln_num is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute a null check validation for pk field mandt
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'mandt',
+    mandt,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where mandt is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute a null check validation for pk field zsysid
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'zsysid',
+    zsysid,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where zsysid is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+
+
+  -- We execute a null check validation for field acq_mdm_sys_id
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'acq_mdm_sys_id',
+    acq_mdm_sys_id,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where acq_mdm_sys_id is null
+  ;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- We execute a null check validation for field acq_pgt_sys_id
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'FLD_NULL',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'acq_pgt_sys_id',
+    acq_pgt_sys_id,
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl where acq_pgt_sys_id is null
+  ;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+
+
+  -- We execute the duplicate record validation for all applicable columns
+  insert into MYDAT_ERR_EVNT
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'RCD_DUPLICATE',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'all',
+    'all',
+    'WARN',
+    'pgt_sls_billing_item_stg',
+    null
+    from 
+  (select 
+    acq_mdm_sys_id,
+    acq_pgt_sys_id,
+ autyp,
+    bill_to_cust_id,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    blg_crncy_cdv,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_ctgy_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_net_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_num,
+    blg_ln_rsn_cdv,
+    blg_ln_rtnd_amt,
+    blg_ln_shpmt_ctry_cdv,
+    blg_ln_tax_pct,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_typ_cdv,
+    blg_net_amt,
+    blg_typ_cdv,
+    bonba,
+    btch_id,
+    co_cdv,
+    crncy_exch_rt_amt,
+    crtd_by_id,
+    crtd_dt,
+    cust_ordr_crncy_cdv,
+    cust_ordr_ln_num,
+    cust_ordr_uniq_id_val,
+ cust_po_typ_cdv,
+    dlvry_doc_crt_dt,
+    dlvry_doc_id,
+    dlvry_ln_num,
+    dstrbtn_chnl_cdv,
+    dw_rownum,
+    ean11,
+    erzet_vbrp,
+    fbuda,
+    fkdat_ana,
+    knuma,
+    knumv_ana,
+    kokrs,
+    kondm,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    kzwi1,
+    kzwi2,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    land1,
+    mandt,
+    matkl,
+    matwa,
+    mtrl_id,
+    mtrl_nm,
+    mwsbp,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    posar,
+    prctr,
+    prodh,
+    prsdt,
+    ps_psp_pnr,
+    reason_code,
+    rfrnc_blg_ln_num,
+    rte_id,
+ sfakn,
+    ship_to_cust_id,
+    shkzg,
+    sls_loc_id,
+    sls_offc_loc_id_val,
+    sls_org_cdv,
+    sold_to_cust_id,
+    spara,
+    spart,
+    stadat,
+    upmat,
+    uprc,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ vbrk__pre_fkart,
+ vbrk__pre_vbeln,
+    vgbel,
+    vgpos,
+ vgtyp,
+    vkgrp,
+    zdel_ind,
+    zsysid,
+    ztimestamp
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg
+  group by 
+    acq_mdm_sys_id,
+    acq_pgt_sys_id,
+ autyp,
+    bill_to_cust_id,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    blg_crncy_cdv,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_ctgy_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_net_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_num,
+    blg_ln_rsn_cdv,
+    blg_ln_rtnd_amt,
+    blg_ln_shpmt_ctry_cdv,
+    blg_ln_tax_pct,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_typ_cdv,
+    blg_net_amt,
+    blg_typ_cdv,
+    bonba,
+    btch_id,
+    co_cdv,
+    crncy_exch_rt_amt,
+    crtd_by_id,
+    crtd_dt,
+    cust_ordr_crncy_cdv,
+    cust_ordr_ln_num,
+    cust_ordr_uniq_id_val,
+ cust_po_typ_cdv,
+    dlvry_doc_crt_dt,
+    dlvry_doc_id,
+    dlvry_ln_num,
+    dstrbtn_chnl_cdv,
+    dw_rownum,
+    ean11,
+    erzet_vbrp,
+    fbuda,
+    fkdat_ana,
+    knuma,
+    knumv_ana,
+    kokrs,
+    kondm,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    kzwi1,
+    kzwi2,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    land1,
+    mandt,
+    matkl,
+    matwa,
+    mtrl_id,
+    mtrl_nm,
+    mwsbp,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    posar,
+    prctr,
+    prodh,
+    prsdt,
+    ps_psp_pnr,
+    reason_code,
+    rfrnc_blg_ln_num,
+    rte_id,
+ sfakn,
+    ship_to_cust_id,
+    shkzg,
+    sls_loc_id,
+    sls_offc_loc_id_val,
+    sls_org_cdv,
+    sold_to_cust_id,
+    spara,
+    spart,
+    stadat,
+    upmat,
+    uprc,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ vbrk__pre_fkart,
+ vbrk__pre_vbeln,
+    vgbel,
+    vgpos,
+ vgtyp,
+    vkgrp,
+    zdel_ind,
+    zsysid,
+    ztimestamp
+  having count(*) > 1
+  ) tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+
+
+  -- We execute the duplicate pk validation for pk columns (excluding duplicate records)
+  insert into MYDAT_ERR_EVNT
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select
+    tbl.blg_doc_id,
+    tbl.blg_ln_num,
+    tbl.mandt,
+    tbl.zsysid,
+    'RCD_PK_DUPLICATE',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    'all',
+    'all',
+    'CRIT',
+    'pgt_sls_billing_item_stg',
+    null
+  from 
+  (select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from 
+  (select
+    acq_mdm_sys_id,
+    acq_pgt_sys_id,
+ autyp,
+    bill_to_cust_id,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    blg_crncy_cdv,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_ctgy_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_net_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_num,
+    blg_ln_rsn_cdv,
+    blg_ln_rtnd_amt,
+    blg_ln_shpmt_ctry_cdv,
+    blg_ln_tax_pct,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_typ_cdv,
+    blg_net_amt,
+    blg_typ_cdv,
+    bonba,
+    btch_id,
+    co_cdv,
+    crncy_exch_rt_amt,
+    crtd_by_id,
+    crtd_dt,
+    cust_ordr_crncy_cdv,
+    cust_ordr_ln_num,
+    cust_ordr_uniq_id_val,
+ cust_po_typ_cdv,
+    dlvry_doc_crt_dt,
+    dlvry_doc_id,
+    dlvry_ln_num,
+    dstrbtn_chnl_cdv,
+    dw_rownum,
+    ean11,
+    erzet_vbrp,
+    fbuda,
+    fkdat_ana,
+    knuma,
+    knumv_ana,
+    kokrs,
+    kondm,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    kzwi1,
+    kzwi2,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    land1,
+    mandt,
+    matkl,
+    matwa,
+    mtrl_id,
+    mtrl_nm,
+    mwsbp,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    posar,
+    prctr,
+    prodh,
+    prsdt,
+    ps_psp_pnr,
+    reason_code,
+    rfrnc_blg_ln_num,
+    rte_id,
+ sfakn,
+    ship_to_cust_id,
+    shkzg,
+    sls_loc_id,
+    sls_offc_loc_id_val,
+    sls_org_cdv,
+    sold_to_cust_id,
+    spara,
+    spart,
+    stadat,
+    upmat,
+    uprc,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ vbrk__pre_fkart,
+ vbrk__pre_vbeln,
+    vgbel,
+    vgpos,
+ vgtyp,
+    vkgrp,
+    zdel_ind,
+    zsysid,
+    ztimestamp
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg
+  group by
+    acq_mdm_sys_id,
+    acq_pgt_sys_id,
+ autyp,
+    bill_to_cust_id,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    blg_crncy_cdv,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_ctgy_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_net_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_num,
+    blg_ln_rsn_cdv,
+    blg_ln_rtnd_amt,
+    blg_ln_shpmt_ctry_cdv,
+    blg_ln_tax_pct,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_typ_cdv,
+    blg_net_amt,
+    blg_typ_cdv,
+    bonba,
+    btch_id,
+    co_cdv,
+    crncy_exch_rt_amt,
+    crtd_by_id,
+    crtd_dt,
+    cust_ordr_crncy_cdv,
+    cust_ordr_ln_num,
+    cust_ordr_uniq_id_val,
+ cust_po_typ_cdv,
+    dlvry_doc_crt_dt,
+    dlvry_doc_id,
+    dlvry_ln_num,
+    dstrbtn_chnl_cdv,
+    dw_rownum,
+    ean11,
+    erzet_vbrp,
+    fbuda,
+    fkdat_ana,
+    knuma,
+    knumv_ana,
+    kokrs,
+    kondm,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    kzwi1,
+    kzwi2,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    land1,
+    mandt,
+    matkl,
+    matwa,
+    mtrl_id,
+    mtrl_nm,
+    mwsbp,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    posar,
+    prctr,
+    prodh,
+    prsdt,
+    ps_psp_pnr,
+    reason_code,
+    rfrnc_blg_ln_num,
+    rte_id,
+ sfakn,
+    ship_to_cust_id,
+    shkzg,
+    sls_loc_id,
+    sls_offc_loc_id_val,
+    sls_org_cdv,
+    sold_to_cust_id,
+    spara,
+    spart,
+    stadat,
+    upmat,
+    uprc,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ vbrk__pre_fkart,
+ vbrk__pre_vbeln,
+    vgbel,
+    vgpos,
+ vgtyp,
+    vkgrp,
+    zdel_ind,
+    zsysid,
+    ztimestamp) tbl2
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  having count(*) > 1
+  ) tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+  -- We move the data from the staging to the clean area (all cleaning is done in one move)
+  --   NOTE:  When we de-dupe records, we only manage those columns
+  --
+
+  -- Then, we delete the clean table for this new run
+  delete from ACQ_P_WORK.pgt_sls_billing_item_stg_cln;
+
+ *** Delete completed. 413612 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- Then, we do the move of the data rejecting records that should be while setting defaults.
+  insert into ACQ_P_WORK.pgt_sls_billing_item_stg_cln
+  (
+
+
+
+    acq_mdm_sys_id,
+    acq_pgt_sys_id,
+ autyp,
+    bill_to_cust_id,
+    blg_cndtn_doc_id_val,
+    blg_cndtn_typ_cdv,
+    blg_crncy_cdv,
+    blg_doc_dt,
+    blg_doc_id,
+    blg_ln_adjmt_amt,
+    blg_ln_adjmt_frgnccy_amt,
+    blg_ln_ctgy_cdv,
+    blg_ln_grss_amt,
+    blg_ln_grss_frgnccy_amt,
+    blg_ln_grss_uprc_amt,
+    blg_ln_grss_uprc_frgnccy_amt,
+    blg_ln_mtrl_bs_uom_cdv,
+    blg_ln_mtrl_bs_uom_qty,
+    blg_ln_mtrl_grss_wght_uom_qty,
+    blg_ln_mtrl_net_wght_uom_qty,
+    blg_ln_mtrl_qty,
+    blg_ln_mtrl_uom_cdv,
+    blg_ln_mtrl_vol_uom_cdv,
+    blg_ln_mtrl_vol_uom_qty,
+    blg_ln_mtrl_wght_uom_cdv,
+    blg_ln_net_amt,
+    blg_ln_net_tot_amt,
+    blg_ln_net_tot_frgnccy_amt,
+    blg_ln_net_uprc_amt,
+    blg_ln_net_uprc_frgnccy_amt,
+    blg_ln_num,
+    blg_ln_rsn_cdv,
+    blg_ln_rtnd_amt,
+    blg_ln_shpmt_ctry_cdv,
+    blg_ln_tax_pct,
+    blg_ln_tot_dscnt_amt,
+    blg_ln_tot_dscnt_frgnccy_amt,
+    blg_ln_tot_prmtn_amt,
+    blg_ln_tot_prmtn_frgnccy_amt,
+    blg_ln_tot_tax_amt,
+    blg_ln_tot_tax_frgnccy_amt,
+    blg_ln_typ_cdv,
+    blg_net_amt,
+    blg_typ_cdv,
+    bonba,
+    btch_id,
+    co_cdv,
+    crncy_exch_rt_amt,
+    crtd_by_id,
+    crtd_dt,
+    cust_ordr_crncy_cdv,
+    cust_ordr_ln_num,
+    cust_ordr_uniq_id_val,
+ cust_po_typ_cdv,
+    dlvry_doc_crt_dt,
+    dlvry_doc_id,
+    dlvry_ln_num,
+    dstrbtn_chnl_cdv,
+    dw_rownum,
+    ean11,
+    erzet_vbrp,
+    fbuda,
+    fkdat_ana,
+    knuma,
+    knumv_ana,
+    kokrs,
+    kondm,
+    kostl,
+    kursk,
+    kursk_dat,
+    kvgr5,
+    kzwi1,
+    kzwi2,
+    kzwi3,
+    kzwi4,
+    kzwi5,
+    kzwi6,
+    land1,
+    mandt,
+    matkl,
+    matwa,
+    mtrl_id,
+    mtrl_nm,
+    mwsbp,
+    ordr_crt_dt,
+    ordr_crt_tm,
+    posar,
+    prctr,
+    prodh,
+    prsdt,
+    ps_psp_pnr,
+    reason_code,
+    rfrnc_blg_ln_num,
+    rte_id,
+ sfakn,
+    ship_to_cust_id,
+    shkzg,
+    sls_loc_id,
+    sls_offc_loc_id_val,
+    sls_org_cdv,
+    sold_to_cust_id,
+    spara,
+    spart,
+    stadat,
+    upmat,
+    uprc,
+    vbak__auart,
+ vbak__zz1_hh_no_sdh,
+ vbrk__pre_fkart,
+ vbrk__pre_vbeln,
+    vgbel,
+    vgpos,
+ vgtyp,
+    vkgrp,
+    zdel_ind,
+    zsysid,
+    ztimestamp
+
+
+
+
+  )
+  select
+
+
+
+    tbl.acq_mdm_sys_id,
+    tbl.acq_pgt_sys_id,
+ tbl.autyp,
+    tbl.bill_to_cust_id,
+    tbl.blg_cndtn_doc_id_val,
+    tbl.blg_cndtn_typ_cdv,
+    tbl.blg_crncy_cdv,
+    tbl.blg_doc_dt,
+    tbl.blg_doc_id,
+    tbl.blg_ln_adjmt_amt,
+    tbl.blg_ln_adjmt_frgnccy_amt,
+    tbl.blg_ln_ctgy_cdv,
+    tbl.blg_ln_grss_amt,
+    tbl.blg_ln_grss_frgnccy_amt,
+    tbl.blg_ln_grss_uprc_amt,
+    tbl.blg_ln_grss_uprc_frgnccy_amt,
+    tbl.blg_ln_mtrl_bs_uom_cdv,
+    tbl.blg_ln_mtrl_bs_uom_qty,
+    tbl.blg_ln_mtrl_grss_wght_uom_qty,
+    tbl.blg_ln_mtrl_net_wght_uom_qty,
+    tbl.blg_ln_mtrl_qty,
+    tbl.blg_ln_mtrl_uom_cdv,
+    tbl.blg_ln_mtrl_vol_uom_cdv,
+    tbl.blg_ln_mtrl_vol_uom_qty,
+    tbl.blg_ln_mtrl_wght_uom_cdv,
+    tbl.blg_ln_net_amt,
+    tbl.blg_ln_net_tot_amt,
+    tbl.blg_ln_net_tot_frgnccy_amt,
+    tbl.blg_ln_net_uprc_amt,
+    tbl.blg_ln_net_uprc_frgnccy_amt,
+    tbl.blg_ln_num,
+    tbl.blg_ln_rsn_cdv,
+    tbl.blg_ln_rtnd_amt,
+    tbl.blg_ln_shpmt_ctry_cdv,
+    tbl.blg_ln_tax_pct,
+    tbl.blg_ln_tot_dscnt_amt,
+    tbl.blg_ln_tot_dscnt_frgnccy_amt,
+    tbl.blg_ln_tot_prmtn_amt,
+    tbl.blg_ln_tot_prmtn_frgnccy_amt,
+    tbl.blg_ln_tot_tax_amt,
+    tbl.blg_ln_tot_tax_frgnccy_amt,
+    tbl.blg_ln_typ_cdv,
+    tbl.blg_net_amt,
+    tbl.blg_typ_cdv,
+    tbl.bonba,
+    tbl.btch_id,
+    tbl.co_cdv,
+    tbl.crncy_exch_rt_amt,
+    tbl.crtd_by_id,
+    tbl.crtd_dt,
+    tbl.cust_ordr_crncy_cdv,
+    tbl.cust_ordr_ln_num,
+    tbl.cust_ordr_uniq_id_val,
+ tbl.cust_po_typ_cdv,
+    tbl.dlvry_doc_crt_dt,
+    tbl.dlvry_doc_id,
+    tbl.dlvry_ln_num,
+    tbl.dstrbtn_chnl_cdv,
+    tbl.dw_rownum,
+    tbl.ean11,
+    tbl.erzet_vbrp,
+    tbl.fbuda,
+    tbl.fkdat_ana,
+    tbl.knuma,
+    tbl.knumv_ana,
+    tbl.kokrs,
+    tbl.kondm,
+    tbl.kostl,
+    tbl.kursk,
+    tbl.kursk_dat,
+    tbl.kvgr5,
+    tbl.kzwi1,
+    tbl.kzwi2,
+    tbl.kzwi3,
+    tbl.kzwi4,
+    tbl.kzwi5,
+    tbl.kzwi6,
+    tbl.land1,
+    tbl.mandt,
+    tbl.matkl,
+    tbl.matwa,
+    tbl.mtrl_id,
+    tbl.mtrl_nm,
+    tbl.mwsbp,
+    tbl.ordr_crt_dt,
+    tbl.ordr_crt_tm,
+    tbl.posar,
+    tbl.prctr,
+    tbl.prodh,
+    tbl.prsdt,
+    tbl.ps_psp_pnr,
+    tbl.reason_code,
+    tbl.rfrnc_blg_ln_num,
+    tbl.rte_id,
+ tbl.sfakn,
+    tbl.ship_to_cust_id,
+    tbl.shkzg,
+    tbl.sls_loc_id,
+    tbl.sls_offc_loc_id_val,
+    tbl.sls_org_cdv,
+    tbl.sold_to_cust_id,
+    tbl.spara,
+    tbl.spart,
+    tbl.stadat,
+    tbl.upmat,
+    tbl.uprc,
+    tbl.vbak__auart,
+ tbl.vbak__zz1_hh_no_sdh,
+ tbl.vbrk__pre_fkart,
+ tbl.vbrk__pre_vbeln,
+    tbl.vgbel,
+    tbl.vgpos,
+ tbl.vgtyp,
+    tbl.vkgrp,
+    tbl.zdel_ind,
+    tbl.zsysid,
+    tbl.ztimestamp
+
+
+
+
+
+  from
+    (
+    select 
+        acq_mdm_sys_id,
+       acq_pgt_sys_id,
+    autyp,
+       bill_to_cust_id,
+       blg_cndtn_doc_id_val,
+       blg_cndtn_typ_cdv,
+       blg_crncy_cdv,
+       blg_doc_dt,
+       blg_doc_id,
+       blg_ln_adjmt_amt,
+       blg_ln_adjmt_frgnccy_amt,
+       blg_ln_ctgy_cdv,
+       blg_ln_grss_amt,
+       blg_ln_grss_frgnccy_amt,
+       blg_ln_grss_uprc_amt,
+       blg_ln_grss_uprc_frgnccy_amt,
+       blg_ln_mtrl_bs_uom_cdv,
+       blg_ln_mtrl_bs_uom_qty,
+       blg_ln_mtrl_grss_wght_uom_qty,
+       blg_ln_mtrl_net_wght_uom_qty,
+       blg_ln_mtrl_qty,
+       blg_ln_mtrl_uom_cdv,
+       blg_ln_mtrl_vol_uom_cdv,
+       blg_ln_mtrl_vol_uom_qty,
+       blg_ln_mtrl_wght_uom_cdv,
+       blg_ln_net_amt,
+       blg_ln_net_tot_amt,
+       blg_ln_net_tot_frgnccy_amt,
+       blg_ln_net_uprc_amt,
+       blg_ln_net_uprc_frgnccy_amt,
+       blg_ln_num,
+       blg_ln_rsn_cdv,
+       blg_ln_rtnd_amt,
+       blg_ln_shpmt_ctry_cdv,
+       blg_ln_tax_pct,
+       blg_ln_tot_dscnt_amt,
+       blg_ln_tot_dscnt_frgnccy_amt,
+       blg_ln_tot_prmtn_amt,
+       blg_ln_tot_prmtn_frgnccy_amt,
+       blg_ln_tot_tax_amt,
+       blg_ln_tot_tax_frgnccy_amt,
+       blg_ln_typ_cdv,
+       blg_net_amt,
+       blg_typ_cdv,
+       bonba,
+       btch_id,
+       co_cdv,
+       crncy_exch_rt_amt,
+       crtd_by_id,
+       crtd_dt,
+       cust_ordr_crncy_cdv,
+       cust_ordr_ln_num,
+       cust_ordr_uniq_id_val,
+    cust_po_typ_cdv,
+       dlvry_doc_crt_dt,
+       dlvry_doc_id,
+       dlvry_ln_num,
+       dstrbtn_chnl_cdv,
+       dw_rownum,
+       ean11,
+       erzet_vbrp,
+       fbuda,
+       fkdat_ana,
+       knuma,
+       knumv_ana,
+       kokrs,
+       kondm,
+       kostl,
+       kursk,
+       kursk_dat,
+       kvgr5,
+       kzwi1,
+       kzwi2,
+       kzwi3,
+       kzwi4,
+       kzwi5,
+       kzwi6,
+       land1,
+       mandt,
+       matkl,
+       matwa,
+       mtrl_id,
+       mtrl_nm,
+       mwsbp,
+       ordr_crt_dt,
+       ordr_crt_tm,
+       posar,
+       prctr,
+       prodh,
+       prsdt,
+       ps_psp_pnr,
+       reason_code,
+       rfrnc_blg_ln_num,
+       rte_id,
+    sfakn,
+       ship_to_cust_id,
+       shkzg,
+       sls_loc_id,
+       sls_offc_loc_id_val,
+       sls_org_cdv,
+       sold_to_cust_id,
+       spara,
+       spart,
+       stadat,
+       upmat,
+       uprc,
+       vbak__auart,
+    vbak__zz1_hh_no_sdh,
+    vbrk__pre_fkart,
+    vbrk__pre_vbeln,
+       vgbel,
+       vgpos,
+    vgtyp,
+       vkgrp,
+       zdel_ind,
+       zsysid,
+       ztimestamp
+    from ACQ_P_STAGE.pgt_sls_billing_item_stg
+    group by 
+       acq_mdm_sys_id,
+       acq_pgt_sys_id,
+    autyp,
+       bill_to_cust_id,
+       blg_cndtn_doc_id_val,
+       blg_cndtn_typ_cdv,
+       blg_crncy_cdv,
+       blg_doc_dt,
+       blg_doc_id,
+       blg_ln_adjmt_amt,
+       blg_ln_adjmt_frgnccy_amt,
+       blg_ln_ctgy_cdv,
+       blg_ln_grss_amt,
+       blg_ln_grss_frgnccy_amt,
+       blg_ln_grss_uprc_amt,
+       blg_ln_grss_uprc_frgnccy_amt,
+       blg_ln_mtrl_bs_uom_cdv,
+       blg_ln_mtrl_bs_uom_qty,
+       blg_ln_mtrl_grss_wght_uom_qty,
+       blg_ln_mtrl_net_wght_uom_qty,
+       blg_ln_mtrl_qty,
+       blg_ln_mtrl_uom_cdv,
+       blg_ln_mtrl_vol_uom_cdv,
+       blg_ln_mtrl_vol_uom_qty,
+       blg_ln_mtrl_wght_uom_cdv,
+       blg_ln_net_amt,
+       blg_ln_net_tot_amt,
+       blg_ln_net_tot_frgnccy_amt,
+       blg_ln_net_uprc_amt,
+       blg_ln_net_uprc_frgnccy_amt,
+       blg_ln_num,
+       blg_ln_rsn_cdv,
+       blg_ln_rtnd_amt,
+       blg_ln_shpmt_ctry_cdv,
+       blg_ln_tax_pct,
+       blg_ln_tot_dscnt_amt,
+       blg_ln_tot_dscnt_frgnccy_amt,
+       blg_ln_tot_prmtn_amt,
+       blg_ln_tot_prmtn_frgnccy_amt,
+       blg_ln_tot_tax_amt,
+       blg_ln_tot_tax_frgnccy_amt,
+       blg_ln_typ_cdv,
+       blg_net_amt,
+       blg_typ_cdv,
+       bonba,
+       btch_id,
+       co_cdv,
+       crncy_exch_rt_amt,
+       crtd_by_id,
+       crtd_dt,
+       cust_ordr_crncy_cdv,
+       cust_ordr_ln_num,
+       cust_ordr_uniq_id_val,
+    cust_po_typ_cdv,
+       dlvry_doc_crt_dt,
+       dlvry_doc_id,
+       dlvry_ln_num,
+       dstrbtn_chnl_cdv,
+       dw_rownum,
+       ean11,
+       erzet_vbrp,
+       fbuda,
+       fkdat_ana,
+       knuma,
+       knumv_ana,
+       kokrs,
+       kondm,
+       kostl,
+       kursk,
+       kursk_dat,
+       kvgr5,
+       kzwi1,
+       kzwi2,
+       kzwi3,
+       kzwi4,
+       kzwi5,
+       kzwi6,
+       land1,
+       mandt,
+       matkl,
+       matwa,
+       mtrl_id,
+       mtrl_nm,
+       mwsbp,
+       ordr_crt_dt,
+       ordr_crt_tm,
+       posar,
+       prctr,
+       prodh,
+       prsdt,
+       ps_psp_pnr,
+       reason_code,
+       rfrnc_blg_ln_num,
+       rte_id,
+    sfakn,
+       ship_to_cust_id,
+       shkzg,
+       sls_loc_id,
+       sls_offc_loc_id_val,
+       sls_org_cdv,
+       sold_to_cust_id,
+       spara,
+       spart,
+       stadat,
+       upmat,
+       uprc,
+       vbak__auart,
+    vbak__zz1_hh_no_sdh,
+    vbrk__pre_fkart,
+    vbrk__pre_vbeln,
+       vgbel,
+       vgpos,
+    vgtyp,
+       vkgrp,
+       zdel_ind,
+       zsysid,
+       ztimestamp
+    ) as tbl
+
+
+  left outer join (select distinct blg_doc_id, blg_ln_num, mandt, zsysid, ERR_SVRTY from MYDAT_ERR_EVNT) errtbl
+    on 
+      -- We have this in on condition because we filter out NON-CRIT ERRORS within the outer join
+      errtbl.ERR_SVRTY = 'CRIT' and
+      coalesce(cast(errtbl.blg_doc_id as VARCHAR(40)),'~MEM~PEP~') = coalesce(cast(tbl.blg_doc_id as VARCHAR(40)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.blg_ln_num as VARCHAR(24)),'~MEM~PEP~') = coalesce(cast(tbl.blg_ln_num as VARCHAR(24)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.mandt as VARCHAR(12)),'~MEM~PEP~') = coalesce(cast(tbl.mandt as VARCHAR(12)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.zsysid as VARCHAR(32)),'~MEM~PEP~') = coalesce(cast(tbl.zsysid as VARCHAR(32)),'~MEM~PEP~')
+
+  where errtbl.ERR_SVRTY is null;
+
+ *** Insert completed. 2353913 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK;
+
+ *** Delete completed. 413612 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_cust_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_BILL_CK_surr,
+    fknk_bill_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_cust_id,
+    stg.bill_to_cust_id,
+    stg.acq_pgt_sys_id,
+    stg.mandt
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P_DIM.gtmd_ddh_cust_core_cf_key as core
+  on
+    stg.bill_to_cust_id = core.cust_id and
+    stg.acq_pgt_sys_id = core.pgt_sys_id and
+    stg.mandt = core.client_id
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.bill_to_cust_id IS NOT NULL and
+    stg.acq_pgt_sys_id IS NOT NULL and
+    stg.mandt IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2353913 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+  (
+    dw_cust_id,
+    dw_sys_id,
+    dw_id,
+    cust_id,
+    pgt_sys_id,
+    client_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (689 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_bill_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_BILL_CK_rowid as dw_id,
+    fknk_bill_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_bill_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    ROW_NUMBER() OVER (ORDER BY fk_BILL_CK_surr) as fk_BILL_CK_rowid
+  from (select distinct
+    fknk_bill_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    fk_BILL_CK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key) maxpk
+  where tbl.fk_BILL_CK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: bill_to_cust_id, acq_pgt_sys_id, mandt',
+    'VALS: ' || tbl.fknk_bill_to_cust_id || '|' || tbl.fknk_acq_pgt_sys_id || '|' || tbl.fknk_mandt
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK as tbl
+  where fk_BILL_CK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK
+  from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+    set fk_BILL_CK_surr = gtmd_ddh_cust_core_cf_key.dw_cust_id
+  where
+    fk_pgt_sls_billing_item_stg_BILL_CK.fknk_bill_to_cust_id = gtmd_ddh_cust_core_cf_key.cust_id and
+    fk_pgt_sls_billing_item_stg_BILL_CK.fknk_acq_pgt_sys_id = gtmd_ddh_cust_core_cf_key.pgt_sys_id and
+    fk_pgt_sls_billing_item_stg_BILL_CK.fknk_mandt = gtmd_ddh_cust_core_cf_key.client_id
+
+    and gtmd_ddh_cust_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_BILL_CK.fk_BILL_CK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK;
+
+ *** Delete completed. 413612 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_mtrl_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_IK_surr,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fknk_mtrl_id
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_item_id,
+    stg.mandt,
+    stg.acq_pgt_sys_id,
+    stg.mtrl_id
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P.gtmd_ddh_mtrl_core_cf_key as core
+  on
+    stg.mandt = core.client_id and
+    stg.acq_pgt_sys_id = core.pgt_sys_id and
+    trim(leading '0' from stg.mtrl_id) = trim(leading '0' from core.mtrl_id)
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.mandt IS NOT NULL and
+    stg.acq_pgt_sys_id IS NOT NULL and
+    stg.mtrl_id IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2353913 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_mtrl_core_cf_key
+  (
+    dw_item_id,
+    dw_sys_id,
+    dw_id,
+    client_id,
+    pgt_sys_id,
+    mtrl_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (691 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fknk_mtrl_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_IK_rowid as dw_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fknk_mtrl_id,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fknk_mtrl_id,
+    ROW_NUMBER() OVER (ORDER BY fk_IK_surr) as fk_IK_rowid
+  from (select distinct
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fknk_mtrl_id,
+    fk_IK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P.gtmd_ddh_mtrl_core_cf_key) maxpk
+  where tbl.fk_IK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: mandt, acq_pgt_sys_id, mtrl_id',
+    'VALS: ' || tbl.fknk_mandt || '|' || tbl.fknk_acq_pgt_sys_id || '|' || tbl.fknk_mtrl_id
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK as tbl
+  where fk_IK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK
+  from ACQ_P.gtmd_ddh_mtrl_core_cf_key
+    set fk_IK_surr = gtmd_ddh_mtrl_core_cf_key.dw_item_id
+  where
+    fk_pgt_sls_billing_item_stg_IK.fknk_mandt = gtmd_ddh_mtrl_core_cf_key.client_id and
+    fk_pgt_sls_billing_item_stg_IK.fknk_acq_pgt_sys_id = gtmd_ddh_mtrl_core_cf_key.pgt_sys_id and
+    fk_pgt_sls_billing_item_stg_IK.fknk_mtrl_id = gtmd_ddh_mtrl_core_cf_key.mtrl_id
+
+    and gtmd_ddh_mtrl_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_IK.fk_IK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK;
+
+ *** Delete completed. 413579 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_loc_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_LK_surr,
+    fknk_acq_pgt_sys_id,
+    fknk_sls_loc_id,
+    fknk_mandt
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_loc_id,
+    stg.acq_pgt_sys_id,
+    stg.sls_loc_id,
+    stg.mandt
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P_DIM.gtmd_ddh_loc_core_cf_key as core
+  on
+    stg.acq_pgt_sys_id = core.pgt_sys_id and
+    stg.sls_loc_id = core.loc_id and
+    stg.mandt = core.client_id
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.acq_pgt_sys_id IS NOT NULL and
+    stg.sls_loc_id IS NOT NULL and
+    stg.mandt IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2353911 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_loc_core_cf_key
+  (
+    dw_loc_id,
+    dw_sys_id,
+    dw_id,
+    pgt_sys_id,
+    loc_id,
+    client_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (692 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_acq_pgt_sys_id,
+    fknk_sls_loc_id,
+    fknk_mandt,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_LK_rowid as dw_id,
+    fknk_acq_pgt_sys_id,
+    fknk_sls_loc_id,
+    fknk_mandt,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_acq_pgt_sys_id,
+    fknk_sls_loc_id,
+    fknk_mandt,
+    ROW_NUMBER() OVER (ORDER BY fk_LK_surr) as fk_LK_rowid
+  from (select distinct
+    fknk_acq_pgt_sys_id,
+    fknk_sls_loc_id,
+    fknk_mandt,
+    fk_LK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P_DIM.gtmd_ddh_loc_core_cf_key) maxpk
+  where tbl.fk_LK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: acq_pgt_sys_id, sls_loc_id, mandt',
+    'VALS: ' || tbl.fknk_acq_pgt_sys_id || '|' || tbl.fknk_sls_loc_id || '|' || tbl.fknk_mandt
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK as tbl
+  where fk_LK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 2 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK
+  from ACQ_P_DIM.gtmd_ddh_loc_core_cf_key
+    set fk_LK_surr = gtmd_ddh_loc_core_cf_key.dw_loc_id
+  where
+    fk_pgt_sls_billing_item_stg_LK.fknk_acq_pgt_sys_id = gtmd_ddh_loc_core_cf_key.pgt_sys_id and
+    fk_pgt_sls_billing_item_stg_LK.fknk_sls_loc_id = gtmd_ddh_loc_core_cf_key.loc_id and
+    fk_pgt_sls_billing_item_stg_LK.fknk_mandt = gtmd_ddh_loc_core_cf_key.client_id
+
+    and gtmd_ddh_loc_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_LK.fk_LK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK;
+
+ *** Delete completed. 404425 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_rte_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_RK_surr,
+    fknk_rte_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_rte_id,
+    stg.rte_id,
+    stg.mandt,
+    stg.acq_pgt_sys_id
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P.gtmd_ddh_rte_core_cf_key as core
+  on
+    stg.rte_id = core.rte_id and
+    stg.mandt = core.client_id and
+    stg.acq_pgt_sys_id = core.pgt_sys_id
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.rte_id IS NOT NULL and
+    stg.mandt IS NOT NULL and
+    stg.acq_pgt_sys_id IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2238075 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_rte_core_cf_key
+  (
+    dw_rte_id,
+    dw_sys_id,
+    dw_id,
+    rte_id,
+    client_id,
+    pgt_sys_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (699 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_rte_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_RK_rowid as dw_id,
+    fknk_rte_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_rte_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    ROW_NUMBER() OVER (ORDER BY fk_RK_surr) as fk_RK_rowid
+  from (select distinct
+    fknk_rte_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fk_RK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P.gtmd_ddh_rte_core_cf_key) maxpk
+  where tbl.fk_RK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: rte_id, mandt, acq_pgt_sys_id',
+    'VALS: ' || tbl.fknk_rte_id || '|' || tbl.fknk_mandt || '|' || tbl.fknk_acq_pgt_sys_id
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK as tbl
+  where fk_RK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK
+  from ACQ_P.gtmd_ddh_rte_core_cf_key
+    set fk_RK_surr = gtmd_ddh_rte_core_cf_key.dw_rte_id
+  where
+    fk_pgt_sls_billing_item_stg_RK.fknk_rte_id = gtmd_ddh_rte_core_cf_key.rte_id and
+    fk_pgt_sls_billing_item_stg_RK.fknk_mandt = gtmd_ddh_rte_core_cf_key.client_id and
+    fk_pgt_sls_billing_item_stg_RK.fknk_acq_pgt_sys_id = gtmd_ddh_rte_core_cf_key.pgt_sys_id
+
+    and gtmd_ddh_rte_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_RK.fk_RK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK;
+
+ *** Delete completed. 413612 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_cust_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_SHIP_CK_surr,
+    fknk_ship_to_cust_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_cust_id,
+    stg.ship_to_cust_id,
+    stg.mandt,
+    stg.acq_pgt_sys_id
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P_DIM.gtmd_ddh_cust_core_cf_key as core
+  on
+    stg.ship_to_cust_id = core.cust_id and
+    stg.mandt = core.client_id and
+    stg.acq_pgt_sys_id = core.pgt_sys_id
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.ship_to_cust_id IS NOT NULL and
+    stg.mandt IS NOT NULL and
+    stg.acq_pgt_sys_id IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2353913 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+  (
+    dw_cust_id,
+    dw_sys_id,
+    dw_id,
+    cust_id,
+    client_id,
+    pgt_sys_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (689 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_ship_to_cust_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_SHIP_CK_rowid as dw_id,
+    fknk_ship_to_cust_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_ship_to_cust_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    ROW_NUMBER() OVER (ORDER BY fk_SHIP_CK_surr) as fk_SHIP_CK_rowid
+  from (select distinct
+    fknk_ship_to_cust_id,
+    fknk_mandt,
+    fknk_acq_pgt_sys_id,
+    fk_SHIP_CK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key) maxpk
+  where tbl.fk_SHIP_CK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: ship_to_cust_id, mandt, acq_pgt_sys_id',
+    'VALS: ' || tbl.fknk_ship_to_cust_id || '|' || tbl.fknk_mandt || '|' || tbl.fknk_acq_pgt_sys_id
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK as tbl
+  where fk_SHIP_CK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK
+  from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+    set fk_SHIP_CK_surr = gtmd_ddh_cust_core_cf_key.dw_cust_id
+  where
+    fk_pgt_sls_billing_item_stg_SHIP_CK.fknk_ship_to_cust_id = gtmd_ddh_cust_core_cf_key.cust_id and
+    fk_pgt_sls_billing_item_stg_SHIP_CK.fknk_mandt = gtmd_ddh_cust_core_cf_key.client_id and
+    fk_pgt_sls_billing_item_stg_SHIP_CK.fknk_acq_pgt_sys_id = gtmd_ddh_cust_core_cf_key.pgt_sys_id
+
+    and gtmd_ddh_cust_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_SHIP_CK.fk_SHIP_CK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the FK surrogate key lookups (validation reporting step might be at end)
+  --
+
+  -- Then, we delete the fk table for this new run
+  delete from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK;
+
+ *** Delete completed. 413329 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We lock the key table to ensure no one is managing surrogate key logic at the same time.
+  -- When we end the transaction, the lock will be given up.
+  --
+  BT;
+
+ *** Begin transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  lock table ACQ_P_DIM.gtmd_ddh_cust_core_cf_key write;
+
+ *** Null statement accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- Then, we insert fk surrogate records into the surrogate table for records in staging
+  insert into ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid,
+    fk_SOLD_CK_surr,
+    fknk_sold_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt
+  )
+  select distinct -- distinct in case dup pks with same fk, helps prevent early failure
+    stg.blg_doc_id,
+    stg.blg_ln_num,
+    stg.mandt,
+    stg.zsysid,
+    core.dw_cust_id,
+    stg.sold_to_cust_id,
+    stg.acq_pgt_sys_id,
+    stg.mandt
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+  left outer join
+    ACQ_P_DIM.gtmd_ddh_cust_core_cf_key as core
+  on
+    stg.sold_to_cust_id = core.cust_id and
+    stg.acq_pgt_sys_id = core.pgt_sys_id and
+    stg.mandt = core.client_id
+
+    and core.prmy_ind = 'Y'
+  where
+  (
+    stg.sold_to_cust_id IS NOT NULL and
+    stg.acq_pgt_sys_id IS NOT NULL and
+    stg.mandt IS NOT NULL
+  ) 
+  ;
+
+ *** Insert completed. 2353776 rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We check for duplicate fks returned.  If this occured, we just simply abort.
+  -- We would prefer not to abort, but the data is just simply too corrupt to continue.
+  -- This can happen for source records that have same pk but different fk.
+  -- This can happen for fk lookup having multi records (so, target table pk was not unique)
+  select
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK
+  group by 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid
+    having count(*) > 1;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT > 0 THEN .QUIT 101; -- sorry, but had to do it
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will create surrogate keys for missing natural keys for table ...
+  -- If this fails, a re-start is OK because DAT_ERR_EVNT is set table, will not create dups
+  -- After creating surrogate keys, we will update the work table with the FKs if need be
+  insert into ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+  (
+    dw_cust_id,
+    dw_sys_id,
+    dw_id,
+    cust_id,
+    pgt_sys_id,
+    client_id,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  )
+  select
+    (689 * 10000000000) + dw_id,
+    dw_sys_id,
+    dw_id,
+    fknk_sold_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    mstr_id,
+    prmy_ind,
+    mssng_ind,
+    del_ind
+  from 
+  (select
+    627 as dw_sys_id,
+    maxpk + fk_SOLD_CK_rowid as dw_id,
+    fknk_sold_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    NULL as mstr_id,
+    'Y' as prmy_ind,
+    'Y' as mssng_ind,
+    'N' as del_ind
+  from
+  (select
+    maxpk.maxpk,
+    fknk_sold_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    ROW_NUMBER() OVER (ORDER BY fk_SOLD_CK_surr) as fk_SOLD_CK_rowid
+  from (select distinct
+    fknk_sold_to_cust_id,
+    fknk_acq_pgt_sys_id,
+    fknk_mandt,
+    fk_SOLD_CK_surr
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK) as tbl
+  cross join
+  (select coalesce(max(dw_id), 0) as maxpk from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key) maxpk
+  where tbl.fk_SOLD_CK_surr is null
+  ) outer_tbl) final_tbl;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We complete the transaction and give up the key lock
+  --
+  ET;
+
+ *** End transaction accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- Then, we insert errors where surrogate keys are not found
+  insert into MYDAT_ERR_EVNT 
+  (
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    ERR_CD, 
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID, 
+    OPTNL_FLD_NM, 
+    OPTNL_FLD_VAL, 
+    ERR_SVRTY, 
+    ERR_DTL_1, 
+    ERR_DTL_2
+  )
+  select 
+    blg_doc_id,
+    blg_ln_num,
+    mandt,
+    zsysid, 
+    'RCD_FK_NO_REF',
+    cast('blg_doc_id|blg_ln_num|mandt|zsysid' as VARCHAR(200)),
+    cast(coalesce(cast(tbl.blg_doc_id as VARCHAR(40)), 'NULL') || '|' || coalesce(cast(tbl.blg_ln_num as VARCHAR(24)), 'NULL') || '|' || coalesce(cast(tbl.mandt as VARCHAR(12)), 'NULL') || '|' || coalesce(cast(tbl.zsysid as VARCHAR(32)), 'NULL') as VARC
+HAR(1000)),
+    
+    null,
+    null,
+    'ERR',
+    'COLS: sold_to_cust_id, acq_pgt_sys_id, mandt',
+    'VALS: ' || tbl.fknk_sold_to_cust_id || '|' || tbl.fknk_acq_pgt_sys_id || '|' || tbl.fknk_mandt
+  from ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK as tbl
+  where fk_SOLD_CK_surr is null;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- If we created some surrogate key records, we need to update our work table with them
+  update ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK
+  from ACQ_P_DIM.gtmd_ddh_cust_core_cf_key
+    set fk_SOLD_CK_surr = gtmd_ddh_cust_core_cf_key.dw_cust_id
+  where
+    fk_pgt_sls_billing_item_stg_SOLD_CK.fknk_sold_to_cust_id = gtmd_ddh_cust_core_cf_key.cust_id and
+    fk_pgt_sls_billing_item_stg_SOLD_CK.fknk_acq_pgt_sys_id = gtmd_ddh_cust_core_cf_key.pgt_sys_id and
+    fk_pgt_sls_billing_item_stg_SOLD_CK.fknk_mandt = gtmd_ddh_cust_core_cf_key.client_id
+
+    and gtmd_ddh_cust_core_cf_key.prmy_ind = 'Y'
+    and fk_pgt_sls_billing_item_stg_SOLD_CK.fk_SOLD_CK_surr is null;
+
+ *** Update completed. No rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will now move data error events into the primary data error event table.
+  insert into ACQ_P_JOB.dat_err_evnt 
+  (
+    STEP_ID,
+    ERR_CD,
+    BTCH_ID,
+    OPTNL_RCRD_NM, 
+    OPTNL_RCRD_ID,
+    OPTNL_FLD_NM,
+    OPTNL_FLD_VAL,
+    ERR_SVRTY,
+    ERR_DTL_1,
+    ERR_DTL_2,
+    TBL_NM
+  )
+  select
+    step_id,
+    err_cd,
+    cur_btch_id as btch_id,
+    optnl_rcrd_nm,
+    optnl_rcrd_id,
+    optnl_fld_nm,
+    optnl_fld_val,
+    err_svrty,
+    err_dtl_1,
+    err_dtl_2,
+    'pgt_sls_billing_item_stg'
+  from MYDAT_ERR_EVNT
+  cross join
+  (
+  select max(actvty.cur_btch_id) as cur_btch_id, max(step.step_id) as step_id
+  from PEPCMN_P.step
+  inner join PEPCMN_P.actvty
+    on actvty.actvty_id = step.actvty_id
+  inner join PEPCMN_P.sys
+    on sys.sys_nm = actvty.sys_nm
+  where
+    sys.sys_nm = 'ACQ' and
+    actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+    step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step;
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  -- We will place error events into the error table.
+  insert into ACQ_P_JOB.pgt_sls_billing_item_err
+  (
+    dw_step_id,
+    dw_btch_id,
+      mandt,
+      acq_pgt_sys_id,
+      acq_mdm_sys_id,
+   autyp,
+      blg_doc_dt,
+      blg_doc_id,
+      blg_ln_num,
+      co_cdv,
+      mtrl_id,
+      mtrl_nm,
+      blg_ln_typ_cdv,
+      sls_loc_id,
+      blg_ln_ctgy_cdv,
+      blg_ln_mtrl_qty,
+      blg_ln_mtrl_uom_cdv,
+      blg_ln_mtrl_bs_uom_qty,
+      blg_ln_mtrl_bs_uom_cdv,
+      blg_ln_mtrl_net_wght_uom_qty,
+      blg_ln_mtrl_grss_wght_uom_qty,
+      blg_ln_mtrl_wght_uom_cdv,
+      blg_ln_mtrl_vol_uom_qty,
+      blg_ln_mtrl_vol_uom_cdv,
+      blg_ln_grss_amt,
+      blg_ln_grss_frgnccy_amt,
+      blg_ln_net_tot_amt,
+      blg_ln_net_tot_frgnccy_amt,
+      blg_ln_tot_tax_amt,
+      blg_ln_tot_tax_frgnccy_amt,
+      blg_ln_tot_dscnt_amt,
+      blg_ln_tot_dscnt_frgnccy_amt,
+      blg_ln_tot_prmtn_amt,
+      blg_ln_tot_prmtn_frgnccy_amt,
+      blg_ln_adjmt_amt,
+      blg_ln_adjmt_frgnccy_amt,
+      blg_ln_net_uprc_amt,
+      blg_ln_net_uprc_frgnccy_amt,
+      blg_ln_grss_uprc_amt,
+      blg_ln_grss_uprc_frgnccy_amt,
+      blg_ln_rsn_cdv,
+      blg_ln_shpmt_ctry_cdv,
+      dlvry_doc_id,
+      dlvry_doc_crt_dt,
+      dlvry_ln_num,
+      sls_offc_loc_id_val,
+      rfrnc_blg_ln_num,
+      btch_id,
+      crtd_by_id,
+      crtd_dt,
+      blg_ln_tax_pct,
+      sls_org_cdv,
+      blg_typ_cdv,
+      cust_ordr_crncy_cdv,
+      blg_crncy_cdv,
+      mwsbp,
+      blg_ln_net_amt,
+      kzwi1,
+      crncy_exch_rt_amt,
+      cust_ordr_uniq_id_val,
+      cust_ordr_ln_num,
+      blg_cndtn_doc_id_val,
+      blg_cndtn_typ_cdv,
+      ordr_crt_dt,
+      ordr_crt_tm,
+      rte_id,
+      ship_to_cust_id,
+      bill_to_cust_id,
+      sold_to_cust_id,
+      zsysid,
+      zdel_ind,
+      ztimestamp,
+      blg_ln_rtnd_amt,
+      blg_net_amt,
+      land1,
+      fkdat_ana,
+      kzwi3,
+      kzwi4,
+      kzwi5,
+      kzwi6,
+      uprc,
+      ean11,
+      fbuda,
+      kokrs,
+      kostl,
+      kursk,
+      kursk_dat,
+      kvgr5,
+      matkl,
+      matwa,
+      posar,
+      prodh,
+      prsdt,
+      spara,
+      spart,
+      stadat,
+      vkgrp,
+      bonba,
+      kondm,
+      prctr,
+      ps_psp_pnr,
+      shkzg,
+      upmat,
+      vgbel,
+      vgpos,
+   vgtyp,
+      knuma,
+      dw_rownum,
+      kzwi2,
+      reason_code,
+      dstrbtn_chnl_cdv,
+      erzet_vbrp,
+      knumv_ana,
+   sfakn,
+   vbrk__pre_fkart,
+   vbrk__pre_vbeln,
+      vbak__auart,
+   vbak__zz1_hh_no_sdh,
+   cust_po_typ_cdv
+
+  )
+  select 
+    this_step.mystep_id,
+    this_step.mybtch_id,
+      tbl.mandt,
+      tbl.acq_pgt_sys_id,
+      tbl.acq_mdm_sys_id,
+   tbl.autyp,
+      tbl.blg_doc_dt,
+      tbl.blg_doc_id,
+      tbl.blg_ln_num,
+      tbl.co_cdv,
+      tbl.mtrl_id,
+      tbl.mtrl_nm,
+      tbl.blg_ln_typ_cdv,
+      tbl.sls_loc_id,
+      tbl.blg_ln_ctgy_cdv,
+      tbl.blg_ln_mtrl_qty,
+      tbl.blg_ln_mtrl_uom_cdv,
+      tbl.blg_ln_mtrl_bs_uom_qty,
+      tbl.blg_ln_mtrl_bs_uom_cdv,
+      tbl.blg_ln_mtrl_net_wght_uom_qty,
+      tbl.blg_ln_mtrl_grss_wght_uom_qty,
+      tbl.blg_ln_mtrl_wght_uom_cdv,
+      tbl.blg_ln_mtrl_vol_uom_qty,
+      tbl.blg_ln_mtrl_vol_uom_cdv,
+      tbl.blg_ln_grss_amt,
+      tbl.blg_ln_grss_frgnccy_amt,
+      tbl.blg_ln_net_tot_amt,
+      tbl.blg_ln_net_tot_frgnccy_amt,
+      tbl.blg_ln_tot_tax_amt,
+      tbl.blg_ln_tot_tax_frgnccy_amt,
+      tbl.blg_ln_tot_dscnt_amt,
+      tbl.blg_ln_tot_dscnt_frgnccy_amt,
+      tbl.blg_ln_tot_prmtn_amt,
+      tbl.blg_ln_tot_prmtn_frgnccy_amt,
+      tbl.blg_ln_adjmt_amt,
+      tbl.blg_ln_adjmt_frgnccy_amt,
+      tbl.blg_ln_net_uprc_amt,
+      tbl.blg_ln_net_uprc_frgnccy_amt,
+      tbl.blg_ln_grss_uprc_amt,
+      tbl.blg_ln_grss_uprc_frgnccy_amt,
+      tbl.blg_ln_rsn_cdv,
+      tbl.blg_ln_shpmt_ctry_cdv,
+      tbl.dlvry_doc_id,
+      tbl.dlvry_doc_crt_dt,
+      tbl.dlvry_ln_num,
+      tbl.sls_offc_loc_id_val,
+      tbl.rfrnc_blg_ln_num,
+      tbl.btch_id,
+      tbl.crtd_by_id,
+      tbl.crtd_dt,
+      tbl.blg_ln_tax_pct,
+      tbl.sls_org_cdv,
+      tbl.blg_typ_cdv,
+      tbl.cust_ordr_crncy_cdv,
+      tbl.blg_crncy_cdv,
+      tbl.mwsbp,
+      tbl.blg_ln_net_amt,
+      tbl.kzwi1,
+      tbl.crncy_exch_rt_amt,
+      tbl.cust_ordr_uniq_id_val,
+      tbl.cust_ordr_ln_num,
+      tbl.blg_cndtn_doc_id_val,
+      tbl.blg_cndtn_typ_cdv,
+      tbl.ordr_crt_dt,
+      tbl.ordr_crt_tm,
+      tbl.rte_id,
+      tbl.ship_to_cust_id,
+      tbl.bill_to_cust_id,
+      tbl.sold_to_cust_id,
+      tbl.zsysid,
+      tbl.zdel_ind,
+      tbl.ztimestamp,
+      tbl.blg_ln_rtnd_amt,
+      tbl.blg_net_amt,
+      tbl.land1,
+      tbl.fkdat_ana,
+      tbl.kzwi3,
+      tbl.kzwi4,
+      tbl.kzwi5,
+      tbl.kzwi6,
+      tbl.uprc,
+      tbl.ean11,
+      tbl.fbuda,
+      tbl.kokrs,
+      tbl.kostl,
+      tbl.kursk,
+      tbl.kursk_dat,
+      tbl.kvgr5,
+      tbl.matkl,
+      tbl.matwa,
+      tbl.posar,
+      tbl.prodh,
+      tbl.prsdt,
+      tbl.spara,
+      tbl.spart,
+      tbl.stadat,
+      tbl.vkgrp,
+      tbl.bonba,
+      tbl.kondm,
+      tbl.prctr,
+      tbl.ps_psp_pnr,
+      tbl.shkzg,
+      tbl.upmat,
+      tbl.vgbel,
+      tbl.vgpos,
+   tbl.vgtyp,
+      tbl.knuma,
+      tbl.dw_rownum,
+      tbl.kzwi2,    
+      tbl.reason_code,
+      tbl.dstrbtn_chnl_cdv,
+      tbl.erzet_vbrp,
+      tbl.knumv_ana,
+   tbl.sfakn,
+   tbl.vbrk__pre_fkart,
+   tbl.vbrk__pre_vbeln,
+      tbl.vbak__auart,
+   tbl.vbak__zz1_hh_no_sdh,
+   tbl.cust_po_typ_cdv
+
+  from ACQ_P_STAGE.pgt_sls_billing_item_stg as tbl
+  left outer join
+  (
+    select max(actvty.cur_btch_id) as mybtch_id, max(step.step_id) as mystep_id
+    from PEPCMN_P.step
+    inner join PEPCMN_P.actvty
+      on actvty.actvty_id = step.actvty_id
+    inner join PEPCMN_P.sys
+      on sys.sys_nm = actvty.sys_nm
+    where
+      sys.sys_nm = 'ACQ' and
+      actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+      step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step on 1=1
+  inner join (select distinct blg_doc_id, blg_ln_num, mandt, zsysid, ERR_SVRTY from MYDAT_ERR_EVNT) errtbl
+    on 
+      coalesce(cast(errtbl.blg_doc_id as VARCHAR(40)),'~MEM~PEP~') = coalesce(cast(tbl.blg_doc_id as VARCHAR(40)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.blg_ln_num as VARCHAR(24)),'~MEM~PEP~') = coalesce(cast(tbl.blg_ln_num as VARCHAR(24)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.mandt as VARCHAR(12)),'~MEM~PEP~') = coalesce(cast(tbl.mandt as VARCHAR(12)),'~MEM~PEP~') and
+      coalesce(cast(errtbl.zsysid as VARCHAR(32)),'~MEM~PEP~') = coalesce(cast(tbl.zsysid as VARCHAR(32)),'~MEM~PEP~')
+
+  where errtbl.ERR_SVRTY = 'CRIT';
+
+ *** Insert completed. No rows added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+  delete ACQ_P_JOB.pgt_sls_billing_item_err
+  where dw_last_updt_dt < (DATE - 30);
+
+ *** Delete completed. No rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+  -- We will now capture some basic statistics in case the process wants to
+  -- handle specific data error events or have specific thresholds in place
+  .export report file=/etlapps/prds2/acq/sales/tmp/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD.val
+ *** To reset export, type .EXPORT RESET
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  select
+    err_cd || '|' ||
+    err_svrty || '|' ||
+    cast(total as varchar(100))  (TITLE '')
+  from
+  (select 
+    err_cd, 
+    err_svrty, 
+    count(*) as total
+  from MYDAT_ERR_EVNT
+  group by 1,2 
+  UNION ALL
+  select 
+    'ALL',
+    err_svrty, 
+    count(*) as total
+  from MYDAT_ERR_EVNT
+  group by 2) tbl;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .export reset
+ *** Output returned to console.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing load task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:32:20 2025 PID: 30394
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 10 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=load;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:32:30-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+
+
+
+  -- We insert the source table into the core table using natural fact pk
+  merge into ACQ_P_CORE.pgt_sls_billing_item
+  using (
+  select 
+    stg.*
+    ,mystep_id
+    ,mybtch_id
+
+    ,fk_pgt_sls_billing_item_stg_BILL_CK.fk_BILL_CK_surr
+
+    ,fk_pgt_sls_billing_item_stg_IK.fk_IK_surr
+
+    ,fk_pgt_sls_billing_item_stg_LK.fk_LK_surr
+
+    ,fk_pgt_sls_billing_item_stg_RK.fk_RK_surr
+
+    ,fk_pgt_sls_billing_item_stg_SHIP_CK.fk_SHIP_CK_surr
+
+    ,fk_pgt_sls_billing_item_stg_SOLD_CK.fk_SOLD_CK_surr
+
+  from 
+    ACQ_P_WORK.pgt_sls_billing_item_stg_cln as stg
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_BILL_CK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_BILL_CK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_BILL_CK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_BILL_CK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_BILL_CK.zsysid
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_IK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_IK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_IK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_IK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_IK.zsysid
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_LK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_LK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_LK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_LK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_LK.zsysid
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_RK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_RK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_RK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_RK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_RK.zsysid
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SHIP_CK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_SHIP_CK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_SHIP_CK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_SHIP_CK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_SHIP_CK.zsysid
+
+  left outer join ACQ_P_WORK.fk_pgt_sls_billing_item_stg_SOLD_CK on
+    stg.blg_doc_id = fk_pgt_sls_billing_item_stg_SOLD_CK.blg_doc_id and
+    stg.blg_ln_num = fk_pgt_sls_billing_item_stg_SOLD_CK.blg_ln_num and
+    stg.mandt = fk_pgt_sls_billing_item_stg_SOLD_CK.mandt and
+    stg.zsysid = fk_pgt_sls_billing_item_stg_SOLD_CK.zsysid
+
+  left outer join
+  (
+    select max(actvty.cur_btch_id) as mybtch_id, max(step.step_id) as mystep_id
+    from PEPCMN_P.step
+    inner join PEPCMN_P.actvty
+      on actvty.actvty_id = step.actvty_id
+    inner join PEPCMN_P.sys
+      on sys.sys_nm = actvty.sys_nm
+    where
+      sys.sys_nm = 'ACQ' and
+      actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+      step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step on 1=1
+  
+  ) tbl
+  on 
+    (
+      pgt_sls_billing_item.mandt = tbl.mandt and
+      pgt_sls_billing_item.zsysid = tbl.zsysid and
+      pgt_sls_billing_item.blg_doc_id = tbl.blg_doc_id and
+      pgt_sls_billing_item.blg_ln_num = tbl.blg_ln_num
+
+      -- and dw_sys_id = 702
+    )
+  when matched then
+    update set 
+      dw_sys_id = 702,
+      dw_last_updt_dtm = CURRENT_TIMESTAMP(0),
+      dw_step_id = tbl.mystep_id,
+      dw_btch_id = tbl.mybtch_id,
+      acq_mdm_sys_id = tbl.acq_mdm_sys_id,
+      acq_pgt_sys_id = tbl.acq_pgt_sys_id,
+   autyp = tbl.autyp,
+      bill_to_cust_id = tbl.bill_to_cust_id,
+      blg_cndtn_doc_id_val = tbl.blg_cndtn_doc_id_val,
+      blg_cndtn_typ_cdv = tbl.blg_cndtn_typ_cdv,
+      blg_crncy_cdv = tbl.blg_crncy_cdv,
+      blg_doc_dt = tbl.blg_doc_dt,
+      blg_ln_adjmt_amt = tbl.blg_ln_adjmt_amt,
+      blg_ln_adjmt_frgnccy_amt = tbl.blg_ln_adjmt_frgnccy_amt,
+      blg_ln_ctgy_cdv = tbl.blg_ln_ctgy_cdv,
+      blg_ln_grss_amt = tbl.blg_ln_grss_amt,
+      blg_ln_grss_frgnccy_amt = tbl.blg_ln_grss_frgnccy_amt,
+      blg_ln_grss_uprc_amt = tbl.blg_ln_grss_uprc_amt,
+      blg_ln_grss_uprc_frgnccy_amt = tbl.blg_ln_grss_uprc_frgnccy_amt,
+      blg_ln_mtrl_bs_uom_cdv = tbl.blg_ln_mtrl_bs_uom_cdv,
+      blg_ln_mtrl_bs_uom_qty = tbl.blg_ln_mtrl_bs_uom_qty,
+      blg_ln_mtrl_grss_wght_uom_qty = tbl.blg_ln_mtrl_grss_wght_uom_qty,
+      blg_ln_mtrl_net_wght_uom_qty = tbl.blg_ln_mtrl_net_wght_uom_qty,
+      blg_ln_mtrl_qty = tbl.blg_ln_mtrl_qty,
+      blg_ln_mtrl_uom_cdv = tbl.blg_ln_mtrl_uom_cdv,
+      blg_ln_mtrl_vol_uom_cdv = tbl.blg_ln_mtrl_vol_uom_cdv,
+      blg_ln_mtrl_vol_uom_qty = tbl.blg_ln_mtrl_vol_uom_qty,
+      blg_ln_mtrl_wght_uom_cdv = tbl.blg_ln_mtrl_wght_uom_cdv,
+      blg_ln_net_amt = tbl.blg_ln_net_amt,
+      blg_ln_net_tot_amt = tbl.blg_ln_net_tot_amt,
+      blg_ln_net_tot_frgnccy_amt = tbl.blg_ln_net_tot_frgnccy_amt,
+      blg_ln_net_uprc_amt = tbl.blg_ln_net_uprc_amt,
+      blg_ln_net_uprc_frgnccy_amt = tbl.blg_ln_net_uprc_frgnccy_amt,
+      blg_ln_rsn_cdv = tbl.blg_ln_rsn_cdv,
+      blg_ln_rtnd_amt = tbl.blg_ln_rtnd_amt,
+      blg_ln_shpmt_ctry_cdv = tbl.blg_ln_shpmt_ctry_cdv,
+      blg_ln_tax_pct = tbl.blg_ln_tax_pct,
+      blg_ln_tot_dscnt_amt = tbl.blg_ln_tot_dscnt_amt,
+      blg_ln_tot_dscnt_frgnccy_amt = tbl.blg_ln_tot_dscnt_frgnccy_amt,
+      blg_ln_tot_prmtn_amt = tbl.blg_ln_tot_prmtn_amt,
+      blg_ln_tot_prmtn_frgnccy_amt = tbl.blg_ln_tot_prmtn_frgnccy_amt,
+      blg_ln_tot_tax_amt = tbl.blg_ln_tot_tax_amt,
+      blg_ln_tot_tax_frgnccy_amt = tbl.blg_ln_tot_tax_frgnccy_amt,
+      blg_ln_typ_cdv = tbl.blg_ln_typ_cdv,
+      blg_net_amt = tbl.blg_net_amt,
+      blg_typ_cdv = tbl.blg_typ_cdv,
+      bonba = tbl.bonba,
+      btch_id = tbl.btch_id,
+      co_cdv = tbl.co_cdv,
+      crncy_exch_rt_amt = tbl.crncy_exch_rt_amt,
+      crtd_by_id = tbl.crtd_by_id,
+      crtd_dt = tbl.crtd_dt,
+      cust_ordr_crncy_cdv = tbl.cust_ordr_crncy_cdv,
+      cust_ordr_ln_num = tbl.cust_ordr_ln_num,
+      cust_ordr_uniq_id_val = tbl.cust_ordr_uniq_id_val,
+   cust_po_typ_cdv = tbl.cust_po_typ_cdv,
+      dlvry_doc_crt_dt = tbl.dlvry_doc_crt_dt,
+      dlvry_doc_id = tbl.dlvry_doc_id,
+      dlvry_ln_num = tbl.dlvry_ln_num,
+      dstrbtn_chnl_cdv = tbl.dstrbtn_chnl_cdv,
+      dw_rownum = tbl.dw_rownum,
+      ean11 = tbl.ean11,
+      erzet_vbrp = tbl.erzet_vbrp,
+      fbuda = tbl.fbuda,
+      fkdat_ana = tbl.fkdat_ana,
+      knuma = tbl.knuma,
+      knumv_ana = tbl.knumv_ana,
+      kokrs = tbl.kokrs,
+      kondm = tbl.kondm,
+      kostl = tbl.kostl,
+      kursk = tbl.kursk,
+      kursk_dat = tbl.kursk_dat,
+      kvgr5 = tbl.kvgr5,
+      kzwi1 = tbl.kzwi1,
+      kzwi2 = tbl.kzwi2,
+      kzwi3 = tbl.kzwi3,
+      kzwi4 = tbl.kzwi4,
+      kzwi5 = tbl.kzwi5,
+      kzwi6 = tbl.kzwi6,
+      land1 = tbl.land1,
+      matkl = tbl.matkl,
+      matwa = tbl.matwa,
+      mtrl_id = tbl.mtrl_id,
+      mtrl_nm = tbl.mtrl_nm,
+      mwsbp = tbl.mwsbp,
+      ordr_crt_dt = tbl.ordr_crt_dt,
+      ordr_crt_tm = tbl.ordr_crt_tm,
+      posar = tbl.posar,
+      prctr = tbl.prctr,
+      prodh = tbl.prodh,
+      prsdt = tbl.prsdt,
+      ps_psp_pnr = tbl.ps_psp_pnr,
+      reason_code = tbl.reason_code,
+      rfrnc_blg_ln_num = tbl.rfrnc_blg_ln_num,
+      rte_id = tbl.rte_id,
+   sfakn = tbl.sfakn,
+      ship_to_cust_id = tbl.ship_to_cust_id,
+      shkzg = tbl.shkzg,
+      sls_loc_id = tbl.sls_loc_id,
+      sls_offc_loc_id_val = tbl.sls_offc_loc_id_val,
+      sls_org_cdv = tbl.sls_org_cdv,
+      sold_to_cust_id = tbl.sold_to_cust_id,
+      spara = tbl.spara,
+      spart = tbl.spart,
+      stadat = tbl.stadat,
+      upmat = tbl.upmat,
+      uprc = tbl.uprc,
+      vbak__auart  = tbl.vbak__auart,
+   vbak__zz1_hh_no_sdh = tbl.vbak__zz1_hh_no_sdh,
+   vbrk__pre_fkart = tbl.vbrk__pre_fkart,
+   vbrk__pre_vbeln = tbl.vbrk__pre_vbeln,
+      vgbel = tbl.vgbel,
+      vgpos = tbl.vgpos,
+      vkgrp = tbl.vkgrp,
+   vgtyp = tbl.vgtyp,
+      zdel_ind = tbl.zdel_ind,
+      ztimestamp = tbl.ztimestamp,
+
+      dw_cust_id_bill_to_cust_id = tbl.fk_bill_ck_surr,
+      dw_item_id = tbl.fk_ik_surr,
+      dw_loc_id = tbl.fk_lk_surr,
+      dw_rte_id = tbl.fk_rk_surr,
+      dw_cust_id_ship_to_cust_id = tbl.fk_ship_ck_surr,
+      dw_cust_id_sold_to_cust_id = tbl.fk_sold_ck_surr
+  when not matched then
+    insert 
+    (
+      dw_sys_id,
+      dw_step_id,
+      dw_btch_id,
+      mandt,
+      zsysid,
+      blg_doc_id,
+      blg_ln_num
+,
+      acq_mdm_sys_id,
+      acq_pgt_sys_id,
+   autyp,
+      bill_to_cust_id,
+      blg_cndtn_doc_id_val,
+      blg_cndtn_typ_cdv,
+      blg_crncy_cdv,
+      blg_doc_dt,
+      blg_ln_adjmt_amt,
+      blg_ln_adjmt_frgnccy_amt,
+      blg_ln_ctgy_cdv,
+      blg_ln_grss_amt,
+      blg_ln_grss_frgnccy_amt,
+      blg_ln_grss_uprc_amt,
+      blg_ln_grss_uprc_frgnccy_amt,
+      blg_ln_mtrl_bs_uom_cdv,
+      blg_ln_mtrl_bs_uom_qty,
+      blg_ln_mtrl_grss_wght_uom_qty,
+      blg_ln_mtrl_net_wght_uom_qty,
+      blg_ln_mtrl_qty,
+      blg_ln_mtrl_uom_cdv,
+      blg_ln_mtrl_vol_uom_cdv,
+      blg_ln_mtrl_vol_uom_qty,
+      blg_ln_mtrl_wght_uom_cdv,
+      blg_ln_net_amt,
+      blg_ln_net_tot_amt,
+      blg_ln_net_tot_frgnccy_amt,
+      blg_ln_net_uprc_amt,
+      blg_ln_net_uprc_frgnccy_amt,
+      blg_ln_rsn_cdv,
+      blg_ln_rtnd_amt,
+      blg_ln_shpmt_ctry_cdv,
+      blg_ln_tax_pct,
+      blg_ln_tot_dscnt_amt,
+      blg_ln_tot_dscnt_frgnccy_amt,
+      blg_ln_tot_prmtn_amt,
+      blg_ln_tot_prmtn_frgnccy_amt,
+      blg_ln_tot_tax_amt,
+      blg_ln_tot_tax_frgnccy_amt,
+      blg_ln_typ_cdv,
+      blg_net_amt,
+      blg_typ_cdv,
+      bonba,
+      btch_id,
+      co_cdv,
+      crncy_exch_rt_amt,
+      crtd_by_id,
+      crtd_dt,
+      cust_ordr_crncy_cdv,
+      cust_ordr_ln_num,
+      cust_ordr_uniq_id_val,
+   cust_po_typ_cdv,
+      dlvry_doc_crt_dt,
+      dlvry_doc_id,
+      dlvry_ln_num,
+      dstrbtn_chnl_cdv,
+      dw_rownum,
+      ean11,
+      erzet_vbrp,
+      fbuda,
+      fkdat_ana,
+      knuma,
+      knumv_ana,
+      kokrs,
+      kondm,
+      kostl,
+      kursk,
+      kursk_dat,
+      kvgr5,
+      kzwi1,
+      kzwi2,
+      kzwi3,
+      kzwi4,
+      kzwi5,
+      kzwi6,
+      land1,
+      matkl,
+      matwa,
+      mtrl_id,
+      mtrl_nm,
+      mwsbp,
+      ordr_crt_dt,
+      ordr_crt_tm,
+      posar,
+      prctr,
+      prodh,
+      prsdt,
+      ps_psp_pnr,
+      reason_code,
+      rfrnc_blg_ln_num,
+      rte_id,
+   sfakn,
+      ship_to_cust_id,
+      shkzg,
+      sls_loc_id,
+      sls_offc_loc_id_val,
+      sls_org_cdv,
+      sold_to_cust_id,
+      spara,
+      spart,
+      stadat,
+      upmat,
+      uprc,
+      vbak__auart,
+   vbak__zz1_hh_no_sdh,
+   vbrk__pre_fkart,
+   vbrk__pre_vbeln,
+      vgbel,
+      vgpos,
+   vgtyp,
+      vkgrp,
+      zdel_ind,
+      ztimestamp,
+
+      dw_cust_id_bill_to_cust_id,
+      dw_item_id,
+      dw_loc_id,
+      dw_rte_id,
+      dw_cust_id_ship_to_cust_id,
+      dw_cust_id_sold_to_cust_id
+    )
+    values 
+    (
+      702,
+      mystep_id,
+      mybtch_id,
+      tbl.mandt,
+      tbl.zsysid,
+      tbl.blg_doc_id,
+      tbl.blg_ln_num
+,
+      tbl.acq_mdm_sys_id,
+      tbl.acq_pgt_sys_id,
+   tbl.autyp,
+      tbl.bill_to_cust_id,
+      tbl.blg_cndtn_doc_id_val,
+      tbl.blg_cndtn_typ_cdv,
+      tbl.blg_crncy_cdv,
+      tbl.blg_doc_dt,
+      tbl.blg_ln_adjmt_amt,
+      tbl.blg_ln_adjmt_frgnccy_amt,
+      tbl.blg_ln_ctgy_cdv,
+      tbl.blg_ln_grss_amt,
+      tbl.blg_ln_grss_frgnccy_amt,
+      tbl.blg_ln_grss_uprc_amt,
+      tbl.blg_ln_grss_uprc_frgnccy_amt,
+      tbl.blg_ln_mtrl_bs_uom_cdv,
+      tbl.blg_ln_mtrl_bs_uom_qty,
+      tbl.blg_ln_mtrl_grss_wght_uom_qty,
+      tbl.blg_ln_mtrl_net_wght_uom_qty,
+      tbl.blg_ln_mtrl_qty,
+      tbl.blg_ln_mtrl_uom_cdv,
+      tbl.blg_ln_mtrl_vol_uom_cdv,
+      tbl.blg_ln_mtrl_vol_uom_qty,
+      tbl.blg_ln_mtrl_wght_uom_cdv,
+      tbl.blg_ln_net_amt,
+      tbl.blg_ln_net_tot_amt,
+      tbl.blg_ln_net_tot_frgnccy_amt,
+      tbl.blg_ln_net_uprc_amt,
+      tbl.blg_ln_net_uprc_frgnccy_amt,
+      tbl.blg_ln_rsn_cdv,
+      tbl.blg_ln_rtnd_amt,
+      tbl.blg_ln_shpmt_ctry_cdv,
+      tbl.blg_ln_tax_pct,
+      tbl.blg_ln_tot_dscnt_amt,
+      tbl.blg_ln_tot_dscnt_frgnccy_amt,
+      tbl.blg_ln_tot_prmtn_amt,
+      tbl.blg_ln_tot_prmtn_frgnccy_amt,
+      tbl.blg_ln_tot_tax_amt,
+      tbl.blg_ln_tot_tax_frgnccy_amt,
+      tbl.blg_ln_typ_cdv,
+      tbl.blg_net_amt,
+      tbl.blg_typ_cdv,
+      tbl.bonba,
+      tbl.btch_id,
+      tbl.co_cdv,
+      tbl.crncy_exch_rt_amt,
+      tbl.crtd_by_id,
+      tbl.crtd_dt,
+      tbl.cust_ordr_crncy_cdv,
+      tbl.cust_ordr_ln_num,
+      tbl.cust_ordr_uniq_id_val,
+   tbl.cust_po_typ_cdv,
+      tbl.dlvry_doc_crt_dt,
+      tbl.dlvry_doc_id,
+      tbl.dlvry_ln_num,
+      tbl.dstrbtn_chnl_cdv,
+      tbl.dw_rownum,
+      tbl.ean11,
+      tbl.erzet_vbrp,
+      tbl.fbuda,
+      tbl.fkdat_ana,
+      tbl.knuma,
+      tbl.knumv_ana,
+      tbl.kokrs,
+      tbl.kondm,
+      tbl.kostl,
+      tbl.kursk,
+      tbl.kursk_dat,
+      tbl.kvgr5,
+      tbl.kzwi1,
+      tbl.kzwi2,
+      tbl.kzwi3,
+      tbl.kzwi4,
+      tbl.kzwi5,
+      tbl.kzwi6,
+      tbl.land1,
+      tbl.matkl,
+      tbl.matwa,
+      tbl.mtrl_id,
+      tbl.mtrl_nm,
+      tbl.mwsbp,
+      tbl.ordr_crt_dt,
+      tbl.ordr_crt_tm,
+      tbl.posar,
+      tbl.prctr,
+      tbl.prodh,
+      tbl.prsdt,
+      tbl.ps_psp_pnr,
+      tbl.reason_code,
+      tbl.rfrnc_blg_ln_num,
+      tbl.rte_id,
+   tbl.sfakn,
+      tbl.ship_to_cust_id,
+      tbl.shkzg,
+      tbl.sls_loc_id,
+      tbl.sls_offc_loc_id_val,
+      tbl.sls_org_cdv,
+      tbl.sold_to_cust_id,
+      tbl.spara,
+      tbl.spart,
+      tbl.stadat,
+      tbl.upmat,
+      tbl.uprc,
+      tbl.vbak__auart,
+   tbl.vbak__zz1_hh_no_sdh,
+   tbl.vbrk__pre_fkart,
+   tbl.vbrk__pre_vbeln,
+      tbl.vgbel,
+      tbl.vgpos,
+   tbl.vgtyp,
+      tbl.vkgrp,
+      tbl.zdel_ind,
+      tbl.ztimestamp,
+
+      tbl.fk_bill_ck_surr,
+      tbl.fk_ik_surr,
+      tbl.fk_lk_surr,
+      tbl.fk_rk_surr,
+      tbl.fk_ship_ck_surr,
+      tbl.fk_sold_ck_surr
+    );
+
+ *** Merge completed. 2353913 rows affected.
+     1599877 rows inserted, 754036 rows updated, no rows deleted.
+ *** Total elapsed time was 18 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+DEL FROM ACQ_P_CORE.PGT_SLS_BILLING_ITEM_INGESTION_SUMMARY;
+
+ *** Delete completed. 2652 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+INSERT INTO ACQ_P_CORE.PGT_SLS_BILLING_ITEM_INGESTION_SUMMARY
+(
+ invoicecreateddate
+,invoicecreateddatehr
+,invoicedate
+,gross_amt
+,netamt
+)
+SELECT CAST(DW_LAST_UPDT_DTm AS varchar(10)) AS invoicecreateddate
+   ,CAST((DW_LAST_UPDT_DTm) AS VARCHAR(13)) AS invoicecreateddatehr
+   ,BLG_DOC_DT AS invoicedate
+   ,SUM(KZWI1) AS gross_amt
+   ,SUM(BLG_LN_NET_AMT) AS netamt
+FROM ACQ_P_CORE.PGT_SLS_BILLING_ITEM
+WHERE SLS_ORG_CDV IN ('US29') 
+AND ZSYSID = 'A1P' 
+AND MANDT = '500' 
+AND SPARA = 'Z1' 
+AND DSTRBTN_CHNL_CDV = 'Z1' 
+AND (   BLG_TYP_CDV NOT IN ('ZF5', 'ZF8', 'ZF9', 'ZFX', 'ZG2', 'ZL2', 'ZG3', 'ZL3') 
+     OR (BLG_TYP_CDV IN ('ZG2', 'ZL2', 'ZG3', 'ZL3') AND CRTD_BY_ID NOT IN ('BTCCTM01'))
+    ) 
+AND (   BLG_LN_CTGY_CDV NOT IN ('ZBHA', 'ZBHS') 
+     OR BLG_LN_CTGY_CDV IS NULL) 
+AND (   VBAK__AUART NOT IN ('ZIC') 
+     OR VBAK__AUART IS NULL) 
+AND ORDR_CRT_DT >= CURRENT_DATE - 30
+AND CUST_ORDR_UNIQ_ID_VAL IS NOT NULL
+GROUP BY CAST(DW_LAST_UPDT_DTm as varchar(10))
+        ,CAST((DW_LAST_UPDT_DTm) AS VARCHAR(13))
+        ,BLG_DOC_DT;
+
+ *** Insert completed. 2682 rows added. 
+ *** Total elapsed time was 21 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+DEL FROM ACQ_P_CORE.PGT_SLS_BILLING_ITEM_SUMMARY;
+
+ *** Delete completed. 2741 rows removed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+INSERT INTO ACQ_P_CORE.PGT_SLS_BILLING_ITEM_SUMMARY
+(
+ invoicecreateddate
+,invoicecreateddatehr
+,invoicedate
+,grossamount
+,netamount
+)
+SELECT 
+    LEFT(CAST((INV_CRT_HR) AS VARCHAR(50)), 10) AS invoicecreateddate,
+    LEFT(CAST((INV_CRT_HR) AS VARCHAR(50)), 13) AS invoicecreateddatehr,
+    BLG_DOC_DT AS invoicedate,
+    SUM(gross_amt) AS grossamount,
+    SUM(netamt) AS netamount
+FROM(SELECT CAST(TO_CHAR(ORDR_CRT_DT, 'YYYY-MM-DD') || ' ' ||LEFT(ORDR_CRT_TM, 2) || ':' ||SUBSTR(ORDR_CRT_TM, 3, 2) || ':' ||RIGHT(ORDR_CRT_TM, 2) AS TIMESTAMP(0)) AS UTC_TIMESTAMP        
+           ,UTC_TIMESTAMP + CAST (EXTRACT (TIMEZONE_HOUR FROM CAST(UTC_TIMESTAMP as TIMESTAMP(0) WITH TIME ZONE)) as INTERVAL HOUR) AS INV_CRT_HR
+           ,ORDR_CRT_TM
+           ,BLG_DOC_DT
+           ,SUM(KZWI1) AS gross_amt
+           ,SUM(BLG_LN_NET_AMT) AS netamt
+      FROM ACQ_P_CORE.PGT_SLS_BILLING_ITEM
+     WHERE SLS_ORG_CDV IN ('US29') 
+    AND ZSYSID = 'A1P' 
+    AND MANDT = '500' 
+    AND SPARA = 'Z1' 
+    AND DSTRBTN_CHNL_CDV = 'Z1' 
+    AND (   BLG_TYP_CDV NOT IN ('ZF5', 'ZF8', 'ZF9', 'ZFX', 'ZG2', 'ZL2', 'ZG3', 'ZL3') 
+         OR (BLG_TYP_CDV IN ('ZG2', 'ZL2', 'ZG3', 'ZL3') AND CRTD_BY_ID NOT IN ('BTCCTM01'))) 
+    AND (   BLG_LN_CTGY_CDV NOT IN ('ZBHA', 'ZBHS') 
+         OR BLG_LN_CTGY_CDV IS NULL) 
+    AND (   VBAK__AUART NOT IN ('ZIC') 
+         OR VBAK__AUART IS NULL) 
+    AND ORDR_CRT_DT >= CURRENT_DATE - 30
+       AND CUST_ORDR_UNIQ_ID_VAL IS NOT NULL 
+    GROUP BY ORDR_CRT_DT, ORDR_CRT_TM, BLG_DOC_DT, BLG_DOC_ID, BLG_LN_NUM
+    ) AS tmp
+GROUP BY 
+    LEFT(CAST((INV_CRT_HR) AS VARCHAR(50)), 13),
+    BLG_DOC_DT,
+    LEFT(CAST((INV_CRT_HR) AS VARCHAR(50)), 10);
+
+ *** Insert completed. 2769 rows added. 
+ *** Total elapsed time was 8 seconds.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing loadstats task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:33:18 2025 PID: 7174
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 5 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=loadmetrics;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:33:23-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- insert the load statistics that are meant to occur (actually occurs before the load)
+  insert into PEPCMN_P_DATA.LD_STATCS (
+    step_id, 
+    btch_id, 
+    db, 
+    tbl, 
+    stage_tot, 
+    clean_tot, 
+    insrt_tot, 
+    updt_tot, 
+    del_tot) 
+  select 
+    step_id, 
+    cur_btch_id, 
+    databasename, 
+    tablename, 
+    stg_total, 
+    cln_total,
+    NULL,
+    NULL,
+    NULL
+  from 
+  (
+  select 
+    this_step.step_id, 
+    this_step.cur_btch_id, 
+    databasename, 
+    tablename, 
+    tbl1.*
+
+    ,tbl2.*
+
+  from dbc.tablesv 
+  cross join
+  (
+    select max(actvty.cur_btch_id) as cur_btch_id, max(step.step_id) as step_id
+    from PEPCMN_P.step
+    inner join PEPCMN_P.actvty
+      on actvty.actvty_id = step.actvty_id
+    inner join PEPCMN_P.sys
+      on sys.sys_nm = actvty.sys_nm
+    where
+      sys.sys_nm = 'ACQ' and
+      actvty_nm = 'PGT_SLS_BILLING_ITEM' and
+      step_nm = 'PGT_SLS_BILLING_ITEM_LOAD'
+  ) this_step
+  cross join 
+  -- STAGE TABLE TOTAL
+  (select count(*) as stg_total from ACQ_P_STAGE.pgt_sls_billing_item_stg) tbl1
+
+  cross join 
+  -- CLEAN TABLE TOTAL
+  (select count(*) as cln_total from ACQ_P_WORK.pgt_sls_billing_item_stg_cln) tbl2
+
+  where LOWER(databasename)=LOWER('ACQ_P_CORE') and 
+        LOWER(tablename)=LOWER('pgt_sls_billing_item')
+  ) tbl;
+
+ *** Insert completed. One row added. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing collectstats task
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:33:24 2025 PID: 7727
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 15 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set errorlevel 3624 severity 0;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SET QUERY_BAND = 'ltype=acq;ltask=stats;ltbl=pgt_sls_billing_item;' FOR SESSION;
+
+ *** Set QUERY_BAND accepted. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:33:39-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  -- We execute the collect statistics command for the column on the master table
+  COLLECT STATISTICS ON ACQ_P_CORE.pgt_sls_billing_item;
+
+ *** Update completed. 47 rows changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORCODE = 3624 THEN .GOTO FIRSTTIME_STATS;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .GOTO DONE;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .LABEL FIRSTTIME_STATS
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  collect statistics 
+
+     column (acq_mdm_sys_id),
+
+     column (acq_pgt_sys_id),
+
+     column (blg_doc_id),
+
+     column (blg_ln_num),
+
+     column (mandt),
+
+     column (zsysid),
+
+
+     index nupi_pgt_sls_billing_item,
+
+    column ( partition )
+  on ACQ_P_CORE.pgt_sls_billing_item;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
+ *** Skipped.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .LABEL DONE
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
+Executing clesend task
+ErrTable:pgt_sls_billing_item_err
+Err2Table:pgt_sls_billing_item_err2
+ErrStep:PGT_SLS_BILLING_ITEM_LOAD
+Host:peplap00726
+ENV_LINK1:https://ews.mypepsico.com/acq_err/?acq_table=pgt_sls_billing_item_err&amp;acq_max=100&amp;acq_date=&amp;action=View&amp;mode=rejected&amp;acq_batch=
+ENV_LINK2:https://ews.mypepsico.com/acq_err/?acq_table=pgt_sls_billing_item_err2&amp;acq_max=100&amp;acq_date=&amp;action=View&amp;mode=rejected&amp;acq_batch=
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:33:40 2025 PID: 9293
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+.set titledashes off;
++---------+---------+---------+---------+---------+---------+---------+----
+
+        .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 11 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+        .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+        .set width 4500
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+        .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+        SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+2025-08-07 11:33:51-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  select 1 from dbc.tablesv 
+  where 
+  LOWER(databasename) = LOWER('ACQ_P_JOB') and
+  LOWER(tablename) = LOWER('pgt_sls_billing_item_err');
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+   1
+   1
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_err_check;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+.export report file /etlapps/prds2/acq/cmn/tmp/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD_ERR.xml;
+ *** To reset export, type .EXPORT RESET
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+        SELECT
+                '<ExceptionRequest xmlns="http://www.PepsiCo.com/unique/default/namespace/CommonLE">
+                <Header>
+                <ApplicationID>ACQ</ApplicationID>
+                <ServiceName>ACQ_LOADER</ServiceName>
+                <ComponentName>SOURCE_TO_CORE</ComponentName>
+                <Hostname>peplap00726</Hostname>
+                <Timestamp>2025-08-07T11:33:40</Timestamp>
+                </Header>
+                <Category>LOAD_ERROR</Category>
+                <Type>'||UPPER('pgt')||'</Type>
+                <Severity>2</Severity>
+                <Code>N/A</Code>
+                <Message>Error Records: '||TRIM(ERR_COUNT)||'; Error table: pgt_sls_billing_item_err</Message>
+                <DumpAnalysis>&#xD;----------------- &#xD; SYSTEM: ACQ;  ACTIVITY: PGT_SLS_BILLING_ITEM;  STEP: PGT_SLS_BILLING_ITEM_LOAD;  TABLE: pgt_sls_billing_item_err;&#xD;STEP_ID: '||DW_STEP_ID||';  BATCH_ID: '||DW_BTCH_ID||';&#xD;QUERY: select * from ACQ_P_JOB.pgt_sls_billing_item_err where DW_BTCH_ID in ('||DW_BTCH_ID||');&#xD;Web Link: https://ews.mypepsico.com/acq_err/?acq_table=pgt_sls_billing_item_err&amp;acq_max=100&amp;acq_date=&amp;action=View&amp;mode=rejected&amp;acq_batch='||DW_BTCH_ID||'</DumpAnalysis>
+                </ExceptionRequest>' (TITLE '')
+        FROM
+                (       SELECT
+                                TRIM(DW_BTCH_ID(INTEGER)) AS DW_BTCH_ID, 
+        TRIM(DW_STEP_ID(INTEGER)) AS DW_STEP_ID,
+        COUNT(*) as ERR_COUNT
+                        FROM
+                                ACQ_P_JOB.pgt_sls_billing_item_err ERR
+                                JOIN PEPCMN_P.ACTVTY A
+                                        ON ERR.DW_BTCH_ID = A.CUR_BTCH_ID
+                                JOIN PEPCMN_P.STEP S
+                                        ON A.ACTVTY_ID=S.ACTVTY_ID
+                                        AND ERR.DW_STEP_ID=S.STEP_ID
+                        WHERE
+                                SYS_NM='ACQ'
+                                AND ACTVTY_NM='PGT_SLS_BILLING_ITEM'
+                                -- AND STEP_NM='PGT_SLS_BILLING_ITEM_LOAD'
+                        GROUP BY 1,2
+                        HAVING ERR_COUNT>0
+                )A;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+    
+.export reset;
+ *** Output returned to console.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.label skip_err_check;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+                select 1 from dbc.tablesv
+                where
+                LOWER(databasename) = LOWER('ACQ_P_JOB') and
+                LOWER(tablename) = LOWER('pgt_sls_billing_item_err2');
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+   1
+   1
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+                .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+                .IF ACTIVITYCOUNT = 0 THEN .GOTO skip_err2_check;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+
+.export report file /etlapps/prds2/acq/cmn/tmp/PGT_SLS_BILLING_ITEM_PGT_SLS_BILLING_ITEM_LOAD_ERR2.xml;
+ *** To reset export, type .EXPORT RESET
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+        SELECT
+                '<ExceptionRequest xmlns="http://www.PepsiCo.com/unique/default/namespace/CommonLE">
+                <Header>
+                <ApplicationID>ACQ</ApplicationID>
+                <ServiceName>ACQ_LOADER</ServiceName>
+                <ComponentName>SOURCE_TO_CORE</ComponentName>
+                <Hostname>peplap00726</Hostname>
+                <Timestamp>2025-08-07T11:33:40</Timestamp>
+                </Header>
+                <Category>LOAD_ERROR</Category>
+                <Type>'||UPPER('pgt')||'</Type>
+                <Severity>2</Severity>
+                <Code>N/A</Code>
+                <Message>Error Records: '||TRIM(ERR_COUNT)||'; Error table: pgt_sls_billing_item_err2</Message>
+				<DumpAnalysis>&#xD;-----------------&#xD;SYSTEM: ACQ;  ACTIVITY: PGT_SLS_BILLING_ITEM;  STEP: PGT_SLS_BILLING_ITEM_LOAD;  TABLE: pgt_sls_billing_item_err;&#xD;STEP_ID: '||DW_STEP_ID||';  BATCH_ID: '||DW_BTCH_ID||';&#xD;QUERY: select * from ACQ_P_JOB.pgt_sls_billing_item_err2 where DW_BTCH_ID in ('||DW_BTCH_ID||');&#xD;Web Link: https://ews.mypepsico.com/acq_err/?acq_table=pgt_sls_billing_item_err2&amp;acq_max=100&amp;acq_date=&amp;action=View&amp;mode=rejected&amp;acq_batch='||DW_BTCH_ID||'</DumpAnalysis>
+                </ExceptionRequest>' (TITLE '')
+        FROM
+                (       SELECT
+                                TRIM(DW_BTCH_ID(INTEGER)) AS DW_BTCH_ID, 
+        TRIM(DW_STEP_ID(INTEGER)) AS DW_STEP_ID,
+        COUNT(*) as ERR_COUNT
+                        FROM
+                                ACQ_P_JOB.pgt_sls_billing_item_err2 ERR
+                                JOIN PEPCMN_P.ACTVTY A
+                                        ON ERR.DW_BTCH_ID = A.CUR_BTCH_ID
+                                JOIN PEPCMN_P.STEP S
+                                        ON A.ACTVTY_ID=S.ACTVTY_ID
+                                        AND ERR.DW_STEP_ID=S.STEP_ID
+                        WHERE
+                                SYS_NM='ACQ'
+                                AND ACTVTY_NM='PGT_SLS_BILLING_ITEM'
+                                -- AND STEP_NM='PGT_SLS_BILLING_ITEM_LOAD'
+                        GROUP BY 1,2
+                        HAVING ERR_COUNT>0
+                )A;
+
+ *** Query completed. No rows found. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+.export reset;
+ *** Output returned to console.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.label skip_err2_check;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+.logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+.quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+ERR_Size:0 ERR2_Size:0
+Executing rcrdcntval task
+yes
+DENO_ERR_CNT = 1
+Removing prior email content file
+TPT load completed successfully
+/etlapps/prds2/acq/stg/tmp/PGT_SLS_BILLING_ITEM.scs created
+/etlapps/prds2/acq/sales/tmp/PGT_SLS_BILLING_ITEM.PGT_SLS_BILLING_ITEM_LOAD.wkf
+Load completed  successfully
+-------- START EXECUTING ARCHIVE PROCESS --------
+**********Zipping the Source Files**********
+
+Source file not found 
+
+
+Source file not found 
+
+
+Source file not found 
+
+
+Renaming ACQ_PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt Files
+
+
+Zipping PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt Files 
+
+
+File PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt Zipped Successfully 
+
+
+Archiving PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt Files 
+
+
+File PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt Archived Successfully 
+
+
+Time stamp NOT required for the file PGT_ZGGL_OTC_CVI_BILLING_ITEM_20250807160145.txt ...
+Zipping and Archiving the Process file
+Zipping the pgt_sls_billing_item.prcs Process File
+
+
+Zipping pgt_sls_billing_item.prcs Process File completed successfully
+Archiving the Process File
+
+
+Archiving pgt_sls_billing_item.prcs.gz Process File completed successfully
+Deleting Temporary File
+Successfully Deleted Temporary File
+-------- ARCHIVE PROCESS COMPLETED SUCCESSFULLY --------
+Archiving completed successfully
+************ TPT GENERIC SCRIPT COMPLETED SUCESSFULLY**************
+BTEQ 16.20.00.10 (64-bit) Thu Aug  7 11:35:44 2025 PID: 24086
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .run file /etlapps/prds2/acq/sales/bin/cmn_tdlogon.btq
++---------+---------+---------+---------+---------+---------+---------+----
+.logon tdprod/ACQ_BATCH_P,
+
+ *** Logon successfully completed.
+ *** Teradata Database Release is 17.20.03.16a                  
+ *** Teradata Database Version is 17.20.03.16                     
+ *** Transaction Semantics are BTET.
+ *** Session Character Set Name is 'ASCII'.
+ 
+ *** Total elapsed time was 21 seconds.
+ 
++---------+---------+---------+---------+---------+---------+---------+----
+ *** Encountered EOF on RUN file. Returning to stdin.
++---------+---------+---------+---------+---------+---------+---------+----
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+----
+
+  .set width 254
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  .set maxerror 4
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  SELECT CURRENT_TIMESTAMP(0);
+
+ *** Query completed. One row found. One column returned. 
+ *** Total elapsed time was 1 second.
+
+     Current TimeStamp(0)
+-------------------------
+2025-08-07 11:36:05-05:00
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+  
+  EXEC PEPCMN_P.STEP_END('ACQ', 'PGT_SLS_BILLING_ITEM', 'PGT_SLS_BILLING_ITEM_LOAD');
+
+ *** Update completed. One row changed. 
+ *** Total elapsed time was 1 second.
+
+
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .IF ERRORLEVEL <> 0 THEN .QUIT ERRORLEVEL;
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .logoff;
+ *** You are now logged off from the DBC.
++---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+-
+
+  .quit;
+ *** Exiting BTEQ...
+ *** RC (return code) = 0 
+Return Code 0
