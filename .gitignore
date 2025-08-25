@@ -1,3 +1,6 @@
 *.venv
 lib/
-.env 
+.env
+dist/
+build/
+*.spec
