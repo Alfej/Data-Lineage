@@ -97,19 +97,20 @@ function initializeData() {
         relationshipColors[rel] = `relationship-${index % 10}`;
     });
 
-    // Initialize column filters
+    // Initialize column filters with all values selected
     parsed.headers.forEach(header => {
         const uniqueValues = [...new Set(originalData.map(row => row[header]))];
         columnFilters[header] = {
             selected: [...uniqueValues],
-            options: uniqueValues
+            options: uniqueValues,
+            allOptions: [...uniqueValues] // Keep original options for reference
         };
     });
 
     createFilterControls(parsed.headers);
     updateGraph();
     updateRelationshipLegend();
-    displayTable(originalData);
+    displayTable();
 }
 
 function createFilterControls(headers) {
@@ -144,48 +145,122 @@ function createFilterControls(headers) {
         options.className = 'multiselect-options';
         options.id = `options-${header}`;
 
-        columnFilters[header].options.forEach(option => {
-            const optionDiv = document.createElement('div');
-            optionDiv.className = 'multiselect-option';
+        // Add "Select All" option at the top
+        const selectAllDiv = document.createElement('div');
+        selectAllDiv.className = 'multiselect-option select-all';
 
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = option;
-            checkbox.checked = true;
-            checkbox.onchange = () => updateFilter(header, option, checkbox.checked);
-
-            const label = document.createElement('span');
-            label.textContent = option;
-
-            optionDiv.appendChild(checkbox);
-            optionDiv.appendChild(label);
-            options.appendChild(optionDiv);
+        const selectAllCheckbox = document.createElement('input');
+        selectAllCheckbox.type = 'checkbox';
+        selectAllCheckbox.id = `selectAll-${header}`;
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.addEventListener('change', (e) => {
+            handleSelectAll(header, e.target.checked);
         });
+
+        const selectAllLabel = document.createElement('span');
+        selectAllLabel.textContent = 'Select All';
+
+        selectAllDiv.appendChild(selectAllCheckbox);
+        selectAllDiv.appendChild(selectAllLabel);
+        options.appendChild(selectAllDiv);
 
         multiselect.appendChild(dropdown);
         multiselect.appendChild(options);
-
         filterGroup.appendChild(label);
         filterGroup.appendChild(multiselect);
         container.appendChild(filterGroup);
 
+        // Initial population of options
+        updateFilterOptions(header);
         updateDropdownText(header);
     });
 }
 
-function toggleDropdown(header) {
-    const dropdown = document.querySelector(`#options-${header}`);
-    const button = dropdown.previousElementSibling;
+function handleSelectAll(header, checked) {
+    const availableOptions = getFilteredOptionsForColumn(header);
+    
+    if (checked) {
+        // Select all available options
+        columnFilters[header].selected = [...availableOptions];
+    } else {
+        // Deselect all
+        columnFilters[header].selected = [];
+    }
+    
+    // Update all checkboxes in this dropdown
+    const optionsContainer = document.getElementById(`options-${header}`);
+    const checkboxes = optionsContainer.querySelectorAll('.multiselect-option:not(.select-all) input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+    });
 
-    dropdown.classList.toggle('show');
-    button.classList.toggle('open');
+    updateDropdownText(header);
+    updateGraph();
+    displayTable();
+    refreshAllFilterOptions();
+}
 
-    // Close other dropdowns
-    document.querySelectorAll('.multiselect-options').forEach(opt => {
-        if (opt !== dropdown) {
-            opt.classList.remove('show');
-            opt.previousElementSibling.classList.remove('open');
+function getFilteredOptionsForColumn(targetHeader) {
+    let filteredData = originalData;
+
+    // Apply filters from other columns (not the target column)
+    Object.entries(columnFilters).forEach(([header, filter]) => {
+        if (header !== targetHeader && filter.selected.length > 0) {
+            filteredData = filteredData.filter(row => filter.selected.includes(row[header]));
         }
+    });
+
+    // Get unique values for target column from filtered data
+    return [...new Set(filteredData.map(row => row[targetHeader]))].sort();
+}
+
+function updateFilterOptions(header) {
+    const availableOptions = getFilteredOptionsForColumn(header);
+    const optionsContainer = document.getElementById(`options-${header}`);
+    
+    // Remove existing individual options (keep Select All)
+    const existingOptions = optionsContainer.querySelectorAll('.multiselect-option:not(.select-all)');
+    existingOptions.forEach(option => option.remove());
+
+    // Add individual options based on filtered data
+    availableOptions.forEach(option => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'multiselect-option';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = option;
+        checkbox.checked = columnFilters[header].selected.includes(option);
+        checkbox.addEventListener('change', (e) => {
+            updateFilter(header, option, e.target.checked);
+        });
+
+        const label = document.createElement('span');
+        label.textContent = option;
+
+        optionDiv.appendChild(checkbox);
+        optionDiv.appendChild(label);
+        optionsContainer.appendChild(optionDiv);
+    });
+
+    // Update the available options in columnFilters
+    columnFilters[header].options = availableOptions;
+    
+    // Update "Select All" checkbox state
+    const selectAllCheckbox = document.getElementById(`selectAll-${header}`);
+    const selectedCount = columnFilters[header].selected.filter(item => availableOptions.includes(item)).length;
+    const allSelected = selectedCount === availableOptions.length && availableOptions.length > 0;
+    const noneSelected = selectedCount === 0;
+    
+    selectAllCheckbox.checked = allSelected;
+    selectAllCheckbox.indeterminate = !allSelected && !noneSelected;
+}
+
+function refreshAllFilterOptions() {
+    // Update available options for all dropdowns based on current filters
+    Object.keys(columnFilters).forEach(header => {
+        updateFilterOptions(header);
+        updateDropdownText(header);
     });
 }
 
@@ -198,34 +273,87 @@ function updateFilter(header, value, checked) {
         columnFilters[header].selected = columnFilters[header].selected.filter(v => v !== value);
     }
 
+    // Update "Select All" checkbox state
+    const availableOptions = getFilteredOptionsForColumn(header);
+    const selectAllCheckbox = document.getElementById(`selectAll-${header}`);
+    const selectedCount = columnFilters[header].selected.filter(item => availableOptions.includes(item)).length;
+    const allSelected = selectedCount === availableOptions.length && availableOptions.length > 0;
+    const noneSelected = selectedCount === 0;
+    
+    selectAllCheckbox.checked = allSelected;
+    selectAllCheckbox.indeterminate = !allSelected && !noneSelected;
+
     updateDropdownText(header);
     updateGraph();
+    displayTable();
+    refreshAllFilterOptions();
+}
+
+function toggleDropdown(header) {
+    const options = document.getElementById(`options-${header}`);
+    const isOpen = options.classList.contains('show');
+    
+    // Close all dropdowns first
+    document.querySelectorAll('.multiselect-options').forEach(opt => {
+        opt.classList.remove('show');
+        opt.previousElementSibling.classList.remove('open');
+    });
+
+    // Toggle current dropdown
+    if (!isOpen) {
+        // Update options before showing
+        updateFilterOptions(header);
+        options.classList.add('show');
+        options.previousElementSibling.classList.add('open');
+    }
 }
 
 function updateDropdownText(header) {
     const selectedText = document.getElementById(`selected-${header}`);
     const selectedCount = document.getElementById(`count-${header}`);
-    const selected = columnFilters[header].selected;
-    const total = columnFilters[header].options.length;
+    const availableOptions = getFilteredOptionsForColumn(header);
+    const selected = columnFilters[header].selected.filter(item => availableOptions.includes(item));
+    const total = availableOptions.length;
 
-    if (selected.length === total) {
+    if (selected.length === total && total > 0) {
         selectedText.textContent = 'All selected';
     } else if (selected.length === 0) {
         selectedText.textContent = 'None selected';
     } else if (selected.length === 1) {
         selectedText.textContent = selected[0];
     } else {
-        selectedText.textContent = `${selected.length} items selected`;
+        selectedText.textContent = `Multiple selected`;
     }
 
     selectedCount.textContent = `${selected.length}/${total}`;
 }
 
+// Get filtered data based on current filter selections
 function getFilteredData() {
     return originalData.filter(row => {
         return Object.keys(columnFilters).every(header => {
+            // If no items are selected for this column, don't filter by it
+            if (columnFilters[header].selected.length === 0) {
+                return true;
+            }
             return columnFilters[header].selected.includes(row[header]);
         });
+    });
+}
+
+// Update displayTable to use filtered data
+function displayTable() {
+    const filteredData = getFilteredData();
+    const tableBody = document.getElementById('lineage-table').querySelector('tbody');
+    tableBody.innerHTML = '';
+
+    filteredData.forEach(row => {
+        const tr = tableBody.insertRow();
+        tr.insertCell().textContent = row.childTableName;
+        tr.insertCell().textContent = row.childTableType;
+        tr.insertCell().textContent = row.relationship;
+        tr.insertCell().textContent = row.parentTableName;
+        tr.insertCell().textContent = row.parentTableType;
     });
 }
 
@@ -443,33 +571,26 @@ function updateRelationshipLegend() {
     });
 }
 
-function displayTable(data) {
-    const tableBody = document.getElementById('lineage-table').querySelector('tbody');
-    tableBody.innerHTML = '';
-
-    data.forEach(row => {
-        const tr = tableBody.insertRow();
-        tr.insertCell().textContent = row.childTableName;
-        tr.insertCell().textContent = row.childTableType;
-        tr.insertCell().textContent = row.relationship;
-        tr.insertCell().textContent = row.parentTableName;
-        tr.insertCell().textContent = row.parentTableType;
-    });
-}
-
 function resetAllFilters() {
+    // Reset all filters to select all original options
     Object.keys(columnFilters).forEach(header => {
-        columnFilters[header].selected = [...columnFilters[header].options];
+        columnFilters[header].selected = [...columnFilters[header].allOptions];
+    });
 
-        // Update checkboxes
-        document.querySelectorAll(`#options-${header} input[type="checkbox"]`).forEach(checkbox => {
-            checkbox.checked = true;
-        });
-
-        updateDropdownText(header);
+    // Refresh all filter options and update UI
+    refreshAllFilterOptions();
+    
+    // Update all "Select All" checkboxes
+    Object.keys(columnFilters).forEach(header => {
+        const selectAllCheckbox = document.getElementById(`selectAll-${header}`);
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = true;
+            selectAllCheckbox.indeterminate = false;
+        }
     });
 
     updateGraph();
+    displayTable();
 }
 
 // Drag functions with position persistence
