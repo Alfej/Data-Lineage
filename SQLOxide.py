@@ -13,7 +13,7 @@ custom_name = input("Enter Query name:")
 # This list will directly store the dictionaries for each row of the final DataFrame.
 dataframe_rows = []
 
-with open('query.sql','r') as file:
+with open('query.txt','r') as file:
     sql = file.read()
 # sql = sample_sql
 

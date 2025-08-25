@@ -12,7 +12,7 @@ import time
 
 # Sample data
 # Ensure the CSV is in the same directory as this script, or provide the full path.
-data = pd.read_csv('Frontend/parent_child_lineage.csv')
+data = pd.read_csv("C:\\DataLineage\\parent_child_lineage.csv")
 df = pd.DataFrame(data)
 
 def process_data():
@@ -87,7 +87,7 @@ def process_data():
 def inject_data_into_html(nodes_data, edges_data):
     """Read static HTML file and inject data"""
     
-    frontend_dir = Path('Frontend')
+    frontend_dir = Path('Frontend_Updated')
     html_file = frontend_dir / 'index.html'
     output_file = frontend_dir / 'graph_visualization.html'
     
@@ -98,14 +98,14 @@ def inject_data_into_html(nodes_data, edges_data):
     # Create data injection script
     data_script = f"""    <script id="graph-data">
         // Data injected by Python script
-        const originalNodes = {json.dumps(nodes_data, indent=8)};
-        const originalLinks = {json.dumps(edges_data, indent=8)};
+        const csvData = {json.dumps(df.to_csv(index=False))};
     </script>"""
     
     # Replace the placeholder data script
     html_content = html_content.replace(
         '''    <script id="graph-data">
         // Data will be injected here by Python script
+        const csvData = '';
         const originalNodes = [];
         const originalLinks = [];
     </script>''',
@@ -141,7 +141,7 @@ def create_interactive_html_graph():
     
     # --- SERVER AND BROWSER LOGIC ---
     PORT = 8000
-    DIRECTORY_TO_SERVE = "Frontend"
+    DIRECTORY_TO_SERVE = "Frontend_Updated"
     FILE_TO_OPEN = output_file.name
 
     # Create a custom handler to serve files from the 'Frontend' directory

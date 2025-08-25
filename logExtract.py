@@ -18,7 +18,7 @@ def clean_bteq_log(log_content):
     lines = log_content.split('\n')
     in_sql_query = False
     sql_start_keywords = ('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 
-                            'ALTER', 'WITH', 'REPLACE', 'COLLECT', 'CALL','SEL','DEL')
+                            'ALTER', 'WITH', 'REPLACE', 'COLLECT', 'CALL','SEL ','DEL ','USING','MERGE')
     cleaned_lines = []
     
     ignore_patterns = [
@@ -35,10 +35,9 @@ def clean_bteq_log(log_content):
         r'^\s*Executing',  # Execution messages
         r'^\s*\|\s*$',  # Empty table borders
         r'^\s*EXEC', # Lines starting with EXEC
-        r'^\s*COLLECT STATISTICS', # Lines starting with COLLECT STATISTICS
         r'^\s*\d+', # Lines starting with any number
-        r'^\s*BT', # Lines starting with EXEC
-        r'^\s*ET', # Lines starting with COLLECT STATISTICS
+        r'^\s*BT', # Lines starting with BT
+        r'^\s*ET', # Lines starting with ET
     ]
     ignore_regex = re.compile('|'.join(ignore_patterns), re.IGNORECASE)
 
@@ -78,11 +77,11 @@ def clean_bteq_log(log_content):
 
 if __name__=="__main__":
     try:
-        with open('test2.log', 'r', encoding='utf-8') as f:
+        with open('test.log', 'r', encoding='utf-8') as f:
             sample_sql = f.read()
         
         cleaned_sql = clean_bteq_log(sample_sql)
-        with open('query2.txt', 'w', encoding='utf-8') as out_f:
+        with open('query.txt', 'w', encoding='utf-8') as out_f:
             out_f.write(cleaned_sql)
         print("Cleaned SQL written to query.txt")
     except FileNotFoundError:

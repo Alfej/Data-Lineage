@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Interactive Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>Data Lineage Visualization</h1>
+    <p>Use the column-based filters below to explore the data. Drag nodes to reposition them - they'll stay where you place them!</p>
+    
+    <div class="container">
+        <div class="controls">
+            <h3>Column Filters</h3>
+            
+            <!-- Dynamic filter controls will be inserted here -->
+            <div id="filter-controls"></div>
+            
+            <button class="btn btn-reset" onclick="resetAllFilters()">🔄 Reset All Filters</button>
+            
+            <div class="status">
+                <strong>Status:</strong><br>
+                Total Nodes: <span id="total-count">0</span><br>
+                Visible: <span id="visible-count">0</span><br>
+                Filtered: <span id="filtered-count">0</span>
+            </div>
+            
+            <div class="legend">
+                <strong>Node Types:</strong><br>
+                🔵 Blue circles = CTE<br>
+                🟢 Green circles = Tables<br>
+                🟡 Yellow circles = Views<br><br>
+                
+                <strong>Relationship Colors:</strong><br>
+                <div id="relationship-legend"></div>
+                <br>
+                
+                <strong>Interactions:</strong><br>
+                • Drag nodes to reposition<br>
+                • Hover for details<br>
+                • Use filters to show/hide
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <svg id="graph"></svg>
+        </div>
+    </div>
+    
+    <div id="lineage-data">
+        <h2>Parent-Child Lineage</h2>
+        <table id="lineage-table">
+            <thead>
+                <tr>
+                    <th>Child Table Name</th>
+                    <th>Child Table Type</th>
+                    <th>Relationship</th>
+                    <th>Parent Table Name</th>
+                    <th>Parent Table Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script id="graph-data">
+        // Data will be injected here by Python script
+        const csvData = '';
+        const originalNodes = [];
+        const originalLinks = [];
+    </script>
+    
+    <script src="js/graph.js"></script>
+</body>
+</html>
+            

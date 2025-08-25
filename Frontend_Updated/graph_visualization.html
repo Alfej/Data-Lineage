@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Interactive Graph Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>Data Lineage Visualization</h1>
+    <p>Use the column-based filters below to explore the data. Drag nodes to reposition them - they'll stay where you place them!</p>
+    
+    <div class="container">
+        <div class="controls">
+            <h3>Column Filters</h3>
+            
+            <!-- Dynamic filter controls will be inserted here -->
+            <div id="filter-controls"></div>
+            
+            <button class="btn btn-reset" onclick="resetAllFilters()">🔄 Reset All Filters</button>
+            
+            <div class="status">
+                <strong>Status:</strong><br>
+                Total Nodes: <span id="total-count">0</span><br>
+                Visible: <span id="visible-count">0</span><br>
+                Filtered: <span id="filtered-count">0</span>
+            </div>
+            
+            <div class="legend">
+                <strong>Node Types:</strong><br>
+                🔵 Blue circles = CTE<br>
+                🟢 Green circles = Tables<br>
+                🟡 Yellow circles = Views<br><br>
+                
+                <strong>Relationship Colors:</strong><br>
+                <div id="relationship-legend"></div>
+                <br>
+                
+                <strong>Interactions:</strong><br>
+                • Drag nodes to reposition<br>
+                • Hover for details<br>
+                • Use filters to show/hide
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <svg id="graph"></svg>
+        </div>
+    </div>
+    
+    <div id="lineage-data">
+        <h2>Parent-Child Lineage</h2>
+        <table id="lineage-table">
+            <thead>
+                <tr>
+                    <th>Child Table Name</th>
+                    <th>Child Table Type</th>
+                    <th>Relationship</th>
+                    <th>Parent Table Name</th>
+                    <th>Parent Table Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script id="graph-data">
+        // Data injected by Python script
+        const csvData = "childTableName,childTableType,relationship,parentTableName,parentTableType\r\ntest,View,Insert,V_CUST_SERV_TIME_RANGE,Table\r\nV_CUST_SERV_TIME_RANGE,Table,Created from,DWL_P.DW_PEP_CALDR_DT,Table\r\nV_CUST_SERV_TIME_RANGE,Table,Created from,DWL_P.DW_TMSLC_CUR_REF_DT,Table\r\ntest,View,Insert,V_CUST_SERV_ELIG_BASE,Table\r\nV_CUST_SERV_ELIG_BASE,Table,Created from,DWL_P.DW_CUST_RPRTNG_ATRBT,Table\r\nV_CUST_SERV_ELIG_BASE,Table,Created from,DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY,Table\r\nV_CUST_SERV_ELIG_BASE,Table,Created from,V_CUST_SERV_TIME_RANGE,Table\r\ntest,View,Insert,V_CUST_AGGR_SAS_WKLY,Table\r\nV_CUST_AGGR_SAS_WKLY,Table,Created from,DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_DAILY,Table\r\nV_CUST_AGGR_SAS_WKLY,Table,Created from,V_CUST_SERV_ELIG_BASE,Table\r\ntest,View,Insert,V_CUST_SERV_TIME_WK_RANGE,Table\r\nV_CUST_SERV_TIME_WK_RANGE,Table,Created from,V_CUST_SERV_TIME_RANGE,Table\r\ntest,View,Insert,V_CUST_STD_CALC_RANGE,Table\r\nV_CUST_STD_CALC_RANGE,Table,Created from,V_CUST_SERV_TIME_WK_RANGE,Table\r\ntest,View,Insert,V_CUST_WK_ACTL_CALL_RANGE,Table\r\nV_CUST_WK_ACTL_CALL_RANGE,Table,Created from,V_CUST_SERV_ELIG_BASE,Table\r\nV_CUST_WK_ACTL_CALL_RANGE,Table,Created from,V_CUST_AGGR_SAS_WKLY,Table\r\nV_CUST_WK_ACTL_CALL_RANGE,Table,Created from,V_CUST_STD_CALC_RANGE,Table\r\ntest,View,Insert,V_STD_WSA_CUST,Table\r\nV_STD_WSA_CUST,Table,Created from,SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY,Table\r\nV_STD_WSA_CUST,Table,Created from,V_CUST_SERV_ELIG_BASE,Table\r\nV_STD_WSA_CUST,Table,Created from,V_CUST_SERV_TIME_WK_RANGE,Table\r\ntest,View,Insert,V_CUST_STD_WKLY,Table\r\nV_CUST_STD_WKLY,Table,Created from,V_STD_WSA_CUST,Table\r\nV_CUST_STD_WKLY,Table,Created from,ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF,Table\r\nV_CUST_STD_WKLY,Table,Created from,V_CUST_WK_ACTL_CALL_RANGE,Table\r\ntest,View,Insert,V_CUST_SERV_WKLY_FNL,Table\r\nV_CUST_SERV_WKLY_FNL,Table,Created from,V_CUST_AGGR_SAS_WKLY,Table\r\nV_CUST_SERV_WKLY_FNL,Table,Created from,V_CUST_STD_WKLY,Table\r\ntest,View,Insert,V_CUST_EXCLUSION,Table\r\nV_CUST_EXCLUSION,Table,Created from,V_CUST_SERV_WKLY_FNL,Table\r\nV_CUST_EXCLUSION,Table,Created from,DWL_P.DW_CUST_RPRTNG_ATRBT,Table\r\nV_CUST_EXCLUSION,Table,Created from,DWL_P.DW_DATA_PARM_ATRBT_VAL,Table\r\ntest,View,Insert,TGT,Table\r\nTGT,Table,Update,DWL_P.DW_CUST_RPRTNG_ATRBT,Table\r\nTGT,Table,Update,V_CUST_EXCLUSION,Table\r\nTGT,Table,Update,V_CUST_SERV_WKLY_FNL,Table\r\ntest,View,Insert,V_DELIV_NM_WKLY,Table\r\nV_DELIV_NM_WKLY,Table,Created from,SEM_EXTRCT.DW_CUST_VISTSCHD_DAY_PLANACTY,Table\r\ntest,View,Insert,V_VOLBAND_CURR,Table\r\nV_VOLBAND_CURR,Table,Created from,V_FNL_CUST,CTE\r\nV_FNL_CUST,CTE,Created from,V_CUST_SERV_WKLY_FNL,Table\r\nV_VOLBAND_CURR,Table,Created from,V_WSA,CTE\r\nV_WSA,CTE,Created from,SEM_EXTRCT.DLS_FLNA_SLS_CUST_TMFRM_MEAS_WKLY,Table\r\nV_WSA,CTE,Created from,SEM_EXTRCT.DLS_FLNA_TIME_TBL_V,Table\r\nV_VOLBAND_CURR,Table,Created from,ACQ_P.PGT_FLNA_OPS_CUST_NATL_STD_SERV_CALL_DT_EFF,Table\r\ntest,View,Insert,DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Delete,V_CUST_SERV_TIME_RANGE,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Delete,DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,V_CUST_SERV_TIME_RANGE,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,PEPCMN_P.STEP,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,PEPCMN_P.ACTVTY,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,PEPCMN_P.SYS,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,V_CUST_SERV_WKLY_FNL,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,V_DELIV_NM_WKLY,Table\r\nDWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table,Insert,V_VOLBAND_CURR,Table\r\nTGT,Table,Update,DWL_P_DRVD.PGT_FLNA_CUST_VIST_ACTVTY_MEAS_WKLY,Table\r\nTGT,Table,Update,DWL_P.DW_DATA_PARM_ATRBT_VAL,Table\r\nTGT,Table,Update,V_CUST_SERV_ELIG_BASE,Table\r\n";
+    </script>
+    
+    <script src="js/graph.js"></script>
+</body>
+</html>
+            
