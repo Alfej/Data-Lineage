@@ -654,6 +654,7 @@ let nodePositions = new Map(); // Store fixed positions
 let hiddenNodes = new Set(); // Track individually hidden nodes
 let hiddenNodeTypes = new Set(); // Track hidden node types
 let hiddenRelationshipTypes = new Set(); // Track hidden relationship types
+let csvHeaders = []; // Store CSV headers for dynamic table display
 
 // Set up SVG and tooltip
 const svg = d3.select("#graph");
@@ -734,6 +735,7 @@ function isNodeVisible(nodeId) {
 function initializeData() {
     const parsed = parseCsvData(csvData);
     originalData = parsed.data;
+    csvHeaders = parsed.headers; // Store headers for table display
 
     // Create nodes and links from data
     const nodeSet = new Set();
@@ -779,6 +781,7 @@ function initializeData() {
 
     createFilterControls(parsed.headers);
     createNodeHidingControls();
+    createTableHeaders(); // Create dynamic table headers
     updateGraph();
     updateRelationshipLegend();
     displayTable();
@@ -1062,6 +1065,23 @@ function getFilteredData() {
     });
 }
 
+// Create dynamic table headers based on CSV headers
+function createTableHeaders() {
+    const table = document.getElementById('lineage-table');
+    const thead = table.querySelector('thead');
+    
+    // Clear existing headers
+    thead.innerHTML = '';
+    
+    const headerRow = thead.insertRow();
+    csvHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header.charAt(0).toUpperCase() + header.slice(1).replace(/([A-Z])/g, ' $1');
+        headerRow.appendChild(th);
+    });
+}
+
+// Updated displayTable function to show all columns
 function displayTable() {
     const filteredData = getFilteredData();
     const tableBody = document.getElementById('lineage-table').querySelector('tbody');
@@ -1069,11 +1089,11 @@ function displayTable() {
 
     filteredData.forEach(row => {
         const tr = tableBody.insertRow();
-        tr.insertCell().textContent = row.childTableName;
-        tr.insertCell().textContent = row.childTableType;
-        tr.insertCell().textContent = row.relationship;
-        tr.insertCell().textContent = row.parentTableName;
-        tr.insertCell().textContent = row.parentTableType;
+        // Add cells for all columns in the CSV
+        csvHeaders.forEach(header => {
+            const cell = tr.insertCell();
+            cell.textContent = row[header] || ''; // Handle missing values
+        });
     });
 }
 
