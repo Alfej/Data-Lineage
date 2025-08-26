@@ -4,6 +4,9 @@ let columnFilters = {};
 let relationshipTypes = [];
 let relationshipColors = {};
 let nodePositions = new Map(); // Store fixed positions
+let hiddenNodes = new Set(); // Track individually hidden nodes
+let hiddenNodeTypes = new Set(); // Track hidden node types
+let hiddenRelationshipTypes = new Set(); // Track hidden relationship types
 
 // Set up SVG and tooltip
 const svg = d3.select("#graph");
@@ -61,6 +64,26 @@ function parseCsvData(csvText) {
     return { headers: headers.map(h => h.trim()), data };
 }
 
+// Helper function to determine if a node is visible based on filters and hiding
+function isNodeVisible(nodeId) {
+    const node = originalNodes.find(n => n.id === nodeId);
+    if (!node) return false;
+    
+    // Check if node passes column filters
+    const filteredData = getFilteredData();
+    const nodeInFilteredData = filteredData.some(row => 
+        row.childTableName === nodeId || row.parentTableName === nodeId
+    );
+    
+    if (!nodeInFilteredData) return false;
+    
+    // Check hiding states
+    const isTypeHidden = hiddenNodeTypes.has(node.type);
+    const isIndividuallyHidden = hiddenNodes.has(nodeId);
+    
+    return !isTypeHidden && !isIndividuallyHidden;
+}
+
 function initializeData() {
     const parsed = parseCsvData(csvData);
     originalData = parsed.data;
@@ -103,11 +126,12 @@ function initializeData() {
         columnFilters[header] = {
             selected: [...uniqueValues],
             options: uniqueValues,
-            allOptions: [...uniqueValues] // Keep original options for reference
+            allOptions: [...uniqueValues]
         };
     });
 
     createFilterControls(parsed.headers);
+    createNodeHidingControls();
     updateGraph();
     updateRelationshipLegend();
     displayTable();
@@ -133,6 +157,7 @@ function createFilterControls(headers) {
 
         const selectedText = document.createElement('span');
         selectedText.id = `selected-${header}`;
+        selectedText.className = 'selected-text';
 
         const selectedCount = document.createElement('span');
         selectedCount.className = 'selected-count';
@@ -176,18 +201,78 @@ function createFilterControls(headers) {
     });
 }
 
+function createNodeHidingControls() {
+    const container = document.getElementById('filter-controls');
+    
+    // Add node hiding section
+    const hidingSection = document.createElement('div');
+    hidingSection.className = 'section';
+    hidingSection.innerHTML = `
+        <h4>Node Controls</h4>
+        <div class="node-controls">
+            <div id="node-type-buttons" class="type-buttons"></div>
+            <div id="individual-node-buttons" class="individual-buttons"></div>
+        </div>
+    `;
+    
+    container.appendChild(hidingSection);
+    
+    updateNodeControls();
+}
+
+function updateNodeControls() {
+    // Update node type buttons
+    const nodeTypes = [...new Set(originalNodes.map(n => n.type))];
+    const nodeTypeContainer = document.getElementById('node-type-buttons');
+    nodeTypeContainer.innerHTML = '<strong>By Type:</strong><br>';
+
+    nodeTypes.forEach(type => {
+        const button = document.createElement('button');
+        const isTypeHidden = hiddenNodeTypes.has(type);
+        const nodesOfType = originalNodes.filter(n => n.type === type);
+        const visibleNodesOfType = nodesOfType.filter(n => isNodeVisible(n.id));
+        
+        button.className = `btn btn-type-control ${isTypeHidden ? 'btn-show' : 'btn-hide'}`;
+        button.textContent = isTypeHidden ? `Show ${type}s` : `Hide ${type}s`;
+        button.onclick = () => toggleNodeType(type);
+        nodeTypeContainer.appendChild(button);
+    });
+
+    // Update individual node buttons for visible filtered nodes
+    const filteredData = getFilteredData();
+    const filteredNodeIds = new Set();
+    
+    filteredData.forEach(row => {
+        filteredNodeIds.add(row.childTableName);
+        filteredNodeIds.add(row.parentTableName);
+    });
+
+    const individualContainer = document.getElementById('individual-node-buttons');
+    individualContainer.innerHTML = '<br><strong>Individual Nodes:</strong><br>';
+    
+    Array.from(filteredNodeIds).forEach(nodeId => {
+        const node = originalNodes.find(n => n.id === nodeId);
+        if (!node) return;
+        
+        const button = document.createElement('button');
+        const isHidden = hiddenNodes.has(nodeId);
+        
+        button.className = `btn btn-individual ${isHidden ? 'btn-show' : 'btn-hide'}`;
+        button.textContent = `${isHidden ? 'Show' : 'Hide'} ${node.name}`;
+        button.onclick = () => toggleIndividualNode(nodeId);
+        individualContainer.appendChild(button);
+    });
+}
+
 function handleSelectAll(header, checked) {
     const availableOptions = getFilteredOptionsForColumn(header);
     
     if (checked) {
-        // Select all available options
         columnFilters[header].selected = [...availableOptions];
     } else {
-        // Deselect all
         columnFilters[header].selected = [];
     }
     
-    // Update all checkboxes in this dropdown
     const optionsContainer = document.getElementById(`options-${header}`);
     const checkboxes = optionsContainer.querySelectorAll('.multiselect-option:not(.select-all) input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
@@ -198,19 +283,18 @@ function handleSelectAll(header, checked) {
     updateGraph();
     displayTable();
     refreshAllFilterOptions();
+    updateNodeControls();
 }
 
 function getFilteredOptionsForColumn(targetHeader) {
     let filteredData = originalData;
 
-    // Apply filters from other columns (not the target column)
     Object.entries(columnFilters).forEach(([header, filter]) => {
         if (header !== targetHeader && filter.selected.length > 0) {
             filteredData = filteredData.filter(row => filter.selected.includes(row[header]));
         }
     });
 
-    // Get unique values for target column from filtered data
     return [...new Set(filteredData.map(row => row[targetHeader]))].sort();
 }
 
@@ -218,11 +302,9 @@ function updateFilterOptions(header) {
     const availableOptions = getFilteredOptionsForColumn(header);
     const optionsContainer = document.getElementById(`options-${header}`);
     
-    // Remove existing individual options (keep Select All)
     const existingOptions = optionsContainer.querySelectorAll('.multiselect-option:not(.select-all)');
     existingOptions.forEach(option => option.remove());
 
-    // Add individual options based on filtered data
     availableOptions.forEach(option => {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'multiselect-option';
@@ -243,10 +325,8 @@ function updateFilterOptions(header) {
         optionsContainer.appendChild(optionDiv);
     });
 
-    // Update the available options in columnFilters
     columnFilters[header].options = availableOptions;
     
-    // Update "Select All" checkbox state
     const selectAllCheckbox = document.getElementById(`selectAll-${header}`);
     const selectedCount = columnFilters[header].selected.filter(item => availableOptions.includes(item)).length;
     const allSelected = selectedCount === availableOptions.length && availableOptions.length > 0;
@@ -257,7 +337,6 @@ function updateFilterOptions(header) {
 }
 
 function refreshAllFilterOptions() {
-    // Update available options for all dropdowns based on current filters
     Object.keys(columnFilters).forEach(header => {
         updateFilterOptions(header);
         updateDropdownText(header);
@@ -273,7 +352,6 @@ function updateFilter(header, value, checked) {
         columnFilters[header].selected = columnFilters[header].selected.filter(v => v !== value);
     }
 
-    // Update "Select All" checkbox state
     const availableOptions = getFilteredOptionsForColumn(header);
     const selectAllCheckbox = document.getElementById(`selectAll-${header}`);
     const selectedCount = columnFilters[header].selected.filter(item => availableOptions.includes(item)).length;
@@ -287,21 +365,19 @@ function updateFilter(header, value, checked) {
     updateGraph();
     displayTable();
     refreshAllFilterOptions();
+    updateNodeControls();
 }
 
 function toggleDropdown(header) {
     const options = document.getElementById(`options-${header}`);
     const isOpen = options.classList.contains('show');
     
-    // Close all dropdowns first
     document.querySelectorAll('.multiselect-options').forEach(opt => {
         opt.classList.remove('show');
         opt.previousElementSibling.classList.remove('open');
     });
 
-    // Toggle current dropdown
     if (!isOpen) {
-        // Update options before showing
         updateFilterOptions(header);
         options.classList.add('show');
         options.previousElementSibling.classList.add('open');
@@ -322,17 +398,15 @@ function updateDropdownText(header) {
     } else if (selected.length === 1) {
         selectedText.textContent = selected[0];
     } else {
-        selectedText.textContent = `Multiple selected`;
+        selectedText.textContent = 'Multiple selected';
     }
 
     selectedCount.textContent = `${selected.length}/${total}`;
 }
 
-// Get filtered data based on current filter selections
 function getFilteredData() {
     return originalData.filter(row => {
         return Object.keys(columnFilters).every(header => {
-            // If no items are selected for this column, don't filter by it
             if (columnFilters[header].selected.length === 0) {
                 return true;
             }
@@ -341,7 +415,6 @@ function getFilteredData() {
     });
 }
 
-// Update displayTable to use filtered data
 function displayTable() {
     const filteredData = getFilteredData();
     const tableBody = document.getElementById('lineage-table').querySelector('tbody');
@@ -357,46 +430,110 @@ function displayTable() {
     });
 }
 
+function calculateLinks() {
+    const filteredData = getFilteredData();
+    const visibleNodeIds = new Set();
+    
+    // Get all nodes that should be visible based on filters and hiding
+    filteredData.forEach(row => {
+        if (isNodeVisible(row.childTableName)) {
+            visibleNodeIds.add(row.childTableName);
+        }
+        if (isNodeVisible(row.parentTableName)) {
+            visibleNodeIds.add(row.parentTableName);
+        }
+    });
+
+    const resultLinks = [];
+
+    // Add direct links between visible nodes
+    filteredData.forEach(row => {
+        if (visibleNodeIds.has(row.parentTableName) && 
+            visibleNodeIds.has(row.childTableName) &&
+            !hiddenRelationshipTypes.has(row.relationship)) {
+            resultLinks.push({
+                source: row.parentTableName,
+                target: row.childTableName,
+                relationship: row.relationship,
+                type: 'direct'
+            });
+        }
+    });
+
+    // Add indirect links when nodes are hidden (connect parent's parent to hidden node's children)
+    const allFilteredNodeIds = new Set();
+    filteredData.forEach(row => {
+        allFilteredNodeIds.add(row.childTableName);
+        allFilteredNodeIds.add(row.parentTableName);
+    });
+
+    for (const hiddenNodeId of allFilteredNodeIds) {
+        if (isNodeVisible(hiddenNodeId)) continue; // Skip visible nodes
+        
+        const incomingLinks = filteredData.filter(row => row.childTableName === hiddenNodeId);
+        const outgoingLinks = filteredData.filter(row => row.parentTableName === hiddenNodeId);
+
+        for (const incoming of incomingLinks) {
+            for (const outgoing of outgoingLinks) {
+                if (visibleNodeIds.has(incoming.parentTableName) &&
+                    visibleNodeIds.has(outgoing.childTableName) &&
+                    !hiddenRelationshipTypes.has(incoming.relationship)) {
+
+                    const exists = resultLinks.some(l =>
+                        l.source === incoming.parentTableName && 
+                        l.target === outgoing.childTableName && 
+                        l.relationship === incoming.relationship
+                    );
+
+                    if (!exists) {
+                        resultLinks.push({
+                            source: incoming.parentTableName,
+                            target: outgoing.childTableName,
+                            relationship: incoming.relationship,
+                            type: 'indirect',
+                            via: hiddenNodeId,
+                            viaRelationship: outgoing.relationship
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    return resultLinks;
+}
+
 function updateGraph() {
     const filteredData = getFilteredData();
 
-    // Create nodes and links from filtered data
+    // Create nodes from filtered and visible data
     const nodeSet = new Set();
-    const linkArray = [];
+    const visibleLinks = calculateLinks();
 
-    filteredData.forEach(row => {
-        nodeSet.add(JSON.stringify({
-            id: row.childTableName,
-            name: row.childTableName,
-            type: row.childTableType
-        }));
-        nodeSet.add(JSON.stringify({
-            id: row.parentTableName,
-            name: row.parentTableName,
-            type: row.parentTableType
-        }));
-
-        linkArray.push({
-            source: row.parentTableName,
-            target: row.childTableName,
-            relationship: row.relationship
-        });
+    // Add nodes that appear in visible links
+    visibleLinks.forEach(link => {
+        const sourceNode = originalNodes.find(n => n.id === link.source);
+        const targetNode = originalNodes.find(n => n.id === link.target);
+        
+        if (sourceNode) {
+            nodeSet.add(JSON.stringify(sourceNode));
+        }
+        if (targetNode) {
+            nodeSet.add(JSON.stringify(targetNode));
+        }
     });
 
     const newNodes = Array.from(nodeSet).map(nodeStr => JSON.parse(nodeStr));
-    const newLinks = linkArray;
 
     // Preserve positions of existing nodes
     newNodes.forEach(newNode => {
         const existingNode = nodes.find(n => n.id === newNode.id);
         if (existingNode) {
-            // Keep existing position and fix it
             newNode.x = existingNode.x;
             newNode.y = existingNode.y;
             newNode.fx = existingNode.fx;
             newNode.fy = existingNode.fy;
         } else if (nodePositions.has(newNode.id)) {
-            // Use stored position
             const pos = nodePositions.get(newNode.id);
             newNode.x = pos.x;
             newNode.y = pos.y;
@@ -406,7 +543,7 @@ function updateGraph() {
     });
 
     nodes = newNodes;
-    links = newLinks;
+    links = visibleLinks;
 
     // Update simulation
     simulation.nodes(nodes);
@@ -419,7 +556,7 @@ function updateGraph() {
     link.exit().remove();
 
     const linkEnter = link.enter().append("line")
-        .attr("class", d => `link ${relationshipColors[d.relationship]}`)
+        .attr("class", d => `link ${relationshipColors[d.relationship]} ${d.type}`)
         .attr("marker-end", "url(#arrowhead)")
         .on("mouseover", function (event, d) {
             tooltip.transition()
@@ -429,11 +566,17 @@ function updateGraph() {
             const sourceNode = typeof d.source === 'object' ? d.source : nodes.find(n => n.id === d.source);
             const targetNode = typeof d.target === 'object' ? d.target : nodes.find(n => n.id === d.target);
 
-            const tooltipHtml = `
-                        <strong>Relationship:</strong> ${d.relationship}<br>
-                        <strong>Parent:</strong> ${sourceNode ? sourceNode.name : 'Unknown'} (${sourceNode ? sourceNode.type : 'Unknown'})<br>
-                        <strong>Child:</strong> ${targetNode ? targetNode.name : 'Unknown'} (${targetNode ? targetNode.type : 'Unknown'})
-                    `;
+            let tooltipHtml = `
+                <strong>Relationship:</strong> ${d.relationship}<br>
+                <strong>Parent:</strong> ${sourceNode ? sourceNode.name : 'Unknown'} (${sourceNode ? sourceNode.type : 'Unknown'})<br>
+                <strong>Child:</strong> ${targetNode ? targetNode.name : 'Unknown'} (${targetNode ? targetNode.type : 'Unknown'})<br>
+                <strong>Connection:</strong> ${d.type}
+            `;
+            
+            if (d.type === 'indirect' && d.via) {
+                const viaNode = originalNodes.find(n => n.id === d.via);
+                tooltipHtml += `<br><strong>Via:</strong> ${viaNode ? viaNode.name : 'Unknown'} (${d.viaRelationship})`;
+            }
 
             tooltip.html(tooltipHtml)
                 .style("left", (event.pageX + 10) + "px")
@@ -463,18 +606,22 @@ function updateGraph() {
     nodeEnter.append("circle")
         .attr("class", d => `node ${d.type.toLowerCase()}`)
         .attr("r", 25)
+        .on("click", (event, d) => {
+            event.stopPropagation();
+            toggleIndividualNode(d.id);
+        })
         .on("mouseover", function (event, d) {
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
 
             const parents = links
-                .filter(l => l.target === d.id || (typeof l.target === 'object' && l.target.id === d.id))
+                .filter(l => (l.target === d.id || (typeof l.target === 'object' && l.target.id === d.id)) && l.type === 'direct')
                 .map(l => typeof l.source === 'object' ? l.source : nodes.find(n => n.id === l.source))
                 .filter(n => n);
 
             const children = links
-                .filter(l => l.source === d.id || (typeof l.source === 'object' && l.source.id === d.id))
+                .filter(l => (l.source === d.id || (typeof l.source === 'object' && l.source.id === d.id)) && l.type === 'direct')
                 .map(l => typeof l.target === 'object' ? l.target : nodes.find(n => n.id === l.target))
                 .filter(n => n);
 
@@ -488,6 +635,8 @@ function updateGraph() {
                 html += `<strong>Children:</strong><br>`;
                 html += children.map(c => `• ${c.name} (${c.type})`).join('<br>') + '<br>';
             }
+
+            html += '<br><em>Click to hide/show this node</em>';
 
             tooltip.html(html)
                 .style("left", (event.pageX + 10) + "px")
@@ -540,15 +689,48 @@ function updateGraph() {
     updateStatus();
 }
 
+function toggleNodeType(nodeType) {
+    const wasHidden = hiddenNodeTypes.has(nodeType);
+    
+    if (wasHidden) {
+        hiddenNodeTypes.delete(nodeType);
+        // Remove individual hiding for nodes of this type to ensure they show
+        originalNodes.filter(n => n.type === nodeType).forEach(node => {
+            hiddenNodes.delete(node.id);
+        });
+    } else {
+        hiddenNodeTypes.add(nodeType);
+    }
+    
+    updateGraph();
+    updateNodeControls();
+}
+
+function toggleIndividualNode(nodeId) {
+    if (hiddenNodes.has(nodeId)) {
+        hiddenNodes.delete(nodeId);
+    } else {
+        hiddenNodes.add(nodeId);
+    }
+    
+    updateGraph();
+    updateNodeControls();
+}
+
 function updateStatus() {
     const filteredData = getFilteredData();
-    const totalNodes = originalNodes.length;
-    const visibleNodes = nodes.length;
-    const filteredNodes = totalNodes - visibleNodes;
+    const totalFilteredNodes = new Set();
+    
+    filteredData.forEach(row => {
+        totalFilteredNodes.add(row.childTableName);
+        totalFilteredNodes.add(row.parentTableName);
+    });
+    
+    const visibleNodes = Array.from(totalFilteredNodes).filter(nodeId => isNodeVisible(nodeId));
 
-    document.getElementById('total-count').textContent = totalNodes;
-    document.getElementById('visible-count').textContent = visibleNodes;
-    document.getElementById('filtered-count').textContent = filteredNodes;
+    document.getElementById('total-count').textContent = originalNodes.length;
+    document.getElementById('visible-count').textContent = visibleNodes.length;
+    document.getElementById('filtered-count').textContent = originalNodes.length - visibleNodes.length;
 }
 
 function updateRelationshipLegend() {
@@ -572,10 +754,15 @@ function updateRelationshipLegend() {
 }
 
 function resetAllFilters() {
-    // Reset all filters to select all original options
+    // Reset column filters
     Object.keys(columnFilters).forEach(header => {
         columnFilters[header].selected = [...columnFilters[header].allOptions];
     });
+
+    // Reset hiding states
+    hiddenNodes.clear();
+    hiddenNodeTypes.clear();
+    hiddenRelationshipTypes.clear();
 
     // Refresh all filter options and update UI
     refreshAllFilterOptions();
@@ -591,6 +778,7 @@ function resetAllFilters() {
 
     updateGraph();
     displayTable();
+    updateNodeControls();
 }
 
 // Drag functions with position persistence
@@ -607,10 +795,8 @@ function dragged(event, d) {
 
 function dragended(event, d) {
     if (!event.active) simulation.alphaTarget(0);
-    // Keep the node fixed at its final position
     d.fx = event.x;
     d.fy = event.y;
-    // Store position for later use
     nodePositions.set(d.id, { x: event.x, y: event.y });
 }
 

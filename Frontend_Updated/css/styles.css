@@ -4,6 +4,7 @@ body {
     padding: 20px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -22,8 +23,10 @@ h1 {
 
 .controls {
     width: 350px;
+    min-width: 300px;
+    max-width: 350px;
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     backdrop-filter: blur(10px);
@@ -31,10 +34,12 @@ h1 {
     max-height: 80vh;
     overflow-y: auto;
     border: 1px solid rgba(255,255,255,0.2);
+    box-sizing: border-box;
 }
 
 .graph-container {
     flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -138,17 +143,20 @@ h1 {
 
 .btn {
     display: inline-block;
-    padding: 8px 14px;
-    margin: 3px 2px;
+    padding: 6px 10px;
+    margin: 2px 1px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     text-align: center;
     text-decoration: none;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .btn:hover {
@@ -169,9 +177,36 @@ h1 {
     font-weight: 600;
 }
 
+.btn-hide {
+    background: linear-gradient(135deg, #E74C3C, #C0392B);
+    color: white;
+}
+
+.btn-show {
+    background: linear-gradient(135deg, #27AE60, #229954);
+    color: white;
+}
+
+.btn-type-control {
+    background: linear-gradient(135deg, #3498DB, #2980B9);
+    color: white;
+    margin: 1px;
+    padding: 4px 8px;
+    font-size: 10px;
+}
+
+.btn-individual {
+    margin: 1px;
+    padding: 4px 6px;
+    font-size: 10px;
+    max-width: calc(50% - 4px);
+    display: inline-block;
+    vertical-align: top;
+}
+
 .section {
-    margin-top: 20px;
-    padding: 16px;
+    margin-top: 15px;
+    padding: 12px;
     background: rgba(248, 249, 250, 0.8);
     border-radius: 8px;
     border-left: 4px solid #3498DB;
@@ -180,50 +215,79 @@ h1 {
 
 .section h4 {
     margin-top: 0;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: #2c3e50;
+    font-size: 14px;
+}
+
+.node-controls {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.type-buttons {
+    margin-bottom: 10px;
+}
+
+.individual-buttons {
+    max-height: 150px;
+    overflow-y: auto;
 }
 
 .filter-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .filter-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-weight: 600;
     color: #2c3e50;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .multiselect {
     position: relative;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .multiselect-dropdown {
     width: 100%;
-    padding: 10px;
+    min-height: 32px;
+    padding: 8px 10px;
     border: 2px solid #ddd;
     border-radius: 6px;
     background: white;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .multiselect-dropdown:hover {
     border-color: #3498DB;
 }
 
+.selected-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 5px;
+    min-width: 0;
+}
+
 .multiselect-dropdown::after {
     content: '▼';
-    font-size: 12px;
+    font-size: 10px;
     color: #666;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .multiselect-dropdown.open::after {
@@ -240,7 +304,7 @@ h1 {
     border: 2px solid #ddd;
     border-top: none;
     border-radius: 0 0 6px 6px;
-    max-height: 200px;
+    max-height: 180px;
     overflow-y: auto;
     z-index: 1000;
     display: none;
@@ -264,13 +328,15 @@ h1 {
 }
 
 .multiselect-option {
-    padding: 10px;
+    padding: 8px 10px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     border-bottom: 1px solid #eee;
     display: flex;
     align-items: center;
     transition: background-color 0.2s ease;
+    min-height: 30px;
+    box-sizing: border-box;
 }
 
 .multiselect-option:hover {
@@ -285,73 +351,97 @@ h1 {
     margin-right: 8px;
     cursor: pointer;
     accent-color: #3498DB;
+    flex-shrink: 0;
 }
 
-/* Enhanced styling for indeterminate checkboxes */
+.multiselect-option span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
 .multiselect-option input[type="checkbox"]:indeterminate {
     accent-color: #F39C12;
-}
-
-.multiselect-option input[type="checkbox"]:indeterminate::before {
-    content: '−';
-    color: white;
-    font-weight: bold;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
 }
 
 .selected-count {
     background: #3498DB;
     color: white;
     padding: 2px 6px;
-    border-radius: 12px;
-    font-size: 11px;
-    margin-left: 5px;
+    border-radius: 10px;
+    font-size: 10px;
     font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .status {
-    margin-top: 20px;
-    padding: 12px;
+    margin-top: 15px;
+    padding: 10px;
     background: rgba(236, 240, 241, 0.9);
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     color: #2c3e50;
     border-left: 4px solid #3498DB;
 }
 
 .legend {
-    margin-top: 20px;
-    padding: 16px;
+    margin-top: 15px;
+    padding: 12px;
     background: rgba(248, 249, 250, 0.9);
     border-radius: 8px;
     border-left: 4px solid #2ECC71;
-    font-size: 12px;
+    font-size: 11px;
     color: #2c3e50;
 }
 
 .relationship-legend-item {
     display: flex;
     align-items: center;
-    margin: 4px 0;
-    font-size: 11px;
+    margin: 3px 0;
+    font-size: 10px;
 }
 
 .relationship-color-box {
-    width: 20px;
+    width: 16px;
     height: 3px;
-    margin-right: 8px;
+    margin-right: 6px;
     border-radius: 2px;
+    flex-shrink: 0;
+}
+
+#lineage-data {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    overflow: hidden; /* Prevent container from expanding beyond viewport */
+}
+
+#lineage-data h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #3498DB;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for table */
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 #lineage-table {
     width: 100%;
+    min-width: 600px; /* Minimum width to prevent crushing */
     border-collapse: collapse;
-    margin-top: 20px;
     font-family: sans-serif;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -359,17 +449,22 @@ h1 {
 #lineage-table th,
 #lineage-table td {
     border: 1px solid #ddd;
-    padding: 12px 10px;
+    padding: 10px 8px;
     text-align: left;
+    word-wrap: break-word;
+    max-width: 200px; /* Prevent individual columns from getting too wide */
 }
 
 #lineage-table thead th {
     background-color: #f2f2f2;
     color: #333;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 #lineage-table tbody tr:nth-child(even) {
@@ -382,30 +477,13 @@ h1 {
 }
 
 #lineage-table tbody td {
-    font-size: 13px;
-}
-
-#lineage-data {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-
-#lineage-data h2 {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 2px solid #3498DB;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    font-size: 18px;
+    font-size: 12px;
 }
 
 .multiselect-option.select-all {
     border-bottom: 2px solid #3498DB;
     font-weight: bold;
-    padding: 12px 10px;
+    padding: 10px;
     background-color: #f8f9fa;
     position: sticky;
     top: 0;
@@ -416,25 +494,39 @@ h1 {
     background-color: #e9ecef;
 }
 
-.multiselect-option.select-all input[type="checkbox"] {
-    transform: scale(1.1);
-}
-
-/* Scrollbar styling for dropdown */
-.multiselect-options::-webkit-scrollbar {
+/* Scrollbar styling */
+.multiselect-options::-webkit-scrollbar,
+.controls::-webkit-scrollbar,
+.table-container::-webkit-scrollbar,
+.node-controls::-webkit-scrollbar,
+.individual-buttons::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
-.multiselect-options::-webkit-scrollbar-track {
+.multiselect-options::-webkit-scrollbar-track,
+.controls::-webkit-scrollbar-track,
+.table-container::-webkit-scrollbar-track,
+.node-controls::-webkit-scrollbar-track,
+.individual-buttons::-webkit-scrollbar-track {
     background: #f1f1f1;
+    border-radius: 3px;
 }
 
-.multiselect-options::-webkit-scrollbar-thumb {
+.multiselect-options::-webkit-scrollbar-thumb,
+.controls::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb,
+.node-controls::-webkit-scrollbar-thumb,
+.individual-buttons::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 3px;
 }
 
-.multiselect-options::-webkit-scrollbar-thumb:hover {
+.multiselect-options::-webkit-scrollbar-thumb:hover,
+.controls::-webkit-scrollbar-thumb:hover,
+.table-container::-webkit-scrollbar-thumb:hover,
+.node-controls::-webkit-scrollbar-thumb:hover,
+.individual-buttons::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
@@ -448,34 +540,8 @@ h1 {
     color: #3498DB;
 }
 
-/* Improved button styling */
-.btn-reset:hover {
-    background: linear-gradient(135deg, #E67E22, #D35400);
-    transform: translateY(-2px);
-}
-
-.btn-reset:active {
-    transform: translateY(0);
-}
-
-/* Loading states and transitions */
-.multiselect-dropdown.loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.multiselect-dropdown.loading::after {
-    content: '⟳';
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
 /* Responsive design improvements */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .container {
         flex-direction: column;
         gap: 15px;
@@ -483,11 +549,42 @@ h1 {
     
     .controls {
         width: 100%;
-        max-height: none;
+        max-width: none;
+        max-height: 50vh;
     }
     
     .multiselect-options {
-        max-height: 150px;
+        max-height: 120px;
+    }
+    
+    .node-controls {
+        max-height: 120px;
+    }
+    
+    .individual-buttons {
+        max-height: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .controls {
+        padding: 10px;
+    }
+    
+    .btn-individual {
+        max-width: calc(100% - 4px);
+        margin-bottom: 2px;
+    }
+    
+    #lineage-table th,
+    #lineage-table td {
+        padding: 6px 4px;
+        font-size: 11px;
+        max-width: 150px;
     }
 }
 
@@ -510,4 +607,20 @@ h1 {
 #lineage-table tbody tr:hover {
     transform: translateX(2px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Loading states */
+.multiselect-dropdown.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.multiselect-dropdown.loading::after {
+    content: '⟳';
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
