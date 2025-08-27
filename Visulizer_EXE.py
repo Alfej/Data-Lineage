@@ -11,7 +11,7 @@ import time
 
 # HTML template string
 print("📥 Loading CSV data...")
-data = pd.read_csv("C:\\DataLineage\\parent_child_lineage.csv")
+data = pd.read_csv(input("Please enter the path to your CSV file: "))
 df = pd.DataFrame(data)
 print(f"✅ Loaded CSV with shape: {df.shape}")
 CSS_CONTENT = '''
@@ -1753,8 +1753,8 @@ def check_csv_structure():
     
     required_columns = ['childTableName', 'parentTableName', 'childTableType', 'parentTableType']
     
-    print("🔍 Checking CSV structure...")
-    print(f"📋 Available columns: {list(df.columns)}")
+    print("Checking CSV structure...")
+    print(f"Available columns: {list(df.columns)}")
     
     missing_required = [col for col in required_columns if col not in df.columns]
     if missing_required:
@@ -1762,16 +1762,16 @@ def check_csv_structure():
         return False
     
     if 'relationship' in df.columns:
-        print("✅ Relationship column found!")
-        print(f"🔗 Unique relationships: {list(df['relationship'].unique())}")
+        print("Relationship column found!")
+        print(f"Unique relationships: {list(df['relationship'].unique())}")
     else:
-        print("⚠️  No 'relationship' column found. Will use 'unknown' as default.")
+        print("No 'relationship' column found. Will use 'unknown' as default.")
     
-    print(f"📊 Data shape: {df.shape}")
+    print(f"Data shape: {df.shape}")
     return True
 
 if __name__ == "__main__":
     if check_csv_structure():
         create_interactive_html_graph()
     else:
-        print("❌ Please check your CSV file structure and try again.")
+        print(" Please check your CSV file structure and try again.")

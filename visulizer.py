@@ -12,7 +12,7 @@ import time
 
 # Sample data
 # Ensure the CSV is in the same directory as this script, or provide the full path.
-data = pd.read_csv("C:\\DataLineage\\parent_child_lineage.csv")
+data = pd.read_csv(input("Please enter the path to your CSV file: "))
 df = pd.DataFrame(data)
 
 def process_data():

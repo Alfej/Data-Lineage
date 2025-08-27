@@ -9,6 +9,10 @@ let hiddenNodeTypes = new Set(); // Track hidden node types
 let hiddenRelationshipTypes = new Set(); // Track hidden relationship types
 let csvHeaders = []; // Store CSV headers for dynamic table display
 
+// Persistent storage keys
+const NODE_POSITIONS_STORAGE_KEY = 'graph_node_positions';
+const CURRENT_SESSION_KEY = 'graph_current_session';
+
 // Set up SVG and tooltip
 const svg = d3.select("#graph");
 const width = 800;
@@ -43,6 +47,92 @@ const simulation = d3.forceSimulation()
     .force("collision", d3.forceCollide().radius(35))
     .alphaDecay(0.05) // Slower decay for smoother settling
     .velocityDecay(0.8); // Higher velocity decay for stability
+
+// Load node positions from localStorage - only for matching nodes
+function loadNodePositions(currentNodeIds) {
+    try {
+        const savedPositions = localStorage.getItem(NODE_POSITIONS_STORAGE_KEY);
+        if (savedPositions) {
+            const positionsData = JSON.parse(savedPositions);
+            nodePositions.clear();
+            
+            let matchedNodes = 0;
+            let totalSavedNodes = Object.keys(positionsData).length;
+            
+            // Only load positions for nodes that exist in current data
+            Object.entries(positionsData).forEach(([nodeId, position]) => {
+                if (currentNodeIds.has(nodeId)) {
+                    nodePositions.set(nodeId, position);
+                    matchedNodes++;
+                }
+            });
+            
+            console.log(`Position matching: ${matchedNodes}/${totalSavedNodes} saved positions matched current nodes`);
+            console.log('Matched node positions:', Array.from(nodePositions.entries()));
+            
+            return matchedNodes > 0;
+        }
+    } catch (error) {
+        console.warn('Failed to load node positions from localStorage:', error);
+    }
+    return false;
+}
+
+// Save node positions to localStorage and mark session as updated
+function saveNodePositions() {
+    try {
+        // Convert Map to object for JSON serialization
+        const positionsData = {};
+        nodePositions.forEach((position, nodeId) => {
+            positionsData[nodeId] = position;
+        });
+        
+        localStorage.setItem(NODE_POSITIONS_STORAGE_KEY, JSON.stringify(positionsData));
+        localStorage.setItem(CURRENT_SESSION_KEY, 'updated');
+        console.log('Saved node positions to localStorage');
+    } catch (error) {
+        console.warn('Failed to save node positions to localStorage:', error);
+    }
+}
+
+// Clear saved positions and session data
+function clearSavedPositions() {
+    try {
+        localStorage.removeItem(NODE_POSITIONS_STORAGE_KEY);
+        localStorage.removeItem(CURRENT_SESSION_KEY);
+        nodePositions.clear();
+        console.log('Cleared saved node positions and session data');
+        
+        // Restart simulation to reposition nodes
+        simulation.alpha(0.8).restart();
+    } catch (error) {
+        console.warn('Failed to clear saved positions:', error);
+    }
+}
+
+// Clear old positions and save new ones for current session
+function refreshPositionsForNewData() {
+    try {
+        // Clear old positions
+        localStorage.removeItem(NODE_POSITIONS_STORAGE_KEY);
+        
+        // Save current positions for new data
+        saveNodePositions();
+        
+        console.log('Refreshed positions for new data set');
+    } catch (error) {
+        console.warn('Failed to refresh positions for new data:', error);
+    }
+}
+
+// Check if this is a fresh session or if positions have been updated
+function isSessionUpdated() {
+    try {
+        return localStorage.getItem(CURRENT_SESSION_KEY) === 'updated';
+    } catch (error) {
+        return false;
+    }
+}
 
 // Parse CSV and initialize
 function parseCsvData(csvText) {
@@ -116,6 +206,14 @@ function initializeData() {
     originalNodes = Array.from(nodeSet).map(nodeStr => JSON.parse(nodeStr));
     originalLinks = linkArray;
 
+    // Get current node IDs for position matching
+    const currentNodeIds = new Set(originalNodes.map(node => node.id));
+    
+    // Load saved positions only for matching nodes
+    const hasMatchingPositions = loadNodePositions(currentNodeIds);
+    
+    console.log(`Current data has ${currentNodeIds.size} nodes:`, Array.from(currentNodeIds));
+
     // Extract unique relationship types and assign colors
     relationshipTypes = [...new Set(originalLinks.map(link => link.relationship))];
     relationshipTypes.forEach((rel, index) => {
@@ -134,10 +232,86 @@ function initializeData() {
 
     createFilterControls(parsed.headers);
     createNodeHidingControls();
+    createPositionControls(); // Add position control buttons
     createTableHeaders(); // Create dynamic table headers
     updateGraph();
     updateRelationshipLegend();
     displayTable();
+
+    // After first render, if we had matching positions, clear old data and save new positions
+    if (hasMatchingPositions) {
+        console.log('Found matching positions from previous session');
+        // Wait a bit for the graph to settle, then refresh positions for new data
+        setTimeout(() => {
+            refreshPositionsForNewData();
+        }, 1000);
+    } else {
+        console.log('No matching positions found, starting fresh');
+        // Clear any old position data since nothing matched
+        localStorage.removeItem(NODE_POSITIONS_STORAGE_KEY);
+        localStorage.removeItem(CURRENT_SESSION_KEY);
+    }
+}
+
+// Create position control buttons
+function createPositionControls() {
+    const container = document.getElementById('filter-controls');
+    
+    const positionSection = document.createElement('div');
+    positionSection.className = 'section';
+    positionSection.innerHTML = `
+        <h4>Position Controls</h4>
+        <div class="position-controls">
+            <button id="reset-positions-btn" class="btn btn-secondary">Reset Positions</button>
+            <button id="save-positions-btn" class="btn btn-primary">Save Positions</button>
+            <button id="refresh-positions-btn" class="btn btn-warning">Refresh for New Data</button>
+        </div>
+        <div id="position-status" class="position-status"></div>
+    `;
+    
+    container.appendChild(positionSection);
+    
+    // Add event listeners
+    document.getElementById('reset-positions-btn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset all node positions? This will clear saved positions.')) {
+            clearSavedPositions();
+        }
+    });
+    
+    document.getElementById('save-positions-btn').addEventListener('click', () => {
+        saveNodePositions();
+        updatePositionStatus('Positions saved successfully!');
+    });
+
+    document.getElementById('refresh-positions-btn').addEventListener('click', () => {
+        if (confirm('This will clear old positions and save current positions for this data set. Continue?')) {
+            refreshPositionsForNewData();
+            updatePositionStatus('Positions refreshed for current data!');
+        }
+    });
+
+    // Show initial status
+    updatePositionStatus();
+}
+
+// Update position status display
+function updatePositionStatus(message = null) {
+    const statusElement = document.getElementById('position-status');
+    if (!statusElement) return;
+
+    if (message) {
+        statusElement.textContent = message;
+        statusElement.style.color = '#28a745';
+        // Clear message after 3 seconds
+        setTimeout(() => {
+            updatePositionStatus();
+        }, 3000);
+    } else {
+        const savedCount = nodePositions.size;
+        const totalNodes = originalNodes ? originalNodes.length : 0;
+        statusElement.textContent = `Saved positions: ${savedCount}/${totalNodes} nodes`;
+        statusElement.style.color = '#6c757d';
+    }
 }
 
 function createFilterControls(headers) {
@@ -545,21 +719,25 @@ function updateGraph() {
 
     const newNodes = Array.from(nodeSet).map(nodeStr => JSON.parse(nodeStr));
 
-    // Preserve positions of existing nodes
+    // Preserve positions of existing nodes and apply saved positions
     newNodes.forEach(newNode => {
         const existingNode = nodes.find(n => n.id === newNode.id);
         if (existingNode) {
+            // Keep current position if node already exists in current render
             newNode.x = existingNode.x;
             newNode.y = existingNode.y;
             newNode.fx = existingNode.fx;
             newNode.fy = existingNode.fy;
         } else if (nodePositions.has(newNode.id)) {
+            // Apply saved position only if this node exists in saved positions
             const pos = nodePositions.get(newNode.id);
             newNode.x = pos.x;
             newNode.y = pos.y;
             newNode.fx = pos.x;
             newNode.fy = pos.y;
+            console.log(`Applied saved position for node ${newNode.id}:`, pos);
         }
+        // If no existing or saved position, let D3 handle initial positioning naturally
     });
 
     nodes = newNodes;
@@ -707,6 +885,9 @@ function updateGraph() {
     }
 
     updateStatus();
+    
+    // Update position status after graph update
+    updatePositionStatus();
 }
 
 function toggleNodeType(nodeType) {
@@ -801,7 +982,7 @@ function resetAllFilters() {
     updateNodeControls();
 }
 
-// Drag functions with position persistence
+// Enhanced drag functions with automatic position saving
 function dragstarted(event, d) {
     if (!event.active) simulation.alphaTarget(0.1).restart();
     d.fx = d.x;
@@ -817,7 +998,14 @@ function dragended(event, d) {
     if (!event.active) simulation.alphaTarget(0);
     d.fx = event.x;
     d.fy = event.y;
+    
+    // Store position in memory
     nodePositions.set(d.id, { x: event.x, y: event.y });
+    
+    // Auto-save positions to localStorage after drag
+    saveNodePositions();
+    
+    console.log(`Node ${d.id} moved to position:`, { x: event.x, y: event.y });
 }
 
 // Close dropdowns when clicking outside
