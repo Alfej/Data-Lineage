@@ -18,12 +18,12 @@ def read_queries_from_txt(file_path):
 
 def read_queries_from_excel(file_path):
     """Read SQL queries from an Excel file. 
-    Assumes the Excel file has a column named 'query' or 'sql' containing SQL queries."""
+    Assumes the Excel file has a column named 'query', 'sql', or 'view_sql' containing SQL queries."""
     try:
         df = pd.read_excel(file_path)
         # Try common column names for SQL queries
         query_column = None
-        for col in ['query', 'Query', 'QUERY', 'sql', 'SQL', 'Sql']:
+        for col in ['query', 'Query', 'QUERY', 'sql', 'SQL', 'Sql', 'view_sql', 'VIEW_SQL', 'View_SQL']:
             if col in df.columns:
                 query_column = col
                 break
@@ -31,8 +31,9 @@ def read_queries_from_excel(file_path):
         if query_column is None:
             # If no standard column found, use the first column
             query_column = df.columns[0]
-            logger.warning(f"No 'query' or 'sql' column found in {file_path}. Using first column: {query_column}")
+            logger.warning(f"No 'query', 'sql', or 'view_sql' column found in {file_path}. Using first column: {query_column}")
         
+        logger.info(f"Using column '{query_column}' for queries from {file_path}")
         # Combine all queries from the column
         queries = df[query_column].dropna().astype(str).tolist()
         return ';'.join(queries)
@@ -209,6 +210,47 @@ dataframe_rows = process_queries(sql, custom_name)
 
 # Create the final DataFrame from the list of rows in one go
 df = pd.DataFrame(dataframe_rows)
+
+# Add table types by looking up from the object types file
+if not df.empty:
+    types_file_path = input("Enter path to object types CSV file (press Enter to skip): ").strip()
+    if types_file_path and Path(types_file_path).exists():
+        try:
+            # Read the object types file
+            types_df = pd.read_csv(types_file_path)
+            logger.info(f"Loaded object types from {types_file_path}")
+            
+            # Create a dictionary for fast lookup: obj_name -> TableKind
+            # Handle case-insensitive matching and strip whitespace
+            type_lookup = {}
+            for _, row in types_df.iterrows():
+                obj_name = str(row['obj_name']).strip().upper()
+                table_kind = str(row['TableKind']).strip()
+                type_lookup[obj_name] = table_kind
+            
+            # Function to get table type
+            def get_table_type(table_name):
+                if pd.isna(table_name) or table_name is None:
+                    return None
+                # Clean the table name and convert to uppercase for matching
+                clean_name = str(table_name).strip().upper()
+                return type_lookup.get(clean_name, 'Unknown')
+            
+            # Add childTypes and parentTypes columns
+            df['childTypes'] = df['childTableName'].apply(get_table_type)
+            df['parentTypes'] = df['parentTableName'].apply(get_table_type)
+            logger.info("Added childTypes and parentTypes columns")
+        except Exception as e:
+            logger.error(f"Error processing object types file: {e}")
+            logger.exception("Full traceback:")
+            df['childTypes'] = 'Unknown'
+            df['parentTypes'] = 'Unknown'
+    else:
+        logger.info("Skipping table types lookup")
+        df['childTypes'] = 'Unknown'
+        df['parentTypes'] = 'Unknown'
+else:
+    logger.warning("DataFrame is empty, no types will be added")
 
 # Print the resulting DataFrame
 print("\n--- Generated DataFrame ---")
