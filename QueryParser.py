@@ -105,6 +105,16 @@ def read_queries_from_input(input_path):
     return ""
 
 
+def clean_table_name(table_name):
+    """Remove <default>. prefix from table names."""
+    if table_name is None:
+        return None
+    table_str = str(table_name).strip()
+    if table_str.startswith('<default>.'):
+        return table_str.replace('<default>.', '', 1)
+    return table_str
+
+
 def process_queries(sql_content, custom_name):
     """Process SQL queries and generate lineage data."""
     dataframe_rows = []
@@ -124,9 +134,9 @@ def process_queries(sql_content, custom_name):
                     # Directly create a row for each parent-child relationship
                     for parent in parent_tables:
                         dataframe_rows.append({
-                            "childTableName": child_table,
+                            "childTableName": clean_table_name(child_table),
                             "relationship": sql_type,
-                            "parentTableName": parent
+                            "parentTableName": clean_table_name(parent)
                         })
 
             else:
@@ -155,7 +165,7 @@ def process_queries(sql_content, custom_name):
                         dataframe_rows.append({
                             "childTableName": custom_name,
                             "relationship": sql_type,
-                            "parentTableName": parent
+                            "parentTableName": clean_table_name(parent)
                         })
                 else: # Handles Insert, Update, etc.
                     # Relationship 1: The target tables depend on the source tables
@@ -163,14 +173,14 @@ def process_queries(sql_content, custom_name):
                         for child in target_tables:
                             for parent in source_tables:
                                 dataframe_rows.append({
-                                    "childTableName": child,
+                                    "childTableName": clean_table_name(child),
                                     "relationship": sql_type,
-                                    "parentTableName": parent
+                                    "parentTableName": clean_table_name(parent)
                                 })
                     else: # Handle cases like INSERT INTO ... VALUES with no source tables
                         for child in target_tables:
                              dataframe_rows.append({
-                                "childTableName": child,
+                                "childTableName": clean_table_name(child),
                                 "relationship": sql_type,
                                 "parentTableName": None
                             })
@@ -181,7 +191,7 @@ def process_queries(sql_content, custom_name):
                         dataframe_rows.append({
                             "childTableName": custom_name,
                             "relationship": sql_type,
-                            "parentTableName": parent # The target tables are the parents here
+                            "parentTableName": clean_table_name(parent) # The target tables are the parents here
                         })
 
         except Exception as e:
@@ -220,6 +230,31 @@ if not df.empty:
             types_df = pd.read_csv(types_file_path)
             logger.info(f"Loaded object types from {types_file_path}")
             
+            # If input was an Excel file with view_name column, add those views to the types
+            if input_path and Path(input_path).exists():
+                input_file = Path(input_path)
+                if input_file.suffix.lower() in ['.xlsx', '.xls', '.xlsm']:
+                    try:
+                        views_df = pd.read_excel(input_path)
+                        if 'view_name' in views_df.columns:
+                            logger.info(f"Found view_name column in {input_file.name}")
+                            unique_views = views_df['view_name'].dropna().unique()
+                            logger.info(f"Adding {len(unique_views)} unique views to ObjectTypes")
+                            
+                            # Create new entries for views not already in types_df
+                            new_views = []
+                            for view_name in unique_views:
+                                view_name_str = str(view_name).strip()
+                                if view_name_str.upper() not in [str(x).strip().upper() for x in types_df['obj_name']]:
+                                    new_views.append({'obj_name': view_name_str, 'TableKind': 'V'})
+                            
+                            if new_views:
+                                new_views_df = pd.DataFrame(new_views)
+                                types_df = pd.concat([types_df, new_views_df], ignore_index=True)
+                                logger.info(f"Added {len(new_views)} new views to ObjectTypes")
+                    except Exception as e:
+                        logger.warning(f"Could not extract view names from Excel file: {e}")
+            
             # Create a dictionary for fast lookup: obj_name -> TableKind
             # Handle case-insensitive matching and strip whitespace
             type_lookup = {}
@@ -228,27 +263,41 @@ if not df.empty:
                 table_kind = str(row['TableKind']).strip()
                 type_lookup[obj_name] = table_kind
             
-            # Function to get table type
-            def get_table_type(table_name):
+            # Function to get table type - defaults to 'View' for unknown tables
+            def get_table_type(table_name, is_query_name=False):
                 if pd.isna(table_name) or table_name is None:
                     return None
+                # If it's the query name, return 'Unknown'
+                if is_query_name:
+                    return 'Unknown'
                 # Clean the table name and convert to uppercase for matching
                 clean_name = str(table_name).strip().upper()
-                return type_lookup.get(clean_name, 'Unknown')
+                # Get the type code (V or T)
+                type_code = type_lookup.get(clean_name, 'V')
+                # Convert to full names
+                if type_code == 'V':
+                    return 'View'
+                elif type_code == 'T':
+                    return 'Table'
+                else:
+                    return 'View'
             
             # Add childTypes and parentTypes columns
-            df['childTypes'] = df['childTableName'].apply(get_table_type)
+            # Check if childTableName is the custom query name
+            df['childTypes'] = df['childTableName'].apply(
+                lambda x: get_table_type(x, is_query_name=(x == custom_name))
+            )
             df['parentTypes'] = df['parentTableName'].apply(get_table_type)
             logger.info("Added childTypes and parentTypes columns")
         except Exception as e:
             logger.error(f"Error processing object types file: {e}")
             logger.exception("Full traceback:")
-            df['childTypes'] = 'Unknown'
-            df['parentTypes'] = 'Unknown'
+            df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
+            df['parentTypes'] = 'View'
     else:
-        logger.info("Skipping table types lookup")
-        df['childTypes'] = 'Unknown'
-        df['parentTypes'] = 'Unknown'
+        logger.info("Skipping table types lookup - defaulting all to View")
+        df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
+        df['parentTypes'] = 'View'
 else:
     logger.warning("DataFrame is empty, no types will be added")
 
