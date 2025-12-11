@@ -5,6 +5,7 @@ import pandas as pd
 from sqllineage.runner import LineageRunner
 import os
 from pathlib import Path
+import time
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -144,7 +145,7 @@ def process_queries(sql_content, custom_name):
                     # First, try to get lineage by transpiling to T-SQL.
                     # This might be desirable if the rest of your tools work better with T-SQL.
                     tsql = sqlglot.transpile(one_sql, read="teradata", write="tsql")[0]
-                    print(tsql)
+                    # print(tsql)  # Commented out for performance - printing slows down execution significantly
                     result = LineageRunner(tsql, dialect='tsql', verbose=False)
                     logger.info("Successfully transpiled to T-SQL for lineage analysis.")
                     target_tables = [str(table) for table in result.target_tables]
@@ -200,111 +201,149 @@ def process_queries(sql_content, custom_name):
     return dataframe_rows
 
 
-# Main execution
-custom_name = input("Enter Query name: ")
-input_path = input("Enter path to query file or folder (press Enter for default 'query.txt'): ").strip()
+# Main execution - only run if this file is executed directly
+if __name__ == "__main__":
+    print("\n" + "="*60)
+    print("STANDARD SQL QUERY PARSER")
+    print("="*60 + "\n")
 
-# Use default query.txt if no path provided
-if not input_path:
-    input_path = 'query.txt'
+    overall_start_time = time.time()
 
-# Read queries from the input (file or folder)
-sql = read_queries_from_input(input_path)
+    custom_name = input("Enter Query name: ")
+    input_path = input("Enter path to query file or folder (press Enter for default 'query.txt'): ").strip()
 
-if not sql:
-    logger.error("No queries found to process. Exiting.")
-    exit(1)
+    # Use default query.txt if no path provided
+    if not input_path:
+        input_path = 'query.txt'
 
-# Process the queries
-dataframe_rows = process_queries(sql, custom_name)
+    # Read queries from the input (file or folder)
+    logger.info("Reading queries from input...")
+    read_start_time = time.time()
+    sql = read_queries_from_input(input_path)
+    read_time = time.time() - read_start_time
+    logger.info(f"Queries read in {read_time:.2f} seconds")
 
-# Create the final DataFrame from the list of rows in one go
-df = pd.DataFrame(dataframe_rows)
+    if not sql:
+        logger.error("No queries found to process. Exiting.")
+        exit(1)
 
-# Add table types by looking up from the object types file
-if not df.empty:
-    types_file_path = input("Enter path to object types CSV file (press Enter to skip): ").strip()
-    if types_file_path and Path(types_file_path).exists():
-        try:
-            # Read the object types file
-            types_df = pd.read_csv(types_file_path)
-            logger.info(f"Loaded object types from {types_file_path}")
-            
-            # If input was an Excel file with view_name column, add those views to the types
-            if input_path and Path(input_path).exists():
-                input_file = Path(input_path)
-                if input_file.suffix.lower() in ['.xlsx', '.xls', '.xlsm']:
-                    try:
-                        views_df = pd.read_excel(input_path)
-                        if 'view_name' in views_df.columns:
-                            logger.info(f"Found view_name column in {input_file.name}")
-                            unique_views = views_df['view_name'].dropna().unique()
-                            logger.info(f"Adding {len(unique_views)} unique views to ObjectTypes")
-                            
-                            # Create new entries for views not already in types_df
-                            new_views = []
-                            for view_name in unique_views:
-                                view_name_str = str(view_name).strip()
-                                if view_name_str.upper() not in [str(x).strip().upper() for x in types_df['obj_name']]:
-                                    new_views.append({'obj_name': view_name_str, 'TableKind': 'V'})
-                            
-                            if new_views:
-                                new_views_df = pd.DataFrame(new_views)
-                                types_df = pd.concat([types_df, new_views_df], ignore_index=True)
-                                logger.info(f"Added {len(new_views)} new views to ObjectTypes")
-                    except Exception as e:
-                        logger.warning(f"Could not extract view names from Excel file: {e}")
-            
-            # Create a dictionary for fast lookup: obj_name -> TableKind
-            # Handle case-insensitive matching and strip whitespace
-            type_lookup = {}
-            for _, row in types_df.iterrows():
-                obj_name = str(row['obj_name']).strip().upper()
-                table_kind = str(row['TableKind']).strip()
-                type_lookup[obj_name] = table_kind
-            
-            # Function to get table type - defaults to 'View' for unknown tables
-            def get_table_type(table_name, is_query_name=False):
-                if pd.isna(table_name) or table_name is None:
-                    return None
-                # If it's the query name, return 'Unknown'
-                if is_query_name:
-                    return 'Unknown'
-                # Clean the table name and convert to uppercase for matching
-                clean_name = str(table_name).strip().upper()
-                # Get the type code (V or T)
-                type_code = type_lookup.get(clean_name, 'V')
-                # Convert to full names
-                if type_code == 'V':
-                    return 'View'
-                elif type_code == 'T':
-                    return 'Table'
-                else:
-                    return 'View'
-            
-            # Add childTypes and parentTypes columns
-            # Check if childTableName is the custom query name
-            df['childTypes'] = df['childTableName'].apply(
-                lambda x: get_table_type(x, is_query_name=(x == custom_name))
-            )
-            df['parentTypes'] = df['parentTableName'].apply(get_table_type)
-            logger.info("Added childTypes and parentTypes columns")
-        except Exception as e:
-            logger.error(f"Error processing object types file: {e}")
-            logger.exception("Full traceback:")
+    # Process the queries
+    logger.info("Processing queries...")
+    process_start_time = time.time()
+    dataframe_rows = process_queries(sql, custom_name)
+    process_time = time.time() - process_start_time
+    logger.info(f"Queries processed in {process_time:.2f} seconds")
+
+    # Create the final DataFrame from the list of rows in one go
+    df = pd.DataFrame(dataframe_rows)
+
+    # Add table types by looking up from the object types file
+    if not df.empty:
+        types_file_path = input("Enter path to object types CSV file (press Enter to skip): ").strip()
+        types_start_time = time.time()
+        if types_file_path and Path(types_file_path).exists():
+            try:
+                # Read the object types file
+                types_df = pd.read_csv(types_file_path)
+                logger.info(f"Loaded object types from {types_file_path}")
+                
+                # If input was an Excel file with view_name column, add those views to the types
+                if input_path and Path(input_path).exists():
+                    input_file = Path(input_path)
+                    if input_file.suffix.lower() in ['.xlsx', '.xls', '.xlsm']:
+                        try:
+                            views_df = pd.read_excel(input_path)
+                            if 'view_name' in views_df.columns:
+                                logger.info(f"Found view_name column in {input_file.name}")
+                                unique_views = views_df['view_name'].dropna().unique()
+                                logger.info(f"Adding {len(unique_views)} unique views to ObjectTypes")
+                                
+                                # Create new entries for views not already in types_df
+                                new_views = []
+                                for view_name in unique_views:
+                                    view_name_str = str(view_name).strip()
+                                    if view_name_str.upper() not in [str(x).strip().upper() for x in types_df['obj_name']]:
+                                        new_views.append({'obj_name': view_name_str, 'TableKind': 'V'})
+                                
+                                if new_views:
+                                    new_views_df = pd.DataFrame(new_views)
+                                    types_df = pd.concat([types_df, new_views_df], ignore_index=True)
+                                    logger.info(f"Added {len(new_views)} new views to ObjectTypes")
+                        except Exception as e:
+                            logger.warning(f"Could not extract view names from Excel file: {e}")
+                
+                # Create a dictionary for fast lookup: obj_name -> TableKind
+                # Handle case-insensitive matching and strip whitespace
+                type_lookup = {}
+                for _, row in types_df.iterrows():
+                    obj_name = str(row['obj_name']).strip().upper()
+                    table_kind = str(row['TableKind']).strip()
+                    type_lookup[obj_name] = table_kind
+                
+                # Function to get table type - defaults to 'View' for unknown tables
+                def get_table_type(table_name, is_query_name=False):
+                    if pd.isna(table_name) or table_name is None:
+                        return None
+                    # If it's the query name, return 'Unknown'
+                    if is_query_name:
+                        return 'Unknown'
+                    # Clean the table name and convert to uppercase for matching
+                    clean_name = str(table_name).strip().upper()
+                    # Get the type code (V or T)
+                    type_code = type_lookup.get(clean_name, 'V')
+                    # Convert to full names
+                    if type_code == 'V':
+                        return 'View'
+                    elif type_code == 'T':
+                        return 'Table'
+                    else:
+                        return 'View'
+                
+                # Add childTypes and parentTypes columns
+                # Check if childTableName is the custom query name
+                df['childTypes'] = df['childTableName'].apply(
+                    lambda x: get_table_type(x, is_query_name=(x == custom_name))
+                )
+                df['parentTypes'] = df['parentTableName'].apply(get_table_type)
+                logger.info("Added childTypes and parentTypes columns")
+            except Exception as e:
+                logger.error(f"Error processing object types file: {e}")
+                logger.exception("Full traceback:")
+                df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
+                df['parentTypes'] = 'View'
+        else:
+            logger.info("Skipping table types lookup - defaulting all to View")
             df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
             df['parentTypes'] = 'View'
+        
+        if types_file_path:
+            types_time = time.time() - types_start_time
+            logger.info(f"Type matching completed in {types_time:.2f} seconds")
     else:
-        logger.info("Skipping table types lookup - defaulting all to View")
-        df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
-        df['parentTypes'] = 'View'
-else:
-    logger.warning("DataFrame is empty, no types will be added")
+        logger.warning("DataFrame is empty, no types will be added")
 
-# Print the resulting DataFrame
-print("\n--- Generated DataFrame ---")
-print(df)
-csv_path = "test2.csv"
-if not df.empty:
-    df.to_csv(csv_path, index=False)
-    logger.info(f"Lineage saved to {csv_path}")
+    # Print the resulting DataFrame
+    print("\n--- Generated DataFrame ---")
+    print(df)
+    csv_path = "test2.csv"
+    if not df.empty:
+        save_start_time = time.time()
+        df.to_csv(csv_path, index=False)
+        save_time = time.time() - save_start_time
+        logger.info(f"CSV saved in {save_time:.2f} seconds")
+        logger.info(f"Lineage saved to {csv_path}")
+        
+        # Print timing summary
+        overall_time = time.time() - overall_start_time
+        print("\n" + "="*60)
+        print("PROCESSING COMPLETE - STANDARD APPROACH")
+        print("="*60)
+        print(f"Total rows generated: {len(df)}")
+        print(f"Query reading time: {read_time:.2f} seconds")
+        print(f"Query processing time: {process_time:.2f} seconds")
+        if 'types_time' in locals():
+            print(f"Type matching time: {types_time:.2f} seconds")
+        print(f"CSV save time: {save_time:.2f} seconds")
+        print(f"Total execution time: {overall_time:.2f} seconds")
+        print(f"Output file: {csv_path}")
+        print("="*60 + "\n")
