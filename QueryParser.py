@@ -18,11 +18,11 @@ def read_queries_from_sql(file_path):
 
 
 def read_queries_from_excel(file_path):
-    """Read SQL queries from an Excel file. 
-    Assumes the Excel file has a column named 'query', 'sql', or 'view_sql' containing SQL queries."""
+    """Read SQL queries from an Excel file with support for multi-line queries."""
     try:
         df = pd.read_excel(file_path)
-        # Try common column names for SQL queries
+        
+        # Find the query column
         query_column = None
         for col in ['query', 'Query', 'QUERY', 'sql', 'SQL', 'Sql', 'view_sql', 'VIEW_SQL', 'View_SQL']:
             if col in df.columns:
@@ -30,18 +30,44 @@ def read_queries_from_excel(file_path):
                 break
         
         if query_column is None:
-            # If no standard column found, use the first column
-            query_column = df.columns[0]
-            logger.warning(f"No 'query', 'sql', or 'view_sql' column found in {file_path}. Using first column: {query_column}")
-        
+            query_column = df.columns[-1]
+            logger.warning(f"No query column found in {file_path}. Using last column: {query_column}")
+
         logger.info(f"Using column '{query_column}' for queries from {file_path}")
-        # Combine all queries from the column
-        queries = df[query_column].dropna().astype(str).tolist()
+        
+        # Check for LineNumber column
+        line_number_column = None
+        for col in ['LineNumber', 'linenumber', 'line_number', 'Line_Number', 'LINENUMBER']:
+            if col in df.columns:
+                line_number_column = col
+                break
+        if line_number_column is None:
+            line_number_column = df.columns[-2]
+            logger.info(f"No LineNumber column found in {file_path}. Queries will not be sorted.")
+        
+        # Check for QueryID or similar grouping column
+        query_name_column = None
+        for col in ['TableName', 'ViewName', 'SQLName', 'view_name', 'QueryNumber', 'query_number']:
+            if col in df.columns:
+                query_name_column = col
+                break
+        if query_name_column is None:
+            query_name_column = df.columns[0]
+            logger.info(f"No QueryID column found in {file_path}. All queries will be treated as one group.")
+        
+        # Group by QueryID if it exists, otherwise treat all rows as one query
+        if query_name_column:
+            df = df.sort_values(by=[query_name_column, line_number_column] if line_number_column else [query_name_column])
+            grouped = df.groupby(query_name_column)[query_column].apply(lambda x: '\n'.join(x.astype(str))).tolist()
+            queries = grouped
+        else:
+            queries = df[query_column].astype(str).tolist()
+        
         return (Path(file_path).stem, ';'.join(queries))
+        
     except Exception as e:
         logger.error(f"Error reading Excel file {file_path}: {e}")
-        return ""
-
+        return (Path(file_path).stem, "")
 
 def get_query_files_from_folder(folder_path):
     """Get all query files (txt and Excel) from a folder."""

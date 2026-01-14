@@ -127,7 +127,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     # Split SQL content into individual queries
     #queries = [q.strip() for q in sql_content.split(';') if q.strip()]
     queries = []
-    for file_nme, sql_txt in sql_content:
+    for file_nme, sql_txt in [sql_content]:
         for q in sql_txt.split(';'):
             if q.strip():
                 queries.append ((file_nme, q.strip()))
