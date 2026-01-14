@@ -9,7 +9,7 @@ from sqlglot import exp, parse_one
 from sqllineage.runner import LineageRunner
 from QueryParser import read_queries_from_input, clean_table_name
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -22,7 +22,7 @@ def process_single_query(query_data):
     Returns:
         Tuple of (dataframe_rows, success_flag, error_info, query_text) 
     """
-    one_sql, custom_name, query_idx = query_data
+    (file_nme, one_sql), custom_name, query_idx = query_data
     dataframe_rows = []
     
     # Remove _x000d_ characters
@@ -48,15 +48,15 @@ def process_single_query(query_data):
         sql_type = type(parsed_sql).__name__
 
         if sql_type == 'Delete':
-            tables_involved = [table.name for table in parsed_sql.find_all(exp.Table)]
+            tables_involved = [table.db + "." + table.name for table in parsed_sql.find_all(exp.Table)]
             if tables_involved:
                 child_table = tables_involved[0]
                 parent_tables = tables_involved[1:]
                 for parent in parent_tables:
                     dataframe_rows.append({
-                        "childTableName": clean_table_name(child_table),
+                        "childTableName": clean_table_name(child_table, file_nme),
                         "relationship": sql_type,
-                        "parentTableName": clean_table_name(parent)
+                        "parentTableName": clean_table_name(parent, file_nme)
                     })
         else:
             try:
@@ -74,33 +74,34 @@ def process_single_query(query_data):
             if sql_type == "Select":
                 for parent in source_tables:
                     dataframe_rows.append({
-                        "childTableName": custom_name,
+                        "childTableName": custom_name + '-' + file_nme,
                         "relationship": sql_type,
-                        "parentTableName": clean_table_name(parent)
+                        "parentTableName": clean_table_name(parent, file_nme)
                     })
             else:
                 if source_tables:
                     for child in target_tables:
                         for parent in source_tables:
                             dataframe_rows.append({
-                                "childTableName": clean_table_name(child),
+                                "childTableName": clean_table_name(child, file_nme),
                                 "relationship": sql_type,
-                                "parentTableName": clean_table_name(parent)
+                                "parentTableName": clean_table_name(parent, file_nme)
                             })
                 else:
                     for child in target_tables:
                         dataframe_rows.append({
-                            "childTableName": clean_table_name(child),
+                            "childTableName": clean_table_name(child, file_nme),
                             "relationship": sql_type,
                             "parentTableName": None
                         })
 
-                for parent in target_tables:
-                    dataframe_rows.append({
-                        "childTableName": custom_name,
-                        "relationship": sql_type,
-                        "parentTableName": clean_table_name(parent)
-                    })
+                #for parent in target_tables:
+                #    if not parent.startswith('<default>.'):
+                #        dataframe_rows.append({
+                #            "childTableName": custom_name + '-' + file_nme,
+                #            "relationship": sql_type,
+                #            "parentTableName": clean_table_name(parent, file_nme)
+                #        })
         
         # Successfully processed
         return (dataframe_rows, True, None, None, one_sql)
@@ -124,7 +125,12 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     logger.info(f"Using {num_processes} processes")
     
     # Split SQL content into individual queries
-    queries = [q.strip() for q in sql_content.split(';') if q.strip()]
+    #queries = [q.strip() for q in sql_content.split(';') if q.strip()]
+    queries = []
+    for file_nme, sql_txt in sql_content:
+        for q in sql_txt.split(';'):
+            if q.strip():
+                queries.append ((file_nme, q.strip()))
     total_queries = len(queries)
     
     if total_queries == 0:
@@ -217,15 +223,15 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
 
 
 def add_table_types(df, types_file_path, input_path, custom_name):
-    """Add childTypes and parentTypes columns to the DataFrame."""
+    """Add childTableType and parentTableType columns to the DataFrame."""
     if df.empty:
         logger.warning("DataFrame is empty, no types will be added")
         return df
     
     if not types_file_path or not Path(types_file_path).exists():
         logger.info("Skipping table types lookup - defaulting all to View")
-        df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
-        df['parentTypes'] = 'View'
+        df['childTableType'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
+        df['parentTableType'] = 'View'
         return df
     
     try:
@@ -272,25 +278,25 @@ def add_table_types(df, types_file_path, input_path, custom_name):
             if is_query_name:
                 return 'Unknown'
             clean_name = str(table_name).strip().upper()
-            type_code = type_lookup.get(clean_name, 'V')
+            type_code = type_lookup.get(clean_name, 'VolTable')
             if type_code == 'V':
                 return 'View'
             elif type_code == 'T':
                 return 'Table'
             else:
-                return 'View'
+                return 'VolTable'
         
-        # Add childTypes and parentTypes columns
-        df['childTypes'] = df['childTableName'].apply(
+        # Add childTableType and parentTableType columns
+        df['childTableType'] = df['childTableName'].apply(
             lambda x: get_table_type(x, is_query_name=(x == custom_name))
         )
-        df['parentTypes'] = df['parentTableName'].apply(get_table_type)
-        logger.info("Added childTypes and parentTypes columns")
+        df['parentTableType'] = df['parentTableName'].apply(get_table_type)
+        logger.info("Added childTableType and parentTableType columns")
         
     except Exception as e:
         logger.error(f"Error processing object types file: {e}")
-        df['childTypes'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
-        df['parentTypes'] = 'View'
+        df['childTableType'] = df['childTableName'].apply(lambda x: 'Unknown' if x == custom_name else 'View')
+        df['parentTableType'] = 'View'
     
     return df
 
@@ -339,6 +345,11 @@ def main():
     csv_path = "test2_multiprocessing.csv"
     if not df.empty:
         save_start = time.time()
+        # Convert all column names to uppercase
+        df.columns = df.columns.str.upper()
+        # Convert all string (object) data in the DataFrame to uppercase
+        for col in df.select_dtypes(include=['object']).columns:
+            df[col] = df[col].str.upper()
         df.to_csv(csv_path, index=False)
         save_time = time.time() - save_start
         logger.info(f"CSV saved in {save_time:.2f} seconds")

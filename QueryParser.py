@@ -7,14 +7,14 @@ import os
 from pathlib import Path
 import time
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-def read_queries_from_txt(file_path):
-    """Read SQL queries from a text file."""
+def read_queries_from_sql(file_path):
+    """Read SQL queries from a sql file."""
     with open(file_path, 'r') as file:
-        return file.read()
+        return (Path(file_path).stem, file.read())
 
 
 def read_queries_from_excel(file_path):
@@ -37,7 +37,7 @@ def read_queries_from_excel(file_path):
         logger.info(f"Using column '{query_column}' for queries from {file_path}")
         # Combine all queries from the column
         queries = df[query_column].dropna().astype(str).tolist()
-        return ';'.join(queries)
+        return (Path(file_path).stem, ';'.join(queries))
     except Exception as e:
         logger.error(f"Error reading Excel file {file_path}: {e}")
         return ""
@@ -55,8 +55,8 @@ def get_query_files_from_folder(folder_path):
     # Search for .txt and Excel files
     for file in folder.rglob('*'):
         if file.is_file():
-            if file.suffix.lower() in ['.txt']:
-                query_files.append(('txt', str(file)))
+            if file.suffix.lower() in ['.txt', '.sql']:
+                query_files.append(('sql', str(file)))
             elif file.suffix.lower() in ['.xlsx', '.xls', '.xlsm']:
                 query_files.append(('excel', str(file)))
     
@@ -75,9 +75,9 @@ def read_queries_from_input(input_path):
     
     if path.is_file():
         # Single file processing
-        if path.suffix.lower() in ['.txt']:
-            logger.info(f"Reading queries from text file: {input_path}")
-            return read_queries_from_txt(input_path)
+        if path.suffix.lower() in ['.txt', '.sql']:
+            logger.info(f"Reading queries from sql file: {input_path}")
+            return read_queries_from_sql(input_path)
         elif path.suffix.lower() in ['.xlsx', '.xls', '.xlsm']:
             logger.info(f"Reading queries from Excel file: {input_path}")
             return read_queries_from_excel(input_path)
@@ -96,23 +96,24 @@ def read_queries_from_input(input_path):
         
         for file_type, file_path in query_files:
             logger.info(f"Processing {file_type} file: {file_path}")
-            if file_type == 'txt':
-                all_queries.append(read_queries_from_txt(file_path))
+            if file_type == 'sql':
+                all_queries.append(read_queries_from_sql(file_path))
             elif file_type == 'excel':
                 all_queries.append(read_queries_from_excel(file_path))
         
-        return ';'.join(all_queries)
+        #return ';'.join(all_queries)
+        return all_queries
     
     return ""
 
 
-def clean_table_name(table_name):
+def clean_table_name(table_name, file_nme):
     """Remove <default>. prefix from table names."""
     if table_name is None:
         return None
     table_str = str(table_name).strip()
     if table_str.startswith('<default>.'):
-        return table_str.replace('<default>.', '', 1)
+        return table_str.replace('<default>', file_nme, 1)
     return table_str
 
 
@@ -124,7 +125,7 @@ def process_queries(sql_content, custom_name):
         if len(one_sql.strip()) == 0:
             continue
         try:
-            parsed_sql = parse_one(one_sql, dialect="teradata")
+            parsed_sql = parse_one(one_sql, dialect='teradata')
             sql_type = type(parsed_sql).__name__
 
             if sql_type == 'Delete':

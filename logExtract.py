@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 def clean_bteq_log(log_content):
     """
@@ -75,7 +76,39 @@ def clean_bteq_log(log_content):
     # Join back into single string
     return '\n'.join(cleaned_lines)
 
-if __name__=="__main__":
+def process_log (input_file):
+    try:
+        with open(input_file, 'r', encoding='utf-8') as f:
+            sample_sql = f.read()
+        
+        cleaned_sql = clean_bteq_log(sample_sql)
+        
+        ouput_file = str(Path(input_file).with_suffix('.txt'))
+
+        with open(ouput_file, 'w', encoding='utf-8') as out_f:
+            out_f.write(cleaned_sql)
+        print(f"Cleaned SQL written to {ouput_file}")
+    except FileNotFoundError:
+        print(f"Error: '{input_file}' not found. Please create this file with your BTEQ log content.")
+
+def get_log_files_from_folder(folder_path):
+    """Get all log files (log) from a folder."""
+    folder = Path(folder_path)
+    query_files = []
+    
+    if not folder.exists() or not folder.is_dir():
+        print(f"Invalid folder path: {folder_path}")
+        return query_files
+    
+    # Search for .log files
+    for file in folder.rglob('*'):
+        if file.is_file():
+            if file.suffix.lower() in ['.log']:
+                query_files.append(('log', str(file)))
+    
+    return query_files
+
+def process_default_log ():
     try:
         with open('test.log', 'r', encoding='utf-8') as f:
             sample_sql = f.read()
@@ -86,3 +119,19 @@ if __name__=="__main__":
         print("Cleaned SQL written to query.txt")
     except FileNotFoundError:
         print("Error: 'test2.log' not found. Please create this file with your BTEQ log content.")
+
+if __name__=="__main__":
+
+    input_path = input("Enter path to query file or folder (press Enter for default 'sqls'): ").strip()
+    # Use default sqls folder in current directly if no path provided
+    if not input_path:
+        input_path = '.\\sqls'
+
+    query_files = get_log_files_from_folder(input_path)
+    
+    if not query_files:
+        print(f"No query files found in folder: {input_path}")
+    else:    
+        for file_type, file_path in query_files:
+            print(f"Processing {file_type} file: {file_path}")
+            process_log (file_path)
