@@ -7,11 +7,10 @@ import time
 import sqlglot
 from sqlglot import exp, parse_one
 from sqllineage.runner import LineageRunner
-from QueryParser import read_queries_from_input, clean_table_name
+from helper import read_queries_from_input, clean_table_name
 
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 
 def process_single_query(query_data):
     """Process a single SQL query and return lineage data.
@@ -79,6 +78,7 @@ def process_single_query(query_data):
                 parent_tables = tables_involved[1:]
                 for parent in parent_tables:
                     dataframe_rows.append({
+                        "script_file": file_nme,
                         "childTableName": clean_table_name(child_table, file_nme),
                         "relationship": sql_type,
                         "parentTableName": clean_table_name(parent, file_nme)
@@ -99,6 +99,7 @@ def process_single_query(query_data):
             if sql_type == "Select":
                 for parent in source_tables:
                     dataframe_rows.append({
+                        "script_file": file_nme,
                         "childTableName": custom_name + '-' + file_nme,
                         "relationship": sql_type,
                         "parentTableName": clean_table_name(parent, file_nme)
@@ -108,6 +109,7 @@ def process_single_query(query_data):
                     for child in target_tables:
                         for parent in source_tables:
                             dataframe_rows.append({
+                                "script_file": file_nme,
                                 "childTableName": clean_table_name(child, file_nme),
                                 "relationship": sql_type,
                                 "parentTableName": clean_table_name(parent, file_nme)
@@ -115,18 +117,11 @@ def process_single_query(query_data):
                 else:
                     for child in target_tables:
                         dataframe_rows.append({
+                            "script_file": file_nme,
                             "childTableName": clean_table_name(child, file_nme),
                             "relationship": sql_type,
                             "parentTableName": None
                         })
-
-                #for parent in target_tables:
-                #    if not parent.startswith('<default>.'):
-                #        dataframe_rows.append({
-                #            "childTableName": custom_name + '-' + file_nme,
-                #            "relationship": sql_type,
-                #            "parentTableName": clean_table_name(parent, file_nme)
-                #        })
         
         # Successfully processed
         return (dataframe_rows, True, None, None, one_sql, file_nme)
@@ -152,7 +147,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     # Split SQL content into individual queries
     #queries = [q.strip() for q in sql_content.split(';') if q.strip()]
     queries = []
-    for file_nme, sql_txt in [sql_content]:
+    for file_nme, sql_txt in sql_content:
         for q in sql_txt.split(';'):
             if q.strip():
                 queries.append ((file_nme, q.strip()))
@@ -211,7 +206,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     # Create DataFrame for error details and save to CSV
     if error_details_list:
         error_df = pd.DataFrame(error_details_list)
-        error_csv_path = custom_name + '-error_details.csv'
+        error_csv_path = "./error/" + custom_name + '-error_details.csv'
         error_df.to_csv(error_csv_path, index=False, encoding='utf-8-sig')
         logger.info(f"Saved {len(error_details_list)} error details to {error_csv_path}")
         print(f"\nDetailed error information saved to: {error_csv_path}")
@@ -368,7 +363,7 @@ def main():
         logger.info(f"Types added in {types_time:.2f} seconds")
     
     # Save to CSV
-    csv_path = custom_name + "-relations.csv"
+    csv_path = "./Relationships/" + custom_name + "-relations.csv"
     if not df.empty:
         save_start = time.time()
         # Convert all column names to uppercase

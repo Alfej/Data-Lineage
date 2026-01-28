@@ -241,7 +241,7 @@ class PandasVOLTABLEResolver:
 def main():
     """Main entry point."""
     input_path = input("Enter input CSV file path: ").strip()
-    output_path = input("Enter output CSV file path: ").strip()
+    output_path = input_path.replace('.csv', '_simplified.csv')
     verbose_input = input("Enable verbose logging? (y/n): ").strip().lower()
     
     # Create resolver and process
