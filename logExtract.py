@@ -83,7 +83,7 @@ def process_log (input_file):
         
         cleaned_sql = clean_bteq_log(sample_sql)
         
-        ouput_file = str(Path(input_file).with_suffix('.txt'))
+        ouput_file = str(Path(input_file).with_suffix('.sql'))
 
         with open(ouput_file, 'w', encoding='utf-8') as out_f:
             out_f.write(cleaned_sql)

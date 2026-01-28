@@ -28,6 +28,9 @@ def process_single_query(query_data):
     # Remove _x000d_ characters
     if '_x000d_' in one_sql:
         one_sql = one_sql.replace('_x000d_', ' ')
+    # Remove _x000D_ characters
+    if '_x000D_' in one_sql:
+        one_sql = one_sql.replace('_x000D_', ' ')
     
     # Remove LOCKING...ACCESS clause
     one_sql_lower = one_sql.lower()
@@ -40,8 +43,30 @@ def process_single_query(query_data):
             # Replace everything from 'locking' to end of 'access' with a space
             one_sql = one_sql[:locking_pos] + ' ' + one_sql[access_pos + 6:]
     
+    # Remove NONSEQUENCED...TRANSACTIONTIME clause
+    one_sql_lower = one_sql.lower()
+    if 'nonsequenced' in one_sql_lower and 'transactiontime' in one_sql_lower:
+        # Find position of 'nonsequenced' and 'transactiontime'
+        nonsequenced_pos = one_sql_lower.find('nonsequenced')
+        transactiontime_pos = one_sql_lower.find('transactiontime', nonsequenced_pos)
+        
+        if nonsequenced_pos != -1 and transactiontime_pos != -1 and transactiontime_pos > nonsequenced_pos:
+            # Replace everything from 'nonsequenced' to end of 'transactiontime' with a space
+            one_sql = one_sql[:nonsequenced_pos] + ' ' + one_sql[transactiontime_pos + 15:]
+
+    # Remove SEQUENCED...TRANSACTIONTIME clause
+    one_sql_lower = one_sql.lower()
+    if 'sequenced' in one_sql_lower and 'transactiontime' in one_sql_lower:
+        # Find position of 'sequenced' and 'transactiontime'
+        sequenced_pos = one_sql_lower.find('sequenced')
+        transactiontime_pos = one_sql_lower.find('transactiontime', sequenced_pos)
+        
+        if sequenced_pos != -1 and transactiontime_pos != -1 and transactiontime_pos > sequenced_pos:
+            # Replace everything from 'sequenced' to end of 'transactiontime' with a space
+            one_sql = one_sql[:sequenced_pos] + ' ' + one_sql[transactiontime_pos + 15:]
+
     if len(one_sql.strip()) == 0:
-        return (dataframe_rows, False, "EmptyQuery", "Empty query string", one_sql)  # Empty query counts as failure
+        return (dataframe_rows, False, "EmptyQuery", "Empty query string", one_sql, file_nme)  # Empty query counts as failure
     
     try:
         parsed_sql = parse_one(one_sql, dialect="teradata")
@@ -104,13 +129,13 @@ def process_single_query(query_data):
                 #        })
         
         # Successfully processed
-        return (dataframe_rows, True, None, None, one_sql)
+        return (dataframe_rows, True, None, None, one_sql, file_nme)
 
     except Exception as e:
         # Failed to process this query - capture error type and message
         error_type = type(e).__name__
         error_msg = str(e)  # Full error message
-        return (dataframe_rows, False, error_type, error_msg, one_sql)
+        return (dataframe_rows, False, error_type, error_msg, one_sql, file_nme)
 
 
 def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
@@ -160,7 +185,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     error_summary = {}
     error_details_list = []  # List to store detailed error information
     
-    for idx, (query_result, success, error_type, error_info, query_text) in enumerate(results):
+    for idx, (query_result, success, error_type, error_info, query_text, file_nme) in enumerate(results):
         all_rows.extend(query_result)
         if success:
             successful_queries += 1
@@ -173,6 +198,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
                 
                 # Store detailed error info for CSV export
                 error_details_list.append({
+                    'script_file': file_nme,
                     'query_index': idx,
                     'sql_query': query_text,
                     'error_type': error_type,
@@ -185,7 +211,7 @@ def process_with_multiprocessing(sql_content, custom_name, num_processes=None):
     # Create DataFrame for error details and save to CSV
     if error_details_list:
         error_df = pd.DataFrame(error_details_list)
-        error_csv_path = 'query_errors_detailed.csv'
+        error_csv_path = custom_name + '-error_details.csv'
         error_df.to_csv(error_csv_path, index=False, encoding='utf-8-sig')
         logger.info(f"Saved {len(error_details_list)} error details to {error_csv_path}")
         print(f"\nDetailed error information saved to: {error_csv_path}")
@@ -342,7 +368,7 @@ def main():
         logger.info(f"Types added in {types_time:.2f} seconds")
     
     # Save to CSV
-    csv_path = "test2_multiprocessing.csv"
+    csv_path = custom_name + "-relations.csv"
     if not df.empty:
         save_start = time.time()
         # Convert all column names to uppercase
