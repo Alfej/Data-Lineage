@@ -103,7 +103,7 @@ def get_log_files_from_folder(folder_path):
     # Search for .log files
     for file in folder.rglob('*'):
         if file.is_file():
-            if file.suffix.lower() in ['.log']:
+            if file.suffix.lower() in ['.log','.msg']:
                 query_files.append(('log', str(file)))
     
     return query_files
