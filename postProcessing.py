@@ -1,4 +1,3 @@
-
 """
 Pandas-based VOLTABLE Resolver - Optimized solution using DataFrame operations.
 """
@@ -58,7 +57,7 @@ class PandasVOLTABLEResolver:
         
         # Group by VOLTABLE name and collect parent tables
         for voltable_name, group in voltable_rows.groupby('CHILDTABLENAME'):
-            parents = set(zip(group['PARENTTABLENAME'], group['PARENTTABLETYPE']))
+            parents = set(zip(group['PARENTTABLENAME'], group['PARENTTABLETYPE'], group['script_file']))
             self.voltable_dependencies[voltable_name] = parents
         
         self.log(f"✓ Found {len(self.voltable_dependencies)} VOLTABLE tables")
@@ -67,18 +66,19 @@ class PandasVOLTABLEResolver:
             for voltable, parents in self.voltable_dependencies.items():
                 self.log(f"  {voltable} → {parents}")
     
-    def resolve_parent_chain(self, table_name: str, table_type: str, 
-                            visited: Set[str] = None) -> Set[Tuple[str, str]]:
+    def resolve_parent_chain(self, table_name: str, table_type: str, script_file_names: Set[str],
+                            visited: Set[str] = None) -> Set[Tuple[str, str, frozenset]]:
         """
         Recursively resolve VOLTABLE dependencies to get final parent tables.
         
         Args:
             table_name: Name of the table to resolve
             table_type: Type of the table
+            script_file_names: Set of script file names to track
             visited: Set to track visited tables (cycle detection)
             
         Returns:
-            Set of (parent_name, parent_type) tuples that are not VOLTABLEs
+            Set of (parent_name, parent_type, script_file_names) tuples that are not VOLTABLEs
         """
         if visited is None:
             visited = set()
@@ -90,13 +90,16 @@ class PandasVOLTABLEResolver:
         
         # Base case: if not a VOLTABLE, return itself
         if table_type != 'VOLTABLE':
-            return {(table_name, table_type)}
+            # Convert set to frozenset so it can be stored in a set (frozenset is hashable)
+            return {(table_name, table_type, frozenset(script_file_names))}
         
         # Recursive case: resolve all parents of this VOLTABLE
         resolved_parents = set()
-        for parent_name, parent_type in self.voltable_dependencies.get(table_name, set()):
+        for parent_name, parent_type, parent_script_file in self.voltable_dependencies.get(table_name, set()):
+            # Create a new set with the parent script file added
+            updated_script_files = script_file_names | {parent_script_file}
             resolved_parents.update(
-                self.resolve_parent_chain(parent_name, parent_type, visited.copy())
+                self.resolve_parent_chain(parent_name, parent_type, updated_script_files, visited.copy())
             )
         
         return resolved_parents
@@ -135,13 +138,18 @@ class PandasVOLTABLEResolver:
             relationship = row['RELATIONSHIP']
             parent_name = row['PARENTTABLENAME']
             parent_type = row['PARENTTABLETYPE']
+            script_file_name = row['script_file']
             
             # Resolve the VOLTABLE parent to its actual parent tables
-            resolved_parents = self.resolve_parent_chain(parent_name, parent_type)
+            script_file_names = {script_file_name}
+            resolved_parents = self.resolve_parent_chain(parent_name, parent_type, script_file_names)
             
             # Create a new row for each resolved parent
-            for resolved_parent_name, resolved_parent_type in resolved_parents:
+            for resolved_parent_name, resolved_parent_type, resolved_script_files in resolved_parents:
+                # Convert frozenset to pipe-separated string
+                script_files_str = ' | '.join(sorted(resolved_script_files))
                 resolved_rows.append({
+                    'script_file': script_files_str,
                     'CHILDTABLENAME': child_name,
                     'CHILDTABLETYPE': child_type,
                     'RELATIONSHIP': relationship,
